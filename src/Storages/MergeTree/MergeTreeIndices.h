@@ -225,4 +225,8 @@ void hypothesisIndexValidator(const IndexDescription & index, bool attach);
 
 MergeTreeIndexPtr ginIndexCreator(const IndexDescription& index);
 void ginIndexValidator(const IndexDescription& index, bool attach);
+
+MergeTreeIndexPtr arrayFilterIndexCreator(const IndexDescription & index);
+void arrayFilterIndexValidator(const IndexDescription & index, bool attach);
+
 }

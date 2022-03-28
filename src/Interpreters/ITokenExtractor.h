@@ -3,7 +3,7 @@
 #include <base/types.h>
 
 #include <Interpreters/BloomFilter.h>
-
+#include <Interpreters/ArrayFilter.h>
 
 namespace DB
 {
@@ -36,6 +36,16 @@ struct ITokenExtractor
     }
 
     virtual void stringLikeToBloomFilter(const char * data, size_t length, BloomFilter & bloom_filter) const = 0;
+
+
+    virtual void stringToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const = 0;
+
+    virtual void stringPaddedToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const
+    {
+        return stringToArrayFilter(data, length, array_filter);
+    }
+
+    virtual void stringLikeToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const = 0;
 
 };
 
@@ -71,6 +81,34 @@ class ITokenExtractorHelper : public ITokenExtractor
         while (cur < length && static_cast<const Derived *>(this)->nextInStringLike(data, length, &cur, token))
             bloom_filter.add(token.c_str(), token.size());
     }
+    //////
+    void stringToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const override
+    {
+        size_t cur = 0;
+        size_t token_start = 0;
+        size_t token_len = 0;
+
+        while (cur < length && static_cast<const Derived *>(this)->nextInString(data, length, &cur, &token_start, &token_len))
+            array_filter.add(data + token_start, token_len);
+    }
+
+    void stringPaddedToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const override
+    {
+        size_t cur = 0;
+        size_t token_start = 0;
+        size_t token_len = 0;
+
+        while (cur < length && static_cast<const Derived *>(this)->nextInStringPadded(data, length, &cur, &token_start, &token_len))
+            array_filter.add(data + token_start, token_len);
+    }
+
+    void stringLikeToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const override
+    {
+        size_t cur = 0;
+        String token;
+        while (cur < length && static_cast<const Derived *>(this)->nextInStringLike(data, length, &cur, token))
+            array_filter.add(token.c_str(), token.size());
+    }    
 };
 
 

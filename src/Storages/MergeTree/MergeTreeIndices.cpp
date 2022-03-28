@@ -104,6 +104,9 @@ MergeTreeIndexFactory::MergeTreeIndexFactory()
 
     registerCreator("gin", ginIndexCreator);
     registerValidator("gin", ginIndexValidator);    
+
+    registerCreator("ngramaf_v1", arrayFilterIndexCreator);
+    registerValidator("ngramaf_v1", arrayFilterIndexValidator);    
 }
 
 MergeTreeIndexFactory & MergeTreeIndexFactory::instance()
