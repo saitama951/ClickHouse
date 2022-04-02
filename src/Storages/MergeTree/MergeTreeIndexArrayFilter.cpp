@@ -58,8 +58,19 @@ void MergeTreeIndexGranuleArrayFilter::serializeBinary(WriteBuffer & ostr) const
 
     for (const auto & array_filter : array_filters)
     {
-        size_serialization->serializeBinary(array_filter.size(), ostr);
-        ostr.write(reinterpret_cast<const char *>(array_filter.getFilter().data()), array_filter.size() * sizeof(ArrayFilter::UnderType));
+        size_t filterSize = array_filter.getFilter().size();
+        size_serialization->serializeBinary(filterSize, ostr);
+
+        std::vector<uint64_t> tmpArray(filterSize * 3, 0);
+
+        size_t index = 0;
+        for (const auto& element : array_filter.getFilter()) {
+
+            tmpArray[index++] = element.first;
+            tmpArray[index++] = element.second.items[0];
+            tmpArray[index++] = element.second.items[1];
+        }
+        ostr.write(reinterpret_cast<const char*>(&tmpArray[0]), filterSize * 3 * sizeof(uint64_t));
     }
 }
 
@@ -74,15 +85,23 @@ void MergeTreeIndexGranuleArrayFilter::deserializeBinary(ReadBuffer & istr, Merg
     for (auto & array_filter : array_filters)
     {
         size_type->getDefaultSerialization()->deserializeBinary(field_rows, istr);
-        size_t rows_to_read = field_rows.get<size_t>();
+        size_t filterSize = field_rows.get<size_t>();
 
-        if (rows_to_read == 0)
+        if (filterSize == 0)
             continue;
 
-        array_filter.getFilter().resize(rows_to_read, 0);
+        std::vector<uint64_t> tmpArray(filterSize * 3, 0);
+        istr.read(reinterpret_cast<char*>(&tmpArray[0]), filterSize * 3 * sizeof(uint64_t));
 
-        istr.read(reinterpret_cast<char *>(
-                array_filter.getFilter().data()), rows_to_read * sizeof(ArrayFilter::UnderType));
+        array_filter.getFilter().clear();
+        for (size_t i = 0; i < filterSize; ++i)
+        {
+            auto bigram = tmpArray[3 * i];
+            BitSet bits;
+            bits.items[0] = tmpArray[3 * i + 1];
+            bits.items[1] = tmpArray[3 * i + 2];
+            array_filter.getFilter().insert({bigram, bits});
+        }
     }
     has_elems = true;
 }
@@ -111,6 +130,20 @@ MergeTreeIndexGranulePtr MergeTreeIndexAggregatorArrayFilter::getGranuleAndReset
     return new_granule;
 }
 
+static void addToArrayFilter(DB::NgramTokenExtractor &extractor, const char* data, size_t length, ArrayFilter& array_filter)
+{
+	size_t cur = 0;
+	size_t token_start = 0;
+	size_t token_len = 0;
+
+	int index = 0;
+	while (cur < length && extractor.nextInStringPadded(data, length, &cur, &token_start, &token_len))
+	{
+		array_filter.add(data + token_start, token_len, index);
+		index++;
+	}
+}
+
 void MergeTreeIndexAggregatorArrayFilter::update(const Block & block, size_t * pos, size_t limit)
 {
     if (*pos >= block.rows())
@@ -132,6 +165,9 @@ void MergeTreeIndexAggregatorArrayFilter::update(const Block & block, size_t * p
             const auto & column_offsets = column_array.getOffsets();
             const auto & column_key = column_array.getData();
 
+            NgramTokenExtractor ngram_extractor1(1);
+            NgramTokenExtractor ngram_extractor2(2);
+            
             for (size_t i = 0; i < rows_read; ++i)
             {
                 size_t element_start_row = column_offsets[current_position - 1];
@@ -140,7 +176,17 @@ void MergeTreeIndexAggregatorArrayFilter::update(const Block & block, size_t * p
                 for (size_t row_num = 0; row_num < elements_size; ++row_num)
                 {
                     auto ref = column_key.getDataAt(element_start_row + row_num);
-                    token_extractor->stringPaddedToArrayFilter(ref.data, ref.size, granule->array_filters[col]);
+                    
+                    size_t cur = 0;
+                    size_t token_start = 0;
+                    size_t token_len = 0;
+                    while (cur < ref.size && ArrayFilter::getNextInString(ref.data, ref.size, &cur, &token_start, &token_len))
+                    {
+
+                        addToArrayFilter(ngram_extractor1, ref.data + token_start, token_len, granule->array_filters[col]);
+                        addToArrayFilter(ngram_extractor2, ref.data + token_start, token_len, granule->array_filters[col]);
+                    }
+                    
                 }
 
                 current_position += 1;
@@ -148,13 +194,25 @@ void MergeTreeIndexAggregatorArrayFilter::update(const Block & block, size_t * p
         }
         else
         {
+            NgramTokenExtractor ngram_extractor1(1);
+            NgramTokenExtractor ngram_extractor2(2);
+
             for (size_t i = 0; i < rows_read; ++i)
             {
                 auto ref = column->getDataAt(current_position + i);
                 token_extractor->stringPaddedToArrayFilter(ref.data, ref.size, granule->array_filters[col]);
+
+                size_t cur = 0;
+                size_t token_start = 0;
+                size_t token_len = 0;
+                while (cur < ref.size && ArrayFilter::getNextInString(ref.data, ref.size, &cur, &token_start, &token_len))
+                {
+
+                    addToArrayFilter(ngram_extractor1, ref.data + token_start, token_len, granule->array_filters[col]);
+                    addToArrayFilter(ngram_extractor2, ref.data + token_start, token_len, granule->array_filters[col]);
+                }                
             }
         }
-        granule->array_filters[col].sort();
     }
 
     granule->has_elems = true;
@@ -661,9 +719,8 @@ bool MergeTreeConditionArrayFilter::tryPrepareSetArrayFilter(
         {
             array_filters.back().emplace_back(params);
             auto ref = column->getDataAt(row);
-            token_extractor->stringPaddedToArrayFilter(ref.data, ref.size, array_filters.back().back());
+            array_filters.back().back().setMatchString(ref.data, ref.size);
         }
-        array_filters.back().back().sort();
     }
 
     out.set_key_position = std::move(key_position);

@@ -84,33 +84,19 @@ class ITokenExtractorHelper : public ITokenExtractor
     //////
     void stringToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const override
     {
-        size_t cur = 0;
-        size_t token_start = 0;
-        size_t token_len = 0;
-
-        while (cur < length && static_cast<const Derived *>(this)->nextInString(data, length, &cur, &token_start, &token_len))
-            array_filter.add(data + token_start, token_len);
+        array_filter.setMatchString(data, length);
     }
 
     void stringPaddedToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const override
     {
-        size_t cur = 0;
-        size_t token_start = 0;
-        size_t token_len = 0;
-
-        while (cur < length && static_cast<const Derived *>(this)->nextInStringPadded(data, length, &cur, &token_start, &token_len))
-            array_filter.add(data + token_start, token_len);
+        array_filter.setMatchString(data, length);
     }
 
     void stringLikeToArrayFilter(const char * data, size_t length, ArrayFilter & array_filter) const override
     {
-        size_t cur = 0;
-        String token;
-        while (cur < length && static_cast<const Derived *>(this)->nextInStringLike(data, length, &cur, token))
-            array_filter.add(token.c_str(), token.size());
+        array_filter.setMatchString(data, length);
     }    
 };
-
 
 /// Parser extracting all ngrams from string.
 struct NgramTokenExtractor final : public ITokenExtractorHelper<NgramTokenExtractor>
