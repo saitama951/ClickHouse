@@ -84,6 +84,7 @@ private:
         enum Function
         {
             /// Atoms of a Boolean expression.
+            FUNCTION_LIKE,
             FUNCTION_EQUALS,
             FUNCTION_NOT_EQUALS,
             FUNCTION_HAS,

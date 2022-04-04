@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <base/types.h>
 #include <base/extended_types.h>
 #include <Core/Field.h>
@@ -27,7 +27,7 @@ class ArrayFilter
 {
 public:
     using UnderType = UInt64;
-    using Container = std::unordered_map<UnderType, BitSet>;
+    using Container = std::map<UnderType, BitSet>;
 
     explicit ArrayFilter(const ArrayFilterParameters & params);
 
@@ -36,8 +36,8 @@ public:
     void clear();
     size_t size() const {return filter.size();}
 
-    bool contains(const ArrayFilter & af);
-    bool contains(const std::string& str) const;
+    bool contains(const ArrayFilter & af, bool searchFromStart = false);
+    bool contains(const std::string& str, bool searchFromStart) const;
 
     const Container & getFilter() const { return filter; }
     Container & getFilter() { return filter; }
@@ -62,7 +62,7 @@ public:
     static const String &getName();
     static bool getNextInString(const char* data, size_t length, size_t* __restrict pos, size_t* __restrict token_start, size_t* __restrict token_length);
 
-    bool match(const String& str) const;
+    bool match(const String& str, bool searchFromStart) const;
 };
 
 using ArrayFilterPtr = std::shared_ptr<ArrayFilter>;

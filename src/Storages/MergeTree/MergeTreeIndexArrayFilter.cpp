@@ -258,7 +258,8 @@ bool MergeTreeConditionArrayFilter::alwaysUnknownOrTrue() const
              || element.function == RPNElement::FUNCTION_IN
              || element.function == RPNElement::FUNCTION_NOT_IN
              || element.function == RPNElement::FUNCTION_MULTI_SEARCH
-             || element.function == RPNElement::ALWAYS_FALSE)
+             || element.function == RPNElement::ALWAYS_FALSE
+             || element.function == RPNElement::FUNCTION_LIKE)
         {
             rpn_stack.push_back(false);
         }
@@ -305,9 +306,10 @@ bool MergeTreeConditionArrayFilter::mayBeTrueOnGranule(MergeTreeIndexGranulePtr 
         }
         else if (element.function == RPNElement::FUNCTION_EQUALS
              || element.function == RPNElement::FUNCTION_NOT_EQUALS
-             || element.function == RPNElement::FUNCTION_HAS)
+             || element.function == RPNElement::FUNCTION_HAS
+             || element.function == RPNElement::FUNCTION_LIKE)
         {
-            rpn_stack.emplace_back(granule->array_filters[element.key_column].contains(*element.array_filter), true);
+            rpn_stack.emplace_back(granule->array_filters[element.key_column].contains(*element.array_filter, element.function != RPNElement::FUNCTION_LIKE), true);
 
             if (element.function == RPNElement::FUNCTION_NOT_EQUALS)
                 rpn_stack.back() = !rpn_stack.back();
@@ -323,7 +325,7 @@ bool MergeTreeConditionArrayFilter::mayBeTrueOnGranule(MergeTreeIndexGranulePtr 
 
                 const auto & array_filters = element.set_array_filters[column];
                 for (size_t row = 0; row < array_filters.size(); ++row)
-                    result[row] = result[row] && granule->array_filters[key_idx].contains(array_filters[row]);
+                    result[row] = result[row] && granule->array_filters[key_idx].contains(array_filters[row], true);
             }
 
             rpn_stack.emplace_back(
@@ -338,7 +340,7 @@ bool MergeTreeConditionArrayFilter::mayBeTrueOnGranule(MergeTreeIndexGranulePtr 
             const auto & array_filters = element.set_array_filters[0];
 
             for (size_t row = 0; row < array_filters.size(); ++row)
-                result[row] = result[row] && granule->array_filters[element.key_column].contains(array_filters[row]);
+                result[row] = result[row] && granule->array_filters[element.key_column].contains(array_filters[row], true);
 
             rpn_stack.emplace_back(
                     std::find(std::cbegin(result), std::cend(result), true) != std::end(result), true);
@@ -583,7 +585,7 @@ bool MergeTreeConditionArrayFilter::traverseASTEquals(
     else if (function_name == "like")
     {
         out.key_column = key_column_num;
-        out.function = RPNElement::FUNCTION_EQUALS;
+        out.function = RPNElement::FUNCTION_LIKE;
         out.array_filter = std::make_unique<ArrayFilter>(params);
         const auto & value = const_value.get<String>();
         token_extractor->stringLikeToArrayFilter(value.data(), value.size(), *out.array_filter);

@@ -106,7 +106,7 @@ void ArrayFilter::clear()
     filter.clear();
 }
 
-bool ArrayFilter::match(const String& str) const
+bool ArrayFilter::match(const String& str, bool searchFromStart) const
 {
     DB::NgramTokenExtractor ngram_extractor1(1);
 
@@ -150,29 +150,46 @@ bool ArrayFilter::match(const String& str) const
             return false;
 
         auto bitmap = it->second;
-            
+        
+        if (searchFromStart)
+        {
+            BitSet bitMask = (1 << (i * 2));
+            if (!(bitmap & bitMask) )
+                return false;
+            bitmap = bitMask;
+        }
+
         if (i + 1 < bigram_array.size())
         {
             auto itNext{ filter.find(bigram_array[i + 1]) };
             if (itNext == filter.end())
                 return false;
 
-            //for each bigram in the bitmap, we need to test if the bigram is the next in binary_array
-            bitmap <<= 2;
-            bitmap &= itNext->second;
+            auto bitmapNext = itNext->second;
+            if (searchFromStart)
+            {
+                BitSet bitMaskNext = (1 << ((i+1) * 2));
+                if (!(bitmapNext & bitMaskNext) )
+                    return false;
+            }
+            else
+            {
+                bitmap <<= 2;
+                bitmap &= bitmapNext;
 
-            if(bitmap == 0)
-                return false;
+                if(bitmap == 0)
+                    return false;
+            }
         }
     }
     return true;
 }
-bool ArrayFilter::contains(const ArrayFilter & af)
+bool ArrayFilter::contains(const ArrayFilter & af, bool searchFromStart)
 {
-    return contains(af.getMatchString());
+    return contains(af.getMatchString(), searchFromStart);
 }
 
-bool ArrayFilter::contains(const string &str) const
+bool ArrayFilter::contains(const string &str, bool searchFromStart) const
 {
     //tokenize input string
     // for each token, check if it matches
@@ -181,7 +198,7 @@ bool ArrayFilter::contains(const string &str) const
     size_t token_len = 0;
     while (cur < str.size() && getNextInString(str.data(), str.size(), &cur, &token_start, &token_len))
     {
-        if (!match(string(str.data() + token_start, token_len)))
+        if (!match(string(str.data() + token_start, token_len), searchFromStart))
             return false;
     }
     return true;
