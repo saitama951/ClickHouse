@@ -77,7 +77,7 @@ public:
     const Digest & getPasswordHashBinary() const { return password_hash; }
 
     /// Sets the salt in String form.
-    void setSalt(const String & salt);
+    void setSalt(String salt);
     String getSalt() const;
 
     /// Sets the server name for authentication type LDAP.

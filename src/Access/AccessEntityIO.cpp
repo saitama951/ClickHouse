@@ -85,9 +85,10 @@ String serializeAccessEntity(const IAccessEntity & entity)
     WriteBufferFromOwnString buf;
     for (const ASTPtr & query : queries)
     {
+        formatAST(*query, buf, false, true);
         if (const User * user = typeid_cast<const User *>(&entity))
         {
-            if (user->auth_data.getSalt().compare("") != 0)
+            if (!user->auth_data.getSalt().empty())
             {
                 std::string strSalt = " '";
                 strSalt += user->auth_data.getSalt();
@@ -95,7 +96,6 @@ String serializeAccessEntity(const IAccessEntity & entity)
                 buf.write(strSalt.c_str(), strSalt.length());
             }
         }
-        formatAST(*query, buf, false, true);
         buf.write(";\n", 2);
     }
     return buf.str();
@@ -132,7 +132,7 @@ AccessEntityPtr deserializeAccessEntityImpl(const String & definition)
             res = user = std::make_unique<User>();
             InterpreterCreateUserQuery::updateUserFromQuery(*user, *create_user_query);
 
-            if (user->auth_data.getSalt().compare("") != 0)
+            if (!user->auth_data.getSalt().empty())
                 user->auth_data.setSalt(user->auth_data.getSalt());
         }
         else if (auto * create_role_query = query->as<ASTCreateRoleQuery>())

@@ -33,7 +33,7 @@ namespace
 
     bool checkPasswordSHA256(const std::string_view & password, const Digest & password_sha256, const String & salt)
     {
-        return Util::encodeSHA256(String(password)+salt) == password_sha256;
+        return Util::encodeSHA256(String(password).append(salt)) == password_sha256;
     }
 
     bool checkPasswordDoubleSHA1MySQL(const std::string_view & scramble, const std::string_view & scrambled_password, const Digest & password_double_sha1)
