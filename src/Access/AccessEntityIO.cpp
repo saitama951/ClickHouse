@@ -90,9 +90,10 @@ String serializeAccessEntity(const IAccessEntity & entity)
         {
             if (!user->auth_data.getSalt().empty())
             {
-                std::string strSalt = " '";
-                strSalt += user->auth_data.getSalt();
-                strSalt+="'";
+                std::string strSalt;
+                strSalt.append(" '");
+                strSalt.append(user->auth_data.getSalt());
+                strSalt.append("'");
                 buf.write(strSalt.c_str(), strSalt.length());
             }
         }

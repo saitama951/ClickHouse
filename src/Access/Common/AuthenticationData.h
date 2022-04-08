@@ -54,7 +54,7 @@ class AuthenticationData
 public:
     using Digest = std::vector<uint8_t>;
 
-    explicit AuthenticationData(AuthenticationType type_ = AuthenticationType::NO_PASSWORD) : type(type_), salt("") {}
+    explicit AuthenticationData(AuthenticationType type_ = AuthenticationType::NO_PASSWORD) : type(type_) {}
     AuthenticationData(const AuthenticationData & src) = default;
     AuthenticationData & operator =(const AuthenticationData & src) = default;
     AuthenticationData(AuthenticationData && src) = default;

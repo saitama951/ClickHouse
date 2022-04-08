@@ -155,7 +155,7 @@ namespace
                 {
                     auth_data.setSalt(parsed_salt);
                 }
-                else
+                else if (expect_password)
                 {
                     ///generate and add salt here
                     ///random generator FIPS complaint
