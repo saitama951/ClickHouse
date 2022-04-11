@@ -65,6 +65,8 @@ namespace
         {
             query->auth_data = user.auth_data;
             query->show_password = attach_mode; /// We don't show password unless it's an ATTACH statement.
+            if (!user.auth_data.getSalt().empty())
+                query->salt = user.auth_data.getSalt();
         }
 
         if (!user.settings.empty())

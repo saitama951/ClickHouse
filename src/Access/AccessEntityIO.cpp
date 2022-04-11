@@ -86,17 +86,6 @@ String serializeAccessEntity(const IAccessEntity & entity)
     for (const ASTPtr & query : queries)
     {
         formatAST(*query, buf, false, true);
-        if (const User * user = typeid_cast<const User *>(&entity))
-        {
-            if (!user->auth_data.getSalt().empty())
-            {
-                std::string strSalt;
-                strSalt.append(" '");
-                strSalt.append(user->auth_data.getSalt());
-                strSalt.append("'");
-                buf.write(strSalt.c_str(), strSalt.length());
-            }
-        }
         buf.write(";\n", 2);
     }
     return buf.str();
