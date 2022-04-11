@@ -151,7 +151,7 @@ namespace
 
             if (type == AuthenticationType::SHA256_PASSWORD)
             {
-                if(!parsed_salt.empty())
+                if (!parsed_salt.empty())
                 {
                     auth_data.setSalt(parsed_salt);
                 }
@@ -162,7 +162,7 @@ namespace
                     uint8_t key[32];
                     RAND_bytes(key, sizeof(key));
                     String salt;
-                    for(size_t i=0; i< 32; ++i)
+                    for (size_t i=0; i< 32; ++i)
                         salt.append(std::to_string(key[i]));
                     value.append(salt);
                     auth_data.setSalt(salt);

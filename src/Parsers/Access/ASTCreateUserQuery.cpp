@@ -59,7 +59,7 @@ namespace
                     value_prefix = "BY";
                     value = auth_data.getPasswordHashHex();
 
-		    if (!auth_data.getSalt().empty())
+                    if (!auth_data.getSalt().empty())
                     {
                         isSaltPresent = true;
                         salt = auth_data.getSalt();
