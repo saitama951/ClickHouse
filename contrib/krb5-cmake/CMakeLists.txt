@@ -692,6 +692,6 @@ target_compile_definitions(_krb5 PRIVATE
     LIBDIR="/usr/local/lib"
 )
 
-target_link_libraries(_krb5 PRIVATE OpenSSL::Crypto OpenSSL::SSL)
+target_link_libraries(_krb5 PRIVATE ${OPENSSL_LIBRARIES})
 
 add_library(ch_contrib::krb5 ALIAS _krb5)

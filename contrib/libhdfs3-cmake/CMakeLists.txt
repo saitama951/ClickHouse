@@ -124,8 +124,8 @@ target_link_libraries(_hdfs3 PRIVATE ch_contrib::libxml2)
 
 # inherit from parent cmake
 target_link_libraries(_hdfs3 PRIVATE ch_contrib::protobuf boost::headers_only)
-if (TARGET OpenSSL::SSL)
-    target_link_libraries(_hdfs3 PRIVATE OpenSSL::Crypto OpenSSL::SSL)
+if (OPENSSL_INCLUDE_DIR AND OPENSSL_LIBRARIES)
+    target_link_libraries(_hdfs3 PRIVATE ${OPENSSL_LIBRARIES})
 endif()
 
 add_library(ch_contrib::hdfs ALIAS _hdfs3)

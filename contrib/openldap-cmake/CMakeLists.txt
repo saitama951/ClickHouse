@@ -81,7 +81,7 @@ add_library(_lber
 )
 
 target_link_libraries(_lber
-    PRIVATE OpenSSL::Crypto OpenSSL::SSL
+    PRIVATE ${OPENSSL_LIBRARIES}
 )
 
 target_include_directories(_lber SYSTEM
@@ -171,13 +171,14 @@ add_library(_ldap
 
 target_link_libraries(_ldap
     PRIVATE _lber
-    PRIVATE OpenSSL::Crypto OpenSSL::SSL
+    PRIVATE ${OPENSSL_LIBRARIES}
 )
 
 target_include_directories(_ldap SYSTEM
     PUBLIC ${_extra_build_dir}/include
     PUBLIC "${OPENLDAP_SOURCE_DIR}/include"
     PRIVATE "${OPENLDAP_SOURCE_DIR}/libraries/libldap"
+    PRIVATE ${OPENSSL_INCLUDE_DIR}
 )
 
 target_compile_definitions(_ldap
@@ -207,7 +208,7 @@ add_library(_ldap_r
 
 target_link_libraries(_ldap_r
     PRIVATE _lber
-    PRIVATE OpenSSL::Crypto OpenSSL::SSL
+    PRIVATE ${OPENSSL_LIBRARIES}
 )
 
 target_include_directories(_ldap_r SYSTEM
@@ -215,6 +216,7 @@ target_include_directories(_ldap_r SYSTEM
     PUBLIC "${OPENLDAP_SOURCE_DIR}/include"
     PRIVATE "${OPENLDAP_SOURCE_DIR}/libraries/libldap_r"
     PRIVATE "${OPENLDAP_SOURCE_DIR}/libraries/libldap"
+    PRIVATE ${OPENSSL_INCLUDE_DIR}
 )
 
 target_compile_definitions(_ldap_r

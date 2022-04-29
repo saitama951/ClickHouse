@@ -48,5 +48,5 @@ target_compile_options (_amqp-cpp
 )
 
 target_include_directories (_amqp-cpp SYSTEM BEFORE PUBLIC "${LIBRARY_DIR}/include" "${LIBRARY_DIR}")
-target_link_libraries (_amqp-cpp PUBLIC OpenSSL::Crypto OpenSSL::SSL ch_contrib::uv)
+target_link_libraries (_amqp-cpp PUBLIC  ${OPENSSL_SSL_LIBRARY} ch_contrib::uv)
 add_library (ch_contrib::amqp_cpp ALIAS _amqp-cpp)

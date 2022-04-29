@@ -445,6 +445,7 @@ if (USE_MUSL)
 endif ()
 
 include(cmake/dbms_glob_sources.cmake)
+include(cmake/ssl.cmake)
 
 add_library(global-group INTERFACE)
 if (OS_LINUX OR OS_ANDROID)

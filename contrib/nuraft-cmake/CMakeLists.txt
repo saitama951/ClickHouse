@@ -44,7 +44,7 @@ set(SRCS
 add_library(_nuraft ${SRCS})
 
 
-if(NOT TARGET OpenSSL::Crypto)
+if(NOT OPENSSL_CRYPTO_LIBRARY)
     target_compile_definitions(_nuraft PRIVATE USE_BOOST_ASIO=1 BOOST_ASIO_STANDALONE=1 SSL_LIBRARY_NOT_FOUND=1)
 else()
     target_compile_definitions(_nuraft PRIVATE USE_BOOST_ASIO=1 BOOST_ASIO_STANDALONE=1)
@@ -56,8 +56,8 @@ target_include_directories (_nuraft SYSTEM PRIVATE "${ClickHouse_SOURCE_DIR}/con
 
 target_link_libraries (_nuraft PRIVATE boost::headers_only boost::coroutine)
 
-if(TARGET OpenSSL::Crypto)
-    target_link_libraries (_nuraft PRIVATE OpenSSL::Crypto OpenSSL::SSL)
+if(OPENSSL_SSL_LIBRARY AND OPENSSL_CRYPTO_LIBRARY)
+    target_link_libraries (_nuraft PRIVATE ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
 endif()
 
 target_include_directories (_nuraft SYSTEM PUBLIC "${LIBRARY_DIR}/include")

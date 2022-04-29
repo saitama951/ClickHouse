@@ -67,8 +67,8 @@ if (COMPILER_CLANG)
 endif()
 
 # Originally, on Windows azure-core is built with bcrypt and crypt32 by default
-if (TARGET OpenSSL::SSL)
-    target_link_libraries(_azure_sdk PRIVATE OpenSSL::Crypto OpenSSL::SSL)
+if (OPENSSL_FOUND)
+    target_link_libraries(_azure_sdk PRIVATE ${OPENSSL_LIBRARIES})
 endif()
 
 # Originally, on Windows azure-core is built with winhttp by default

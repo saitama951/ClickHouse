@@ -448,7 +448,7 @@ target_link_libraries(_parquet
         ch_contrib::thrift
         boost::headers_only
         boost::regex
-        OpenSSL::Crypto OpenSSL::SSL)
+        ${OPENSSL_LIBRARIES})
 
 if (SANITIZE STREQUAL "undefined")
     target_compile_options(_parquet PRIVATE -fno-sanitize=undefined)
