@@ -488,6 +488,46 @@ else()
     message(STATUS "Unit tests are disabled")
 endif ()
 
+option(ENABLE_CH_BUNDLE_BORINGSSL "Provide user to allow static linking of FIPS compliant BoringSSL library. By default, uses in-house ClickHouse BoringSSL" ON)
+
+message (STATUS "ENABLE_CH_BUNDLE_BORINGSSL: ${ENABLE_CH_BUNDLE_BORINGSSL}")
+if (ENABLE_CH_BUNDLE_BORINGSSL)
+    message (STATUS "Uses in-house ClickHouse FIPS compliant BoringSSL library")
+else ()
+    message (STATUS "Uses static linking of FIPS compliant BoringSSL library")
+endif ()
+
+if (NOT ENABLE_CH_BUNDLE_BORINGSSL)
+
+        if (NOT STATIC_LINK_BORINGSSL_LIB)
+            message (STATUS "In case of static linking of FIPS compliant BoringSSL library and header, locations has to be provided")
+        else ()
+	    set(ENABLE_SSL 1)
+            find_path (OPENSSL_INCLUDE_DIR NAMES openssl/ssl.h PATHS ${OPENSSL_INCLUDE_PATHS})
+            find_library (OPENSSL_SSL_LIBRARY ssl PATHS ${STATIC_LINK_BORINGSSL_LIB})
+            find_library (OPENSSL_CRYPTO_LIBRARY crypto PATHS ${STATIC_LINK_BORINGSSL_LIB})
+
+            if (NOT TARGET OpenSSL::Crypto AND OPENSSL_CRYPTO_LIBRARY)
+		add_library(OpenSSL::Crypto STATIC IMPORTED)
+		set_target_properties(OpenSSL::Crypto PROPERTIES
+                                      INTERFACE_INCLUDE_DIRECTORIES "${OPENSSL_INCLUDE_DIR}")
+                set_target_properties(OpenSSL::Crypto PROPERTIES
+                                      IMPORTED_LOCATION "${OPENSSL_CRYPTO_LIBRARY}")
+            endif ()
+
+            if (NOT TARGET OpenSSL::SSL AND OPENSSL_SSL_LIBRARY)
+		add_library(OpenSSL::SSL STATIC IMPORTED)
+		set_target_properties(OpenSSL::SSL PROPERTIES
+                                      INTERFACE_INCLUDE_DIRECTORIES "${OPENSSL_INCLUDE_DIR}")
+                set_target_properties(OpenSSL::SSL PROPERTIES
+                                      IMPORTED_LOCATION "${OPENSSL_SSL_LIBRARY}")
+            endif ()
+
+	    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${STATIC_LINK_BORINGSSL_LIB}") 
+        endif ()
+endif ()
+
+
 enable_testing() # Enable for tests without binary
 
 # when installing to /usr - place configs to /etc but for /usr/local place to /usr/local/etc
