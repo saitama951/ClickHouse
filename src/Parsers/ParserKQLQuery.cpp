@@ -49,11 +49,11 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     node = select_query;
 
     
-    //ParserKQLFilter KQLfilter_p;
+    ParserKQLFilter KQLfilter_p;
     ParserKQLLimit KQLlimit_p;
     ParserKQLProject KQLproject_p;
-    //ParserKQLSort KQLsort_p;
-    //ParserKQLSummarize KQLsummarize_p;
+    ParserKQLSort KQLsort_p;
+    ParserKQLSummarize KQLsummarize_p;
     ParserKQLTable KQLtable_p;
     
     ASTPtr select_expression_list;
@@ -64,14 +64,14 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     ASTPtr limit_length;
 
     std::unordered_map<std::string, ParserKQLBase * > KQLParser = {
-       // { "filter",&KQLfilter_p},
-       // { "where",&KQLfilter_p},
+        { "filter",&KQLfilter_p},
+        { "where",&KQLfilter_p},
         { "limit",&KQLlimit_p},
         { "take",&KQLlimit_p},
         { "project",&KQLproject_p},
-       // { "sort by",&KQLsort_p},
-       // { "order by",&KQLsort_p},
-       // { "summarize",&KQLsummarize_p},
+        { "sort",&KQLsort_p},
+        { "order",&KQLsort_p},
+        { "summarize",&KQLsummarize_p},
         { "table",&KQLtable_p}
     };
 
@@ -112,12 +112,17 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
 
     if (!KQLlimit_p.parse(pos, limit_length, expected))
         return false;
-    //if (!KQLfilter_p.parse(pos, where_expression, expected))
-        //return false;
-    //if (!KQLsort_p.parse(pos, order_expression_list, expected))
-        // return false;
-    //if (!KQLsummarize_p.parse(pos, group_expression_list, expected))
-        // return false;
+
+    if (!KQLfilter_p.parse(pos, where_expression, expected))
+        return false;
+
+    if (!KQLsort_p.parse(pos, order_expression_list, expected))
+         return false;
+
+    if (!KQLsummarize_p.parse(pos, select_expression_list, expected))
+         return false;
+    else
+        group_expression_list = KQLsummarize_p.group_expression_list;
 
     select_query->setExpression(ASTSelectQuery::Expression::SELECT, std::move(select_expression_list));
     select_query->setExpression(ASTSelectQuery::Expression::TABLES, std::move(tables));
