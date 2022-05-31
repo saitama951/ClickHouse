@@ -1,42 +1,41 @@
+#include <iostream>
 #include <memory>
+#include <queue>
+#include <sstream>
+#include <vector>
+#include <Parsers/ASTExpressionList.h>
+#include <Parsers/ASTIdentifier.h>
+#include <Parsers/ASTInterpolateElement.h>
 #include <Parsers/ASTLiteral.h>
+#include <Parsers/ASTOrderByElement.h>
 #include <Parsers/ASTSelectQuery.h>
-#include <Parsers/IParserBase.h>
 #include <Parsers/CommonParsers.h>
 #include <Parsers/ExpressionElementParsers.h>
 #include <Parsers/ExpressionListParsers.h>
-#include <Parsers/ParserSetQuery.h>
-#include <Parsers/ParserSampleRatio.h>
-#include <Parsers/ParserSelectQuery.h>
-#include <Parsers/ParserTablesInSelectQuery.h>
-#include <Parsers/ParserWithElement.h>
-#include <Parsers/ASTOrderByElement.h>
-#include <Parsers/ASTExpressionList.h>
-#include <Parsers/ASTInterpolateElement.h>
-#include <Parsers/ASTIdentifier.h>
+#include <Parsers/IParserBase.h>
 #include <Parsers/ParserKQLQuery.h>
 #include <Parsers/ParserKQLSummarize.h>
-#include <iostream>
-#include <sstream>
-#include <vector>
+#include <Parsers/ParserSampleRatio.h>
+#include <Parsers/ParserSelectQuery.h>
+#include <Parsers/ParserSetQuery.h>
+#include <Parsers/ParserTablesInSelectQuery.h>
+#include <Parsers/ParserWithElement.h>
 
 namespace DB
 {
-
 std::pair<String, String> removeLastWord(String input)
 {
     std::istringstream ss(input);
     std::string token;
     std::vector<String> temp;
 
-    while(std::getline(ss, token, ' ')) 
+    while (std::getline(ss, token, ' '))
     {
-        std::cout << "MALLIK - inside function: "<< token << std::endl;
         temp.push_back(token);
     }
 
     String firstPart;
-    for(std::size_t i = 0; i < temp.size() - 1; i++)
+    for (std::size_t i = 0; i < temp.size() - 1; i++)
     {
         firstPart += temp[i];
     }
@@ -44,48 +43,56 @@ std::pair<String, String> removeLastWord(String input)
     return std::make_pair(firstPart, temp[temp.size() - 1]);
 }
 
-bool ParserKQLSummarize :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
+
+bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
 {
     if (op_pos.empty())
         return true;
-    if (op_pos.size() != 1 )  // now only support one summarize
+    if (op_pos.size() != 1) // now only support one summarize
         return false;
 
     //summarize avg(age) by FirstName  ==> select FirstName,avg(Age) from Customers3 group by FirstName
-    /*
-    summarize has syntax :
 
-    T | summarize [SummarizeParameters] [[Column =] Aggregation [, ...]] [by [Column =] GroupExpression [, ...]]
+    //summarize has syntax :
 
-    right now , we only support:
+    //T | summarize [SummarizeParameters] [[Column =] Aggregation [, ...]] [by [Column =] GroupExpression [, ...]]
 
-    T | summarize Aggregation [, ...] [by GroupExpression  [, ...]]
-    Aggregation -> the Aggregation function on column
-    GroupExpression - > columns
-    */
+    //right now , we only support:
+
+    //T | summarize Aggregation [, ...] [by GroupExpression  [, ...]]
+    //Aggregation -> the Aggregation function on column
+    //GroupExpression - > columns
+
     auto begin = pos;
 
-    pos = op_pos.back();  
+    pos = op_pos.back();
     String exprAggregation;
     String exprGroupby;
     String exprColumns;
+    String binString;
 
     bool groupby = false;
     String as;
     String column_name;
     int character_passed = 0;
 
-    while (!pos->isEnd() && pos->type != TokenType::PipeMark &&  pos->type != TokenType::Semicolon)
+    while (!pos->isEnd() && pos->type != TokenType::PipeMark && pos->type != TokenType::Semicolon)
     {
         if (String(pos->begin, pos->end) == "by")
             groupby = true;
-        else 
+        else
         {
-            if (groupby) 
-                exprGroupby = exprGroupby + String(pos->begin,pos->end) +" ";
+            if (groupby)
+            {
+                if (String(pos->begin, pos->end) == "bin")
+                    exprGroupby = exprGroupby + "round" + " ";
+                else
+                    exprGroupby = exprGroupby + String(pos->begin, pos->end) + " ";
+            }
+
             else
             {
-                if(String(pos->begin, pos->end) == "=")
+                if (String(pos->begin, pos->end) == "=")
                 {
                     std::pair<String, String> temp = removeLastWord(exprAggregation);
                     exprAggregation = temp.first;
@@ -93,11 +100,11 @@ bool ParserKQLSummarize :: parseImpl(Pos & pos, ASTPtr & node, Expected & expect
                 }
                 else
                 {
-                    if(!column_name.empty())
+                    if (!column_name.empty())
                     {
-                        exprAggregation = exprAggregation + String(pos->begin,pos->end);
+                        exprAggregation = exprAggregation + String(pos->begin, pos->end);
                         character_passed++;
-                        if(String(pos->begin, pos->end) == ")") // was 4
+                        if (String(pos->begin, pos->end) == ")") // was 4
                         {
                             exprAggregation = exprAggregation + " AS " + column_name;
                             column_name = "";
@@ -105,19 +112,16 @@ bool ParserKQLSummarize :: parseImpl(Pos & pos, ASTPtr & node, Expected & expect
                     }
                     else
                     {
-                        exprAggregation = exprAggregation + String(pos->begin,pos->end) +" ";
+                        exprAggregation = exprAggregation + String(pos->begin, pos->end) + " ";
                     }
-                        
                 }
-                
             }
-                
         }
         ++pos;
     }
 
     if (exprGroupby.empty())
-        exprColumns =exprAggregation;
+        exprColumns = exprAggregation;
     else
     {
         if (exprAggregation.empty())
@@ -125,22 +129,21 @@ bool ParserKQLSummarize :: parseImpl(Pos & pos, ASTPtr & node, Expected & expect
         else
             exprColumns = exprGroupby + "," + exprAggregation;
     }
-    Tokens tokenColumns(exprColumns.c_str(), exprColumns.c_str()+exprColumns.size());
+    Tokens tokenColumns(exprColumns.c_str(), exprColumns.c_str() + exprColumns.size());
     IParser::Pos posColumns(tokenColumns, pos.max_depth);
     if (!ParserNotEmptyExpressionList(true).parse(posColumns, node, expected))
-        return false; 
+        return false;
 
     if (groupby)
     {
-        Tokens tokenGroupby(exprGroupby.c_str(), exprGroupby.c_str()+exprGroupby.size());
+        Tokens tokenGroupby(exprGroupby.c_str(), exprGroupby.c_str() + exprGroupby.size());
         IParser::Pos postokenGroupby(tokenGroupby, pos.max_depth);
         if (!ParserNotEmptyExpressionList(false).parse(postokenGroupby, group_expression_list, expected))
-            return false; 
+            return false;
     }
 
-    pos =begin;
+    pos = begin;
     return true;
- 
 }
 
 }

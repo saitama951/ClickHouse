@@ -49,7 +49,7 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     node = select_query;
 
     
-    ParserKQLFilter KQLfilter_p;
+    //ParserKQLFilter KQLfilter_p;
     ParserKQLLimit KQLlimit_p;
     ParserKQLProject KQLproject_p;
     //ParserKQLSort KQLsort_p;
