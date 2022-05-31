@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #include <queue>
 #include <sstream>
@@ -67,6 +68,7 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
     String exprAggregation;
     String exprGroupby;
     String exprColumns;
+    String binString;
 
     bool groupby = false;
     bool bin_function = false;
