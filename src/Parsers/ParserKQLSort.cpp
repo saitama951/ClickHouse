@@ -78,4 +78,5 @@ bool ParserKQLSort :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     pos =begin;
     return true;
 } 
+
 }

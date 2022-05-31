@@ -6,7 +6,7 @@
 #include <Parsers/ExpressionElementParsers.h>
 #include <Parsers/ExpressionListParsers.h>
 #include <Parsers/ParserSetQuery.h>
-//#include <Parsers/ParserSampleRatio.h>
+#include <Parsers/ParserSampleRatio.h>
 #include <Parsers/ParserSelectQuery.h>
 #include <Parsers/ParserTablesInSelectQuery.h>
 #include <Parsers/ParserWithElement.h>
@@ -45,7 +45,7 @@ bool ParserKQLSummarize :: parseImpl(Pos & pos, ASTPtr & node, Expected & expect
     String exprAggregation;
     String exprGroupby;
     String exprColumns;
-    
+
     bool groupby = false;
 
     while (!pos->isEnd() && pos->type != TokenType::PipeMark &&  pos->type != TokenType::Semicolon)

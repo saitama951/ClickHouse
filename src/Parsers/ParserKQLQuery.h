@@ -12,7 +12,9 @@ public:
 protected:
     std::vector<Pos> op_pos;
     std::vector<String> expresions;
+
     virtual String getExprFromToken(Pos pos);
+
 };
 
 class ParserKQLQuery : public IParserBase
