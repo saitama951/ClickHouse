@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iostream> //MALLIK: remove later
 #include <memory>
 #include <queue>
 #include <sstream>
@@ -20,7 +21,6 @@
 #include <Parsers/ParserSetQuery.h>
 #include <Parsers/ParserTablesInSelectQuery.h>
 #include <Parsers/ParserWithElement.h>
-
 namespace DB
 {
 std::pair<String, String> removeLastWord(String input)
@@ -69,10 +69,11 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
     String exprAggregation;
     String exprGroupby;
     String exprColumns;
-    String binString;
 
     bool groupby = false;
-    String as;
+    bool bin_function = false;
+    String bin_column;
+    String last_string;
     String column_name;
     int character_passed = 0;
 
@@ -85,9 +86,21 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
             if (groupby)
             {
                 if (String(pos->begin, pos->end) == "bin")
+                {
                     exprGroupby = exprGroupby + "round" + " ";
+                    bin_function = true;
+                }
+
                 else
                     exprGroupby = exprGroupby + String(pos->begin, pos->end) + " ";
+                
+                if (bin_function && last_string == "(")
+                {
+                    bin_column = String(pos->begin, pos->end);
+                    bin_function = false;
+                }
+
+                last_string = String(pos->begin, pos->end);
             }
 
             else
@@ -119,6 +132,9 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
         }
         ++pos;
     }
+
+    if(!bin_column.empty())
+        exprGroupby = exprGroupby + " AS " + bin_column;
 
     if (exprGroupby.empty())
         exprColumns = exprAggregation;
