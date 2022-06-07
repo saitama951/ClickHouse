@@ -30,9 +30,7 @@ bool ParserKQLLimit :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     auto destpos = pos;
     for (auto it = op_pos.begin(); it != op_pos.end(); ++it)
     {
-
         pos = *it;
-
         auto isNumber = [&]
         {
             for (auto ch = pos->begin ; ch < pos->end; ++ch)

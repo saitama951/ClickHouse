@@ -30,7 +30,6 @@ std::pair<String, String> ParserKQLSummarize::removeLastWord(String input)
     String token;
     std::vector<String> temp;
 
-    //while (std::getline(in, token, ' '))
     while (!in.eof())
     {
         readStringUntilWhitespace(token, in);
@@ -209,6 +208,5 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
     pos = begin;
     return true;
 }
-
 
 }

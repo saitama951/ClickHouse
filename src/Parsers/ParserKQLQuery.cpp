@@ -47,7 +47,8 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
 {
     auto select_query = std::make_shared<ASTSelectQuery>();
     node = select_query;
-   
+
+    
     ParserKQLFilter KQLfilter_p;
     ParserKQLLimit KQLlimit_p;
     ParserKQLProject KQLproject_p;
@@ -63,7 +64,6 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     ASTPtr limit_length;
 
     std::unordered_map<std::string, ParserKQLBase * > KQLParser = {
-
         { "filter",&KQLfilter_p},
         { "where",&KQLfilter_p},
         { "limit",&KQLlimit_p},
@@ -112,7 +112,6 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
 
     if (!KQLlimit_p.parse(pos, limit_length, expected))
         return false;
-
 
     if (!KQLfilter_p.parse(pos, where_expression, expected))
         return false;

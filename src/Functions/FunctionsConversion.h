@@ -705,7 +705,7 @@ template <>
 struct FormatImpl<DataTypeDate32>
 {
     template <typename ReturnType = void>
-    static ReturnType execute(const DataTypeDate::FieldType x, WriteBuffer & wb, const DataTypeDate32 *, const DateLUTImpl *)
+    static ReturnType execute(const DataTypeDate32::FieldType x, WriteBuffer & wb, const DataTypeDate32 *, const DateLUTImpl *)
     {
         writeDateText(ExtendedDayNum(x), wb);
         return ReturnType(true);
@@ -2516,6 +2516,8 @@ protected:
     }
 
     bool useDefaultImplementationForNulls() const override { return false; }
+    /// CAST(Nothing, T) -> T
+    bool useDefaultImplementationForNothing() const override { return false; }
     bool useDefaultImplementationForConstants() const override { return true; }
     bool useDefaultImplementationForLowCardinalityColumns() const override { return false; }
     ColumnNumbers getArgumentsThatAreAlwaysConstant() const override { return {1}; }

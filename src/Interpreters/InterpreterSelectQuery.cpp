@@ -166,6 +166,14 @@ InterpreterSelectQuery::InterpreterSelectQuery(
 {}
 
 InterpreterSelectQuery::InterpreterSelectQuery(
+    const ASTPtr & query_ptr_,
+    ContextMutablePtr context_,
+    const SelectQueryOptions & options_,
+    const Names & required_result_column_names_)
+    : InterpreterSelectQuery(query_ptr_, context_, std::nullopt, nullptr, options_, required_result_column_names_)
+{}
+
+InterpreterSelectQuery::InterpreterSelectQuery(
         const ASTPtr & query_ptr_,
         ContextPtr context_,
         Pipe input_pipe_,
@@ -273,6 +281,28 @@ static bool shouldIgnoreQuotaAndLimits(const StorageID & table_id)
 InterpreterSelectQuery::InterpreterSelectQuery(
     const ASTPtr & query_ptr_,
     ContextPtr context_,
+    std::optional<Pipe> input_pipe_,
+    const StoragePtr & storage_,
+    const SelectQueryOptions & options_,
+    const Names & required_result_column_names,
+    const StorageMetadataPtr & metadata_snapshot_,
+    SubqueriesForSets subquery_for_sets_,
+    PreparedSets prepared_sets_)
+    : InterpreterSelectQuery(
+        query_ptr_,
+        Context::createCopy(context_),
+        std::move(input_pipe_),
+        storage_,
+        options_,
+        required_result_column_names,
+        metadata_snapshot_,
+        std::move(subquery_for_sets_),
+        std::move(prepared_sets_))
+{}
+
+InterpreterSelectQuery::InterpreterSelectQuery(
+    const ASTPtr & query_ptr_,
+    ContextMutablePtr context_,
     std::optional<Pipe> input_pipe_,
     const StoragePtr & storage_,
     const SelectQueryOptions & options_,
@@ -1093,7 +1123,13 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
     bool use_grouping_set_key = expressions.use_grouping_set_key;
 
     if (query.group_by_with_grouping_sets && query.group_by_with_totals)
-       throw Exception("WITH TOTALS and GROUPING SETS are not supported together", ErrorCodes::NOT_IMPLEMENTED);
+        throw Exception(ErrorCodes::NOT_IMPLEMENTED, "WITH TOTALS and GROUPING SETS are not supported together");
+
+    if (query.group_by_with_grouping_sets && (query.group_by_with_rollup || query.group_by_with_cube))
+        throw Exception(ErrorCodes::NOT_IMPLEMENTED, "GROUPING SETS are not supported together with ROLLUP and CUBE");
+
+    if (expressions.hasHaving() && query.group_by_with_totals && (query.group_by_with_rollup || query.group_by_with_cube))
+        throw Exception(ErrorCodes::NOT_IMPLEMENTED, "WITH TOTALS and WITH ROLLUP or CUBE are not supported together in presence of HAVING");
 
     if (query_info.projection && query_info.projection->desc->type == ProjectionDescription::Type::Aggregate)
     {
@@ -1168,6 +1204,12 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
         LOG_TRACE(log, "{} -> {}", QueryProcessingStage::toString(from_stage), QueryProcessingStage::toString(options.to_stage));
     }
 
+    if (query_info.projection && query_info.projection->input_order_info && query_info.input_order_info)
+       throw Exception("InputOrderInfo is set for projection and for query", ErrorCodes::LOGICAL_ERROR);
+    InputOrderInfoPtr input_order_info_for_order;
+    if (!expressions.need_aggregate)
+        input_order_info_for_order = query_info.projection ? query_info.projection->input_order_info : query_info.input_order_info;
+
     if (options.to_stage > QueryProcessingStage::FetchColumns)
     {
         auto preliminary_sort = [&]()
@@ -1183,10 +1225,7 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
                 && !expressions.has_window)
             {
                 if (expressions.has_order_by)
-                    executeOrder(
-                        query_plan,
-                        query_info.input_order_info ? query_info.input_order_info
-                                                    : (query_info.projection ? query_info.projection->input_order_info : nullptr));
+                    executeOrder(query_plan, input_order_info_for_order);
 
                 if (expressions.has_order_by && query.limitLength())
                     executeDistinct(query_plan, false, expressions.selected_columns, true);
@@ -1311,15 +1350,8 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
                 executeWhere(query_plan, expressions.before_where, expressions.remove_where_filter);
 
             if (expressions.need_aggregate)
-            {
                 executeAggregation(
                     query_plan, expressions.before_aggregation, aggregate_overflow_row, aggregate_final, query_info.input_order_info);
-
-                /// We need to reset input order info, so that executeOrder can't use it
-                query_info.input_order_info.reset();
-                if (query_info.projection)
-                    query_info.projection->input_order_info.reset();
-            }
 
             // Now we must execute:
             // 1) expressions before window functions,
@@ -1387,11 +1419,7 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
                         executeRollupOrCube(query_plan, Modificator::CUBE);
 
                     if ((query.group_by_with_rollup || query.group_by_with_cube || query.group_by_with_grouping_sets) && expressions.hasHaving())
-                    {
-                        if (query.group_by_with_totals)
-                            throw Exception("WITH TOTALS and WITH ROLLUP or CUBE or GROUPING SETS are not supported together in presence of HAVING", ErrorCodes::NOT_IMPLEMENTED);
                         executeHaving(query_plan, expressions.before_having, expressions.remove_having_filter);
-                    }
                 }
                 else if (expressions.hasHaving())
                     executeHaving(query_plan, expressions.before_having, expressions.remove_having_filter);
@@ -1455,10 +1483,7 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
                     && !(query.group_by_with_totals && !aggregate_final))
                     executeMergeSorted(query_plan, "for ORDER BY, without aggregation");
                 else    /// Otherwise, just sort.
-                    executeOrder(
-                        query_plan,
-                        query_info.input_order_info ? query_info.input_order_info
-                                                    : (query_info.projection ? query_info.projection->input_order_info : nullptr));
+                    executeOrder(query_plan, input_order_info_for_order);
             }
 
             /** Optimization - if there are several sources and there is LIMIT, then first apply the preliminary LIMIT,
@@ -1629,15 +1654,6 @@ void InterpreterSelectQuery::addEmptySourceToQueryPlan(
     {
         auto & prewhere_info = *prewhere_info_ptr;
 
-        if (prewhere_info.alias_actions)
-        {
-            pipe.addSimpleTransform([&](const Block & header)
-            {
-                return std::make_shared<ExpressionTransform>(header,
-                    std::make_shared<ExpressionActions>(prewhere_info.alias_actions));
-            });
-        }
-
         if (prewhere_info.row_level_filter)
         {
             pipe.addSimpleTransform([&](const Block & header)
@@ -1703,12 +1719,11 @@ void InterpreterSelectQuery::setMergeTreeReadTaskCallbackAndClientInfo(MergeTree
     context->setMergeTreeReadTaskCallback(std::move(callback));
 }
 
-void InterpreterSelectQuery::setProperClientInfo()
+void InterpreterSelectQuery::setProperClientInfo(size_t replica_num, size_t replica_count)
 {
     context->getClientInfo().query_kind = ClientInfo::QueryKind::SECONDARY_QUERY;
-    assert(options.shard_count.has_value() && options.shard_num.has_value());
-    context->getClientInfo().count_participating_replicas = *options.shard_count;
-    context->getClientInfo().number_of_current_replica = *options.shard_num;
+    context->getClientInfo().count_participating_replicas = replica_count;
+    context->getClientInfo().number_of_current_replica = replica_num;
 }
 
 bool InterpreterSelectQuery::shouldMoveToPrewhere()
@@ -1876,19 +1891,6 @@ void InterpreterSelectQuery::addPrewhereAliasActions()
             /// Don't remove columns which are needed to be aliased.
             for (const auto & name : required_columns)
                 prewhere_info->prewhere_actions->tryRestoreColumn(name);
-
-            auto analyzed_result
-                = TreeRewriter(context).analyze(required_columns_from_prewhere_expr, metadata_snapshot->getColumns().getAllPhysical());
-            prewhere_info->alias_actions
-                = ExpressionAnalyzer(required_columns_from_prewhere_expr, analyzed_result, context).getActionsDAG(true, false);
-
-            /// Add (physical?) columns required by alias actions.
-            auto required_columns_from_alias = prewhere_info->alias_actions->getRequiredColumns();
-            Block prewhere_actions_result = prewhere_info->prewhere_actions->getResultColumns();
-            for (auto & column : required_columns_from_alias)
-                if (!prewhere_actions_result.has(column.name))
-                    if (required_columns.end() == std::find(required_columns.begin(), required_columns.end(), column.name))
-                        required_columns.push_back(column.name);
 
             /// Add physical columns required by prewhere actions.
             for (const auto & column : required_columns_from_prewhere)
@@ -2064,12 +2066,15 @@ void InterpreterSelectQuery::executeFetchColumns(QueryProcessingStage::Enum proc
         if (prewhere_info)
             query_info.prewhere_info = prewhere_info;
 
+        bool optimize_read_in_order = analysis_result.optimize_read_in_order;
+        bool optimize_aggregation_in_order = analysis_result.optimize_aggregation_in_order && !query_analyzer->useGroupingSetKey();
+
         /// Create optimizer with prepared actions.
         /// Maybe we will need to calc input_order_info later, e.g. while reading from StorageMerge.
-        if ((analysis_result.optimize_read_in_order || analysis_result.optimize_aggregation_in_order)
+        if ((optimize_read_in_order || optimize_aggregation_in_order)
             && (!query_info.projection || query_info.projection->complete))
         {
-            if (analysis_result.optimize_read_in_order)
+            if (optimize_read_in_order)
             {
                 if (query_info.projection)
                 {
@@ -2295,7 +2300,7 @@ void InterpreterSelectQuery::executeAggregation(QueryPlan & query_plan, const Ac
 
     SortDescription group_by_sort_description;
 
-    if (group_by_info && settings.optimize_aggregation_in_order)
+    if (group_by_info && settings.optimize_aggregation_in_order && !query_analyzer->useGroupingSetKey())
         group_by_sort_description = getSortDescriptionFromGroupBy(getSelectQuery());
     else
         group_by_info = nullptr;
@@ -2358,8 +2363,11 @@ void InterpreterSelectQuery::executeTotalsAndHaving(
 {
     const Settings & settings = context->getSettingsRef();
 
+    const auto & header_before = query_plan.getCurrentDataStream().header;
+
     auto totals_having_step = std::make_unique<TotalsHavingStep>(
         query_plan.getCurrentDataStream(),
+        getAggregatesMask(header_before, query_analyzer->aggregates()),
         overflow_row,
         expression,
         has_having ? getSelectQuery().having()->getColumnName() : "",
@@ -2744,12 +2752,6 @@ void InterpreterSelectQuery::executeExtremes(QueryPlan & query_plan)
 
 void InterpreterSelectQuery::executeSubqueriesInSetsAndJoins(QueryPlan & query_plan, SubqueriesForSets & subqueries_for_sets)
 {
-    // const auto & input_order_info = query_info.input_order_info
-    //     ? query_info.input_order_info
-    //     : (query_info.projection ? query_info.projection->input_order_info : nullptr);
-    // if (input_order_info)
-    //     executeMergeSorted(query_plan, input_order_info->order_key_prefix_descr, 0, "before creating sets for subqueries and joins");
-
     const Settings & settings = context->getSettingsRef();
 
     SizeLimits limits(settings.max_rows_to_transfer, settings.max_bytes_to_transfer, settings.transfer_overflow_mode);

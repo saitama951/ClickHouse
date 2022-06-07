@@ -16,12 +16,10 @@
 #include <Parsers/ASTIdentifier.h>
 #include <Parsers/ParserKQLQuery.h>
 #include <Parsers/ParserKQLFilter.h>
-
 #include <Parsers/ParserKQLOperators.h>
 
 namespace DB
 {
-
 
 bool ParserKQLFilter :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
 {
@@ -49,5 +47,7 @@ bool ParserKQLFilter :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
 
     return true;
 }
+
+
 
 }
