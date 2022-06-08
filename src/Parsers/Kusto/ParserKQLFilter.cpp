@@ -15,16 +15,19 @@ bool ParserKQLFilter :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     Pos begin = pos;
     String expr;
 
-    for (auto op_po : op_pos)
+    KQLOperators convetor;
+
+    for (auto it = op_pos.begin(); it != op_pos.end(); ++it)
     {
+        pos = *it;
         if (expr.empty())
-            expr = "(" + getExprFromToken(op_po) +")";
+            expr = "(" + convetor.getExprFromToken(pos) +")";
         else
-            expr = expr + " and (" + getExprFromToken(op_po) +")";
+            expr = expr + " and (" + convetor.getExprFromToken(pos) +")";
     }
 
-    Tokens token_filter(expr.c_str(), expr.c_str()+expr.size());
-    IParser::Pos pos_filter(token_filter, pos.max_depth);
+    Tokens tokenFilter(expr.c_str(), expr.c_str()+expr.size());
+    IParser::Pos pos_filter(tokenFilter, pos.max_depth);
     if (!ParserExpressionWithOptionalAlias(false).parse(pos_filter, node, expected))
         return false;
 
