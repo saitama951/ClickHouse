@@ -13,13 +13,14 @@ bool ParserKQLLimit :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
         return true;
 
     auto begin = pos;
-    Int64 min_limit = -1;
+    Int64 minLimit = -1;
     auto final_pos = pos;
-    for (auto op_po: op_pos)
+    for (auto it = op_pos.begin(); it != op_pos.end(); ++it)
     {
-        auto is_number = [&]
+        pos = *it;
+        auto isNumber = [&]
         {
-            for (const auto *ch = op_po->begin ; ch < op_po->end; ++ch)
+            for (auto ch = pos->begin ; ch < pos->end; ++ch)
             {
                 if (!isdigit(*ch))
                     return false;
@@ -27,21 +28,21 @@ bool ParserKQLLimit :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
             return true;
         };
 
-        if (!is_number())
+        if (!isNumber())
             return false;
 
-        auto limit_length = std::strtol(op_po->begin,nullptr, 10);
-        if (-1 == min_limit)
+        auto limitLength = std::strtol(pos->begin,nullptr, 10);
+        if (-1 == minLimit)
         {
-            min_limit = limit_length;
-            final_pos = op_po;
+            minLimit = limitLength;
+            final_pos = pos;
         }
         else
         {
-            if (min_limit > limit_length)
+            if (minLimit > limitLength)
             {
-                min_limit = limit_length;
-                final_pos = op_po;
+                minLimit = limitLength;
+                final_pos = pos;
             }
         }
     }

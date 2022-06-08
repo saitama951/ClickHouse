@@ -7,10 +7,12 @@ namespace DB
 class ParserKQLBase : public IParserBase
 {
 public:
-    virtual bool parsePrepare(Pos & pos);
-    virtual String getExprFromToken(Pos &pos);
-    virtual String getExprFromToken(const String & text, const uint32_t & max_depth);
+    virtual bool parsePrepare(Pos & pos) ;
+
+protected:
     std::vector<Pos> op_pos;
+    std::vector<String> expresions;
+    virtual String getExprFromToken(Pos pos);
 };
 
 class ParserKQLQuery : public IParserBase

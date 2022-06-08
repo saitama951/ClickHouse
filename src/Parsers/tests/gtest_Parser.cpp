@@ -13,6 +13,9 @@
 #include <Parsers/formatAST.h>
 #include <Parsers/parseQuery.h>
 #include <Parsers/Kusto/ParserKQLQuery.h>
+#include <string_view>
+#include <regex>
+#include <gtest/gtest.h>
 
 namespace
 {
@@ -272,6 +275,10 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
             "SELECT\n    FirstName,\n    LastName\nFROM Customers\nLIMIT 3"
         },
         {
+            "Customers | project FirstName,LastName,Occupation | take 3 | project FirstName,LastName,Education",
+            "throws Syntax error"
+        },
+        {
             "Customers | sort by FirstName desc",
             "SELECT *\nFROM Customers\nORDER BY FirstName DESC"
         },
@@ -349,7 +356,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "Customers | where Age > 30 | where Education == 'Bachelors'",
-            "SELECT *\nFROM Customers\nWHERE (Age > 30) AND (Education = 'Bachelors')"
+            "throws Syntax error"
         },
         {
             "Customers |summarize count() by Occupation",
@@ -370,10 +377,6 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         {
             "Customers |summarize  max(Age) by Occupation",
             "SELECT\n    Occupation,\n    max(Age)\nFROM Customers\nGROUP BY Occupation"
-        },
-        {
-            "Customers |summarize count() by bin(Age, 10)",
-            "SELECT\n    toInt32(Age / 10) * 10 AS bin_int,\n    count()\nFROM Customers\nGROUP BY bin_int"
         },
         {
             "Customers | where FirstName contains 'pet'",
@@ -412,142 +415,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
             "SELECT *\nFROM Customers\nWHERE match(FirstName, 'P.*r')"
         },
         {
-            "Customers | where FirstName startswith 'pet'",
-            "SELECT *\nFROM Customers\nWHERE FirstName ILIKE 'pet%'"
-        },
-        {
-            "Customers | where FirstName !startswith 'pet'",
-            "SELECT *\nFROM Customers\nWHERE NOT (FirstName ILIKE 'pet%')"
-        },
-        {
-            "Customers | where Age in ((Customers|project Age|where Age < 30))",
-            "SELECT *\nFROM Customers\nWHERE Age IN (\n    SELECT Age\n    FROM Customers\n    WHERE Age < 30\n)"
-        },
-        {
-            "Customers|where Occupation has_any ('Skilled','abcd')",
-            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, 'Skilled') OR hasTokenCaseInsensitive(Occupation, 'abcd')"
-        },
-        {
-            "Customers|where Occupation has_all ('Skilled','abcd')",
-            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, 'Skilled') AND hasTokenCaseInsensitive(Occupation, 'abcd')"
-        },
-        {
-            "Customers|where Occupation has_all (strcat('Skill','ed'),'Manual')",
-            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, concat('Skill', 'ed')) AND hasTokenCaseInsensitive(Occupation, 'Manual')"
-        },
-        {
-            "Customers | where Occupation == strcat('Pro','fessional') | take 1",
-            "SELECT *\nFROM Customers\nWHERE Occupation = concat('Pro', 'fessional')\nLIMIT 1"
-        },
-        {
-            "Customers | project countof('The cat sat on the mat', 'at')",
-            "SELECT countSubstrings('The cat sat on the mat', 'at')\nFROM Customers"
-        },
-        {
-            "Customers | project countof('The cat sat on the mat', 'at', 'normal')",
-            "SELECT countSubstrings('The cat sat on the mat', 'at')\nFROM Customers"
-        },
-        {
-            "Customers | project countof('The cat sat on the mat', 'at', 'regex')",
-            "SELECT countMatches('The cat sat on the mat', 'at')\nFROM Customers"
-        },
-        {
-            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 0, 'The price of PINEAPPLE ice cream is 10')",
-            "SELECT extract('The price of PINEAPPLE ice cream is 10', '\\b[A-Z]+\\b.+\\b\\\\d+')\nFROM Customers"
-        },
-        {
-            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 1, 'The price of PINEAPPLE ice cream is 20')",
-            "SELECT extract('The price of PINEAPPLE ice cream is 20', '\\b[A-Z]+\\b')\nFROM Customers"
-        },
-        {
-            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 2, 'The price of PINEAPPLE ice cream is 30')",
-            "SELECT extract('The price of PINEAPPLE ice cream is 30', '\\b\\\\d+')\nFROM Customers"
-        },
-        {
-            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 2, 'The price of PINEAPPLE ice cream is 40', typeof(int))",
-            "SELECT CAST(extract('The price of PINEAPPLE ice cream is 40', '\\b\\\\d+'), 'Int32')\nFROM Customers"
-        },
-        {
-            "Customers | project extract_all('(\\w)(\\w+)(\\w)','The price of PINEAPPLE ice cream is 50')",
-            "SELECT extractAllGroups('The price of PINEAPPLE ice cream is 50', '(\\\\w)(\\\\w+)(\\\\w)')\nFROM Customers"
-        },
-        {
-            " Customers | project split('aa_bb', '_')",
-            "SELECT splitByString('_', 'aa_bb')\nFROM Customers"
-        },
-        {
-            "Customers | project split('aaa_bbb_ccc', '_', 1)",
-            "SELECT arrayPushBack([], splitByString('_', 'aaa_bbb_ccc')[2])\nFROM Customers"
-        },
-        {
-            "Customers | project strcat_delim('-', '1', '2', 'A')",
-            "SELECT concat('1', '-', '2', '-', 'A')\nFROM Customers"
-        },
-        {
-            "Customers | project indexof('abcdefg','cde')",
-            "SELECT position('abcdefg', 'cde', 1) - 1\nFROM Customers"
-        },
-        {
-            "Customers | project indexof('abcdefg','cde', 2) ",
-            "SELECT position('abcdefg', 'cde', 3) - 1\nFROM Customers"
-        },
-        {
-            "print x=1, s=strcat('Hello', ', ', 'World!')",
-            "SELECT\n    1 AS x,\n    concat('Hello', ', ', 'World!') AS s"
-        },
-        {
-            "print parse_urlquery('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment')",
-            "SELECT concat('{', concat('\"Query Parameters\":', concat('{\"', replace(replace(if(position('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment', '?') > 0, queryString('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), 'https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '=', '\":\"'), '&', '\",\"'), '\"}')), '}')"
-        },
-        {
-            "print strcmp('a','b')",
-            "SELECT multiIf('a' = 'b', 0, 'a' < 'b', -1, 1)"
-        },
-        {
-            "print parse_url('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment')",
-            "SELECT concat('{', concat('\"Scheme\":\"', protocol('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Host\":\"', domain('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Port\":\"', toString(port('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment')), '\"'), ',', concat('\"Path\":\"', path('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Username\":\"', splitByChar(':', splitByChar('@', netloc('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'))[1])[1], '\"'), ',', concat('\"Password\":\"', splitByChar(':', splitByChar('@', netloc('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'))[1])[2], '\"'), ',', concat('\"Query Parameters\":', concat('{\"', replace(replace(queryString('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '=', '\":\"'), '&', '\",\"'), '\"}')), ',', concat('\"Fragment\":\"', fragment('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), '}')"
-        },{
-             "Customers | summarize t = make_list(FirstName) by FirstName",
-             "SELECT\n    FirstName,\n    groupArrayIf(FirstName, FirstName IS NOT NULL) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "Customers | summarize t = make_list(FirstName, 10) by FirstName",
-             "SELECT\n    FirstName,\n    groupArrayIf(10)(FirstName, FirstName IS NOT NULL) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "Customers | summarize t = make_list_if(FirstName, Age > 10) by FirstName",
-             "SELECT\n    FirstName,\n    groupArrayIf(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "Customers | summarize t = make_list_if(FirstName, Age > 10, 10) by FirstName",
-             "SELECT\n    FirstName,\n    groupArrayIf(10)(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "Customers | summarize t = make_list_with_nulls(FirstName) by FirstName",
-             "SELECT\n    FirstName,\n    groupArray(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "Customers | summarize t = make_set(FirstName) by FirstName",
-             "SELECT\n    FirstName,\n    groupUniqArray(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "Customers | summarize t = make_set(FirstName, 10) by FirstName",
-             "SELECT\n    FirstName,\n    groupUniqArray(10)(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "Customers | summarize t = make_set_if(FirstName, Age > 10) by FirstName",
-             "SELECT\n    FirstName,\n    groupUniqArrayIf(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "Customers | summarize t = make_set_if(FirstName, Age > 10, 10) by FirstName",
-             "SELECT\n    FirstName,\n    groupUniqArrayIf(10)(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
-             "print output = dynamic([1, 2, 3])",
-             "SELECT [1, 2, 3] AS output"
-         },
-         {
-             "print output = dynamic(['a', 'b', 'c'])",
-             "SELECT ['a', 'b', 'c'] AS output"
-         }
+            "Customers|summarize count() by bin(Age, 10) ",
+            "SELECT\n    round(Age, 10) AS Age,\n    count()\nFROM Customers\nGROUP BY Age"
+        }
 })));

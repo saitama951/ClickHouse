@@ -19,6 +19,7 @@ public:
     {}
 };
 
+
 class ParserKQLWithOutput : public IParserBase
 {
 protected:
@@ -37,13 +38,6 @@ class ParserKQLWithUnionQuery : public IParserBase
 {
 protected:
     const char * getName() const override { return "KQL query, possibly with UNION"; }
-    bool parseImpl(Pos & pos, ASTPtr & node, Expected & expected) override;
-};
-
-class ParserKQLTaleFunction : public IParserBase
-{
-protected:
-    const char * getName() const override { return "KQL() function"; }
     bool parseImpl(Pos & pos, ASTPtr & node, Expected & expected) override;
 };
 
