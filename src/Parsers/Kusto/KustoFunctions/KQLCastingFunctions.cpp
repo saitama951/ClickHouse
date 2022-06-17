@@ -1,91 +1,51 @@
+
 #include <Parsers/IParserBase.h>
 #include <Parsers/Kusto/KustoFunctions/IParserKQLFunction.h>
-#include <Parsers/Kusto/KustoFunctions/KQLCastingFunctions.h>
 #include <Parsers/Kusto/KustoFunctions/KQLFunctionFactory.h>
-
-#include <format>
+#include <Parsers/Kusto/KustoFunctions/KQLCastingFunctions.h>
 
 namespace DB
 {
-bool ToBool::convertImpl(String & out, IParser::Pos & pos)
+bool Tobool::convertImpl(String &out,IParser::Pos &pos)
 {
-    const auto function_name = getKQLFunctionName(pos);
-    if (function_name.empty())
-        return false;
-
-    const auto param = getArgument(function_name, pos);
-    out = std::format(
-        "multiIf(toString({0}) = 'true', true, "
-        "toString({0}) = 'false', false, toInt64OrNull(toString({0})) != 0)",
-        param,
-        generateUniqueIdentifier());
-    return true;
+    String res = String(pos->begin,pos->end);
+    out = res;
+    return false;
 }
 
-bool ToDateTime::convertImpl(String & out, IParser::Pos & pos)
+bool ToDatetime::convertImpl(String &out,IParser::Pos &pos)
 {
-    const auto function_name = getKQLFunctionName(pos);
-    if (function_name.empty())
-        return false;
-
-    const auto param = getArgument(function_name, pos);
-
-    out = std::format("parseDateTime64BestEffortOrNull(toString({0}),9,'UTC')", param);
-    return true;
+    String res = String(pos->begin,pos->end);
+    out = res;
+    return false;
 }
 
-bool ToDouble::convertImpl(String & out, IParser::Pos & pos)
+bool ToDouble::convertImpl(String &out,IParser::Pos &pos)
 {
-    const auto function_name = getKQLFunctionName(pos);
-    if (function_name.empty())
-        return false;
-
-    const auto param = getArgument(function_name, pos);
-    out = std::format("toFloat64OrNull(toString({0}))", param);
-    return true;
+    String res = String(pos->begin,pos->end);
+    out = res;
+    return false;
 }
 
-bool ToInt::convertImpl(String & out, IParser::Pos & pos)
+bool ToInt::convertImpl(String &out,IParser::Pos &pos)
 {
-    const auto function_name = getKQLFunctionName(pos);
-    if (function_name.empty())
-        return false;
-
-    const auto param = getArgument(function_name, pos);
-    out = std::format("toInt32OrNull(toString({0}))", param);
-    return true;
+    String res = String(pos->begin,pos->end);
+    out = res;
+    return false;
 }
 
-bool ToString::convertImpl(String & out, IParser::Pos & pos)
+bool ToString::convertImpl(String &out,IParser::Pos &pos)
 {
-    const auto function_name = getKQLFunctionName(pos);
-    if (function_name.empty())
-        return false;
+    String res = String(pos->begin,pos->end);
+    out = res;
+    return false;
+}
 
-    const auto param = getArgument(function_name, pos);
-    out = std::format("ifNull(toString({0}), '')", param);
-    return true;
-} 
-bool ToTimeSpan::convertImpl(String & out, IParser::Pos & pos)
+bool ToTimespan::convertImpl(String &out,IParser::Pos &pos)
 {
-     const auto function_name = getKQLFunctionName(pos);
-    if (function_name.empty())
-        return false;   
-    ++pos;
-    if(pos->type == TokenType::StringLiteral || pos->type == TokenType::QuotedIdentifier)
-    {
-        --pos;
-        auto arg = getArgument(function_name,pos);
-        auto out1 =  kqlCallToExpression("time", {arg}, pos.max_depth);
-        out = std::format("{}" , out1);
-    }
-    else
-    {
-        auto arg = getConvertedArgument(function_name,pos);
-        out = std::format("{}" , arg);
-    }
-
-    return true;
+    String res = String(pos->begin,pos->end);
+    out = res;
+    return false;
 }
 
 }
