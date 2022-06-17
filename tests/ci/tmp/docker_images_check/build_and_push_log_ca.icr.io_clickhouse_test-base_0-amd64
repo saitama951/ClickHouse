@@ -1,0 +1,82 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 30B 0.0s
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/test-util:0-amd64
+#3 DONE 0.8s
+
+#4 [1/8] FROM docker.io/clickhouse/test-util:0-amd64@sha256:ebf05e58097396165acb7bab25a326f0f6af58b93a12b2ca391c2118a96a6074
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/test-base:latest
+#5 ERROR: ca.icr.io/clickhouse/test-base:latest: not found
+
+#6 importing cache manifest from ca.icr.io/clickhouse/test-base:0-amd64
+#6 ERROR: ca.icr.io/clickhouse/test-base:0-amd64: not found
+
+#4 [1/8] FROM docker.io/clickhouse/test-util:0-amd64@sha256:ebf05e58097396165acb7bab25a326f0f6af58b93a12b2ca391c2118a96a6074
+#4 resolve docker.io/clickhouse/test-util:0-amd64@sha256:ebf05e58097396165acb7bab25a326f0f6af58b93a12b2ca391c2118a96a6074 0.0s done
+#4 DONE 0.0s
+
+#7 [4/8] RUN apt-get update     && apt-get install         bash         fakeroot         ccache         curl         software-properties-common         --yes --no-install-recommends
+#7 CACHED
+
+#8 [5/8] RUN arch=amd64   && curl -Lo /usr/bin/dpkg-deb https://github.com/ClickHouse-Extras/dpkg/releases/download/1.21.1-clickhouse/dpkg-deb-${arch}
+#8 CACHED
+
+#9 [2/8] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#9 CACHED
+
+#10 [3/8] RUN apt-get update     && apt-get install ca-certificates lsb-release wget gnupg apt-transport-https         --yes --no-install-recommends --verbose-versions     && export LLVM_PUBKEY_HASH="bda960a8da687a275a2078d43c111d66b1c6a893a3275271beedf266c1ff4a0cdecb429c7a5cccf9f486ea7aa43fd27f"     && wget -nv -O /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key     && echo "${LLVM_PUBKEY_HASH} /tmp/llvm-snapshot.gpg.key" | sha384sum -c     && apt-key add /tmp/llvm-snapshot.gpg.key     && export CODENAME="$(lsb_release --codename --short | tr 'A-Z' 'a-z')"     && echo "deb [trusted=yes] http://apt.llvm.org/${CODENAME}/ llvm-toolchain-${CODENAME}-13 main" >>         /etc/apt/sources.list
+#10 CACHED
+
+#11 [6/8] RUN apt-get update     && apt-get install         clang-13         debhelper         devscripts         gdb          git         gperf         lcov         llvm-13         moreutils         perl         pigz         pkg-config         tzdata         pv         --yes --no-install-recommends
+#11 CACHED
+
+#12 [7/8] RUN echo "TSAN_OPTIONS='verbosity=1000 halt_on_error=1 history_size=7 memory_limit_mb=46080'" >> /etc/environment;   echo "UBSAN_OPTIONS='print_stacktrace=1'" >> /etc/environment;   echo "MSAN_OPTIONS='abort_on_error=1 poison_in_dtor=1'" >> /etc/environment;   echo "LSAN_OPTIONS='suppressions=/usr/share/clickhouse-test/config/lsan_suppressions.txt'" >> /etc/environment;   ln -s /usr/lib/llvm-13/bin/llvm-symbolizer /usr/bin/llvm-symbolizer;
+#12 CACHED
+
+#13 [8/8] RUN ln -snf "/usr/share/zoneinfo/Europe/Moscow" /etc/localtime && echo "Europe/Moscow" > /etc/timezone
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 writing image sha256:f337b939e2a2797e27622d7711ba2ccc5eb8c7d682a5af7d36cb75751a454e9d done
+#14 naming to ca.icr.io/clickhouse/test-base:0-amd64 done
+#14 DONE 0.0s
+
+#15 exporting cache
+#15 preparing build cache for export done
+#15 DONE 0.0s
+
+#16 pushing ca.icr.io/clickhouse/test-base:0-amd64 with docker
+#16 pushing layer 928ccc78c827
+#16 pushing layer 6d7082f0b47c
+#16 pushing layer d80cb2a069df
+#16 pushing layer df0efa3a8a40
+#16 pushing layer 06fefdb6d8a7
+#16 pushing layer a3aa1ac10e3a 1.0s
+#16 pushing layer d66283bf5e74 1.0s
+#16 pushing layer 4ce542a2d01c 1.0s
+#16 pushing layer af7ed92504ae 1.0s
+#16 pushing layer 06fefdb6d8a7 3.9s done
+#16 pushing layer 928ccc78c827 3.9s done
+#16 pushing layer 6d7082f0b47c 3.9s done
+#16 pushing layer d80cb2a069df 3.9s done
+#16 pushing layer df0efa3a8a40 3.9s done
+#16 pushing layer a3aa1ac10e3a 4.9s done
+#16 pushing layer d66283bf5e74 4.9s done
+#16 pushing layer 4ce542a2d01c 4.9s done
+#16 pushing layer af7ed92504ae 4.9s done
+#16 DONE 2.0s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/test-base:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/test-base:latest:
+------

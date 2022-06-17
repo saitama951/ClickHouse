@@ -1,0 +1,82 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/nginx:alpine
+#3 DONE 0.2s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/6] FROM docker.io/library/nginx:alpine@sha256:a74534e76ee1121d418fa7394ca930eb67440deda413848bc67c68138535b989
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/s3-proxy:0-amd64
+#6 ERROR: ca.icr.io/clickhouse/s3-proxy:0-amd64: not found
+
+#7 importing cache manifest from ca.icr.io/clickhouse/s3-proxy:latest
+#7 ERROR: ca.icr.io/clickhouse/s3-proxy:latest: not found
+
+#4 [internal] load build context
+#4 transferring context: 118B 0.0s done
+#4 DONE 0.0s
+
+#8 [2/6] COPY run.sh /run.sh
+#8 CACHED
+
+#9 [4/6] COPY server.key /etc/ssl/certs/server.key
+#9 CACHED
+
+#10 [5/6] COPY nginx.conf /etc/nginx/nginx.conf
+#10 CACHED
+
+#11 [3/6] COPY server.crt /etc/ssl/certs/server.crt
+#11 CACHED
+
+#12 [6/6] RUN chmod +x /run.sh
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 writing image sha256:0a45f92114048c1aac91c276cd6b77d48fed8ec55f37b81a2c71dee484ef0fce done
+#13 naming to ca.icr.io/clickhouse/s3-proxy:0-amd64 done
+#13 DONE 0.0s
+
+#14 exporting cache
+#14 preparing build cache for export done
+#14 DONE 0.0s
+
+#15 pushing ca.icr.io/clickhouse/s3-proxy:0-amd64 with docker
+#15 pushing layer 2f1c4d2d2799
+#15 pushing layer c08e77fe0ef6
+#15 pushing layer 38c533c574d9
+#15 pushing layer 1287421b4f5d
+#15 pushing layer 9c2219b4e66a
+#15 pushing layer c0e7c94aefd8 3.1s
+#15 pushing layer d6dd885da0bb 3.1s
+#15 pushing layer a43749efe4ec 3.1s
+#15 pushing layer 45b275e8a06d 3.1s
+#15 pushing layer 4721bfafc708
+#15 pushing layer 4fc242d58285 3.1s
+#15 pushing layer 2f1c4d2d2799 8.2s done
+#15 pushing layer c08e77fe0ef6 8.2s done
+#15 pushing layer 38c533c574d9 8.2s done
+#15 pushing layer 1287421b4f5d 8.2s done
+#15 pushing layer 9c2219b4e66a 8.2s done
+#15 pushing layer c0e7c94aefd8 11.3s done
+#15 pushing layer d6dd885da0bb 11.3s done
+#15 pushing layer a43749efe4ec 11.3s done
+#15 pushing layer 45b275e8a06d 11.3s done
+#15 pushing layer 4721bfafc708 8.2s done
+#15 pushing layer 4fc242d58285 11.3s done
+#15 DONE 2.4s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/s3-proxy:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/s3-proxy:latest:
+------

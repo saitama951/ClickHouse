@@ -1,0 +1,104 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context:
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/test-util:0-amd64
+#3 DONE 2.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/fasttest:latest
+#4 ERROR: ca.icr.io/clickhouse/fasttest:latest: not found
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [ 1/11] FROM docker.io/clickhouse/test-util:0-amd64@sha256:5af4d1bdc51b18c501023bfb15d0f5a582ba519eac0327ba3f28c34d84b0b2e6
+#6 DONE 0.0s
+
+#7 importing cache manifest from ca.icr.io/clickhouse/fasttest:0-amd64
+#7 ERROR: ca.icr.io/clickhouse/fasttest:0-amd64: not found
+
+#6 [ 1/11] FROM docker.io/clickhouse/test-util:0-amd64@sha256:5af4d1bdc51b18c501023bfb15d0f5a582ba519eac0327ba3f28c34d84b0b2e6
+#6 resolve docker.io/clickhouse/test-util:0-amd64@sha256:5af4d1bdc51b18c501023bfb15d0f5a582ba519eac0327ba3f28c34d84b0b2e6 0.0s done
+#6 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 28B 0.0s done
+#5 DONE 0.0s
+
+#8 [ 8/11] RUN ln -s /usr/bin/lld-13 /usr/bin/ld.lld
+#8 CACHED
+
+#9 [ 4/11] RUN apt-get update     && apt-get install         bash         fakeroot         ccache         curl         software-properties-common         --yes --no-install-recommends
+#9 CACHED
+
+#10 [ 3/11] RUN apt-get update     && apt-get install ca-certificates lsb-release wget gnupg apt-transport-https         --yes --no-install-recommends --verbose-versions     && export LLVM_PUBKEY_HASH="bda960a8da687a275a2078d43c111d66b1c6a893a3275271beedf266c1ff4a0cdecb429c7a5cccf9f486ea7aa43fd27f"     && wget -nv -O /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key     && echo "${LLVM_PUBKEY_HASH} /tmp/llvm-snapshot.gpg.key" | sha384sum -c     && apt-key add /tmp/llvm-snapshot.gpg.key     && export CODENAME="$(lsb_release --codename --short | tr 'A-Z' 'a-z')"     && echo "deb [trusted=yes] https://apt.llvm.org/${CODENAME}/ llvm-toolchain-${CODENAME}-13 main" >>         /etc/apt/sources.list
+#10 CACHED
+
+#11 [ 9/11] RUN mkdir -p /tmp/clickhouse-odbc-tmp   && wget -nv -O - https://github.com/ClickHouse/clickhouse-odbc/releases/download/v1.1.4.20200302/clickhouse-odbc-1.1.4-Linux.tar.gz | tar --strip-components=1 -xz -C /tmp/clickhouse-odbc-tmp   && cp /tmp/clickhouse-odbc-tmp/lib64/*.so /usr/local/lib/   && odbcinst -i -d -f /tmp/clickhouse-odbc-tmp/share/doc/clickhouse-odbc/config/odbcinst.ini.sample   && odbcinst -i -s -l -f /tmp/clickhouse-odbc-tmp/share/doc/clickhouse-odbc/config/odbc.ini.sample   && rm -rf /tmp/clickhouse-odbc-tmp
+#11 CACHED
+
+#12 [ 7/11] RUN pip3 install numpy scipy pandas Jinja2
+#12 CACHED
+
+#13 [10/11] RUN ln -snf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo Europe/Moscow > /etc/timezone
+#13 CACHED
+
+#14 [ 5/11] RUN arch=amd64   && curl -Lo /usr/bin/dpkg-deb https://github.com/ClickHouse-Extras/dpkg/releases/download/1.21.1-clickhouse/dpkg-deb-${arch}
+#14 CACHED
+
+#15 [ 6/11] RUN apt-get update     && apt-get install         apt-transport-https         bash         brotli         build-essential         ca-certificates         ccache         clang-13         clang-tidy-13         cmake         curl         expect         fakeroot         gdb         git         gperf         lld-13         llvm-13         lsof         moreutils         ninja-build         psmisc         python3         python3-lxml         python3-pip         python3-requests         python3-termcolor         rename         software-properties-common         tzdata         unixodbc        --yes --no-install-recommends
+#15 CACHED
+
+#16 [ 2/11] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#16 CACHED
+
+#17 [11/11] COPY run.sh /
+#17 CACHED
+
+#18 exporting to image
+#18 exporting layers done
+#18 writing image sha256:164595285ae34397ddb0414dd930b81dae9d79ef642a5cc4ad1d908fde19a74b done
+#18 naming to ca.icr.io/clickhouse/fasttest:0-amd64 done
+#18 DONE 0.0s
+
+#19 exporting cache
+#19 preparing build cache for export done
+#19 DONE 0.0s
+
+#20 pushing ca.icr.io/clickhouse/fasttest:0-amd64 with docker
+#20 pushing layer 2164a9528dc7
+#20 pushing layer f238d7060559
+#20 pushing layer adf8824c2349
+#20 pushing layer e9c41816e746
+#20 pushing layer 0f6b410fb625
+#20 pushing layer 0dc3540d8119 3.1s
+#20 pushing layer c4baf63d9045 3.1s
+#20 pushing layer d4d871556b62 3.1s
+#20 pushing layer 29bd94055118 3.1s
+#20 pushing layer d66283bf5e74 3.1s
+#20 pushing layer 4ce542a2d01c 3.1s
+#20 pushing layer af7ed92504ae 3.1s
+#20 pushing layer 2164a9528dc7 8.4s done
+#20 pushing layer f238d7060559 8.4s done
+#20 pushing layer adf8824c2349 8.4s done
+#20 pushing layer e9c41816e746 8.4s done
+#20 pushing layer 0f6b410fb625 8.4s done
+#20 pushing layer 0dc3540d8119 11.5s done
+#20 pushing layer c4baf63d9045 11.5s done
+#20 pushing layer d4d871556b62 11.5s done
+#20 pushing layer 29bd94055118 11.5s done
+#20 pushing layer d66283bf5e74 11.5s done
+#20 pushing layer 4ce542a2d01c 11.5s done
+#20 pushing layer af7ed92504ae 11.5s done
+#20 DONE 2.5s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/fasttest:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/fasttest:latest:
+------

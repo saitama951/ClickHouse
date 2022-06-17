@@ -1,0 +1,9 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+error: failed to receive status: rpc error: code = Unavailable desc = error reading from server: read tcp 172.23.115.1:42998->9.21.104.197:2375: read: connection reset by peer

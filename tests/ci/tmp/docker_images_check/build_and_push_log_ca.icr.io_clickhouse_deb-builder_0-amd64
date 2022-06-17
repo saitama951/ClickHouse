@@ -1,0 +1,279 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:20.04
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/9] FROM docker.io/library/ubuntu:20.04
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/deb-builder:latest
+#6 ERROR: ca.icr.io/clickhouse/deb-builder:latest: not found
+
+#7 importing cache manifest from ca.icr.io/clickhouse/deb-builder:0-amd64
+#7 ERROR: ca.icr.io/clickhouse/deb-builder:0-amd64: not found
+
+#8 [3/9] RUN apt-get update     && apt-get install ca-certificates lsb-release wget gnupg apt-transport-https         --yes --no-install-recommends --verbose-versions     && export LLVM_PUBKEY_HASH="bda960a8da687a275a2078d43c111d66b1c6a893a3275271beedf266c1ff4a0cdecb429c7a5cccf9f486ea7aa43fd27f"     && wget -nv -O /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key     && echo "${LLVM_PUBKEY_HASH} /tmp/llvm-snapshot.gpg.key" | sha384sum -c     && apt-key add /tmp/llvm-snapshot.gpg.key     && export CODENAME="$(lsb_release --codename --short | tr 'A-Z' 'a-z')"     && echo "deb [trusted=yes] http://apt.llvm.org/${CODENAME}/ llvm-toolchain-${CODENAME}-13 main" >>         /etc/apt/sources.list
+#8 CACHED
+
+#9 [4/9] RUN apt-get update     && apt-get install         bash         fakeroot         ccache         curl         software-properties-common         --yes --no-install-recommends
+#9 CACHED
+
+#10 [5/9] RUN arch=amd64   && curl -Lo /usr/bin/dpkg-deb https://github.com/ClickHouse-Extras/dpkg/releases/download/1.21.1-clickhouse/dpkg-deb-${arch}
+#10 CACHED
+
+#11 [2/9] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#11 CACHED
+
+#12 [6/9] RUN apt-get update     && apt-get install         alien         clang-13         clang-tidy-13         cmake         debhelper         devscripts         gdb          git         gperf         lld-13         llvm-13         llvm-13-dev         moreutils         ninja-build         perl         pigz         pixz         pkg-config         tzdata         --yes --no-install-recommends
+#12 CACHED
+
+#4 [internal] load build context
+#4 transferring context: 30B 0.0s done
+#4 DONE 0.1s
+
+#13 [7/9] RUN add-apt-repository ppa:ubuntu-toolchain-r/test --yes     && apt-get update     && apt-get install gcc-11 g++-11 --yes
+#13 2.372 Hit:1 http://security.ubuntu.com/ubuntu focal-security InRelease
+#13 2.374 Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
+#13 2.416 Hit:3 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+#13 2.457 Hit:4 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+#13 2.509 Get:5 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal InRelease [17.5 kB]
+#13 3.271 Hit:6 https://apt.llvm.org/focal llvm-toolchain-focal-13 InRelease
+#13 3.382 Get:7 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 Packages [19.1 kB]
+#13 3.532 Fetched 36.7 kB in 1s (28.7 kB/s)
+#13 3.532 Reading package lists...
+#13 4.580 Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
+#13 4.614 Hit:3 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+#13 4.658 Hit:4 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+#13 4.695 Hit:5 http://security.ubuntu.com/ubuntu focal-security InRelease
+#13 4.696 Hit:6 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal InRelease
+#13 4.713 Hit:1 https://apt.llvm.org/focal llvm-toolchain-focal-13 InRelease
+#13 5.485 Reading package lists...
+#13 6.406 Reading package lists...
+#13 7.262 Building dependency tree...
+#13 7.523 Reading state information...
+#13 7.745 The following additional packages will be installed:
+#13 7.745   cpp-11 gcc-11-base libasan6 libatomic1 libcc1-0 libgcc-11-dev libgcc-s1
+#13 7.745   libgomp1 libitm1 liblsan0 libquadmath0 libstdc++-11-dev libstdc++6 libtsan0
+#13 7.745   libubsan1
+#13 7.746 Suggested packages:
+#13 7.746   gcc-11-locales g++-11-multilib gcc-11-doc gcc-11-multilib libstdc++-11-doc
+#13 7.802 The following NEW packages will be installed:
+#13 7.803   cpp-11 g++-11 gcc-11 gcc-11-base libasan6 libcc1-0 libgcc-11-dev
+#13 7.804   libstdc++-11-dev
+#13 7.804 The following packages will be upgraded:
+#13 7.804   libatomic1 libgcc-s1 libgomp1 libitm1 liblsan0 libquadmath0 libstdc++6
+#13 7.805   libtsan0 libubsan1
+#13 8.043 9 upgraded, 8 newly installed, 0 to remove and 18 not upgraded.
+#13 8.043 Need to get 49.5 MB of archives.
+#13 8.043 After this operation, 155 MB of additional disk space will be used.
+#13 8.043 Get:1 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 gcc-11-base amd64 11.1.0-1ubuntu1~20.04 [19.0 kB]
+#13 8.360 Get:2 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libgcc-s1 amd64 11.1.0-1ubuntu1~20.04 [42.1 kB]
+#13 8.777 Get:3 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libstdc++6 amd64 11.1.0-1ubuntu1~20.04 [584 kB]
+#13 9.509 Get:4 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 cpp-11 amd64 11.1.0-1ubuntu1~20.04 [9184 kB]
+#13 10.77 Get:5 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libcc1-0 amd64 11.1.0-1ubuntu1~20.04 [48.7 kB]
+#13 11.19 Get:6 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libgomp1 amd64 11.1.0-1ubuntu1~20.04 [107 kB]
+#13 11.71 Get:7 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libitm1 amd64 11.1.0-1ubuntu1~20.04 [26.3 kB]
+#13 12.03 Get:8 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libatomic1 amd64 11.1.0-1ubuntu1~20.04 [9232 B]
+#13 12.24 Get:9 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libasan6 amd64 11.1.0-1ubuntu1~20.04 [2140 kB]
+#13 13.18 Get:10 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 liblsan0 amd64 11.1.0-1ubuntu1~20.04 [894 kB]
+#13 14.01 Get:11 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libtsan0 amd64 11.1.0-1ubuntu1~20.04 [2091 kB]
+#13 14.96 Get:12 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libubsan1 amd64 11.1.0-1ubuntu1~20.04 [846 kB]
+#13 15.82 Get:13 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libquadmath0 amd64 11.1.0-1ubuntu1~20.04 [146 kB]
+#13 16.35 Get:14 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libgcc-11-dev amd64 11.1.0-1ubuntu1~20.04 [2373 kB]
+#13 17.30 Get:15 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 gcc-11 amd64 11.1.0-1ubuntu1~20.04 [18.5 MB]
+#13 30.61 Get:16 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 libstdc++-11-dev amd64 11.1.0-1ubuntu1~20.04 [1945 kB]
+#13 31.76 Get:17 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal/main amd64 g++-11 amd64 11.1.0-1ubuntu1~20.04 [10.5 MB]
+#13 34.60 debconf: delaying package configuration, since apt-utils is not installed
+#13 34.65 Fetched 49.5 MB in 27s (1862 kB/s)
+#13 34.70 Selecting previously unselected package gcc-11-base:amd64.
+#13 34.70 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 27572 files and directories currently installed.)
+#13 34.72 Preparing to unpack .../gcc-11-base_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 34.73 Unpacking gcc-11-base:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 34.81 Setting up gcc-11-base:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 34.88 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 27577 files and directories currently installed.)
+#13 34.89 Preparing to unpack .../libgcc-s1_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 34.91 Unpacking libgcc-s1:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 34.99 Setting up libgcc-s1:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 35.07 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 27577 files and directories currently installed.)
+#13 35.08 Preparing to unpack .../libstdc++6_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 35.13 Unpacking libstdc++6:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 35.26 Setting up libstdc++6:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 35.32 Selecting previously unselected package cpp-11.
+#13 35.32 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 27577 files and directories currently installed.)
+#13 35.34 Preparing to unpack .../00-cpp-11_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 35.35 Unpacking cpp-11 (11.1.0-1ubuntu1~20.04) ...
+#13 36.10 Selecting previously unselected package libcc1-0:amd64.
+#13 36.10 Preparing to unpack .../01-libcc1-0_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 36.11 Unpacking libcc1-0:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 36.17 Preparing to unpack .../02-libgomp1_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 36.19 Unpacking libgomp1:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 36.29 Preparing to unpack .../03-libitm1_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 36.30 Unpacking libitm1:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 36.36 Preparing to unpack .../04-libatomic1_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 36.38 Unpacking libatomic1:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 36.43 Selecting previously unselected package libasan6:amd64.
+#13 36.43 Preparing to unpack .../05-libasan6_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 36.44 Unpacking libasan6:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 36.69 Preparing to unpack .../06-liblsan0_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 36.71 Unpacking liblsan0:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 36.85 Preparing to unpack .../07-libtsan0_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 36.87 Unpacking libtsan0:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 37.16 Preparing to unpack .../08-libubsan1_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 37.17 Unpacking libubsan1:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 37.31 Preparing to unpack .../09-libquadmath0_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 37.32 Unpacking libquadmath0:amd64 (11.1.0-1ubuntu1~20.04) over (10.3.0-1ubuntu1~20.04) ...
+#13 37.38 Selecting previously unselected package libgcc-11-dev:amd64.
+#13 37.39 Preparing to unpack .../10-libgcc-11-dev_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 37.39 Unpacking libgcc-11-dev:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 37.64 Selecting previously unselected package gcc-11.
+#13 37.64 Preparing to unpack .../11-gcc-11_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 37.65 Unpacking gcc-11 (11.1.0-1ubuntu1~20.04) ...
+#13 39.07 Selecting previously unselected package libstdc++-11-dev:amd64.
+#13 39.07 Preparing to unpack .../12-libstdc++-11-dev_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 39.08 Unpacking libstdc++-11-dev:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 39.36 Selecting previously unselected package g++-11.
+#13 39.37 Preparing to unpack .../13-g++-11_11.1.0-1ubuntu1~20.04_amd64.deb ...
+#13 39.37 Unpacking g++-11 (11.1.0-1ubuntu1~20.04) ...
+#13 40.23 Setting up cpp-11 (11.1.0-1ubuntu1~20.04) ...
+#13 40.24 Setting up libgomp1:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.26 Setting up libasan6:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.27 Setting up libquadmath0:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.28 Setting up libatomic1:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.29 Setting up libubsan1:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.31 Setting up libcc1-0:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.32 Setting up liblsan0:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.33 Setting up libitm1:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.34 Setting up libtsan0:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.35 Setting up libgcc-11-dev:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.37 Setting up gcc-11 (11.1.0-1ubuntu1~20.04) ...
+#13 40.38 Setting up libstdc++-11-dev:amd64 (11.1.0-1ubuntu1~20.04) ...
+#13 40.39 Setting up g++-11 (11.1.0-1ubuntu1~20.04) ...
+#13 40.40 Processing triggers for ccache (3.7.7-1) ...
+#13 40.41 Updating symlinks in /usr/lib/ccache ...
+#13 40.43 Processing triggers for man-db (2.9.1-1) ...
+#13 40.46 Processing triggers for libc-bin (2.31-0ubuntu9.7) ...
+#13 DONE 40.9s
+
+#14 [8/9] RUN ln -s /usr/bin/lld-13 /usr/bin/ld.lld     && ln -sf /usr/lib/llvm-13/bin/llvm-objcopy /usr/bin/aarch64-linux-gnu-strip     && ln -sf /usr/lib/llvm-13/bin/llvm-objcopy /usr/bin/aarch64-linux-gnu-objcopy     && ln -sf /usr/lib/llvm-13/bin/llvm-objdump /usr/bin/aarch64-linux-gnu-objdump
+#14 DONE 0.6s
+
+#15 [9/9] COPY build.sh /
+#15 DONE 0.1s
+
+#16 exporting to image
+#16 exporting layers done
+#16 writing image sha256:34aef24f7d19f6b4f7dd5ac6fe8089bf3484dab16a702151550dd35d1b39c076 done
+#16 naming to ca.icr.io/clickhouse/deb-builder:0-amd64 done
+#16 DONE 0.0s
+
+#17 exporting cache
+#17 preparing build cache for export done
+#17 DONE 0.0s
+
+#18 pushing ca.icr.io/clickhouse/deb-builder:0-amd64 with docker
+#18 pushing layer 9171e6801ec9
+#18 pushing layer 447022cfa566
+#18 pushing layer 797b234b7782
+#18 pushing layer eb379694733b
+#18 pushing layer 15ca42533d02
+#18 pushing layer 18321db63cff 3.2s
+#18 pushing layer 4a1e9f85ca04 3.2s
+#18 pushing layer 032fbcaef3aa
+#18 pushing layer bf8cedc62fb3 3.2s
+#18 pushing layer 9171e6801ec9 3.07kB / 1.52kB 7.6s
+#18 pushing layer 15ca42533d02 132.61kB / 797.14kB 7.8s
+#18 pushing layer 15ca42533d02 799.74kB / 797.14kB 14.3s
+#18 pushing layer 797b234b7782 9.36MB / 174.55MB 24.5s
+#18 pushing layer 9171e6801ec9 12.4s done
+#18 pushing layer 797b234b7782 18.27MB / 174.55MB 41.0s
+#18 pushing layer 447022cfa566 9.4s done
+#18 pushing layer 15ca42533d02 19.1s done
+#18 pushing layer 797b234b7782 28.30MB / 174.55MB 57.4s
+#18 pushing layer 797b234b7782 37.35MB / 174.55MB 70.5s
+#18 pushing layer 18321db63cff 5.42MB / 84.11MB 19.7s
+#18 pushing layer 18321db63cff 10.24MB / 84.11MB 29.6s
+#18 pushing layer 797b234b7782 46.68MB / 174.55MB 87.0s
+#18 pushing layer 18321db63cff 16.18MB / 84.11MB 39.5s
+#18 pushing layer 4a1e9f85ca04 6.58MB / 81.25MB 23.7s
+#18 pushing layer eb379694733b 52.25MB / 1.03GB 100.2s
+#18 pushing layer 18321db63cff 21.11MB / 84.11MB 49.4s
+#18 pushing layer 4a1e9f85ca04 12.10MB / 81.25MB 33.6s
+#18 pushing layer 797b234b7782 55.59MB / 174.55MB 103.5s
+#18 pushing layer 18321db63cff 26.51MB / 84.11MB 59.2s
+#18 pushing layer 4a1e9f85ca04 16.95MB / 81.25MB 43.4s
+#18 pushing layer 797b234b7782 65.06MB / 174.55MB 119.9s
+#18 pushing layer 18321db63cff 31.46MB / 84.11MB 69.1s
+#18 pushing layer 4a1e9f85ca04 22.30MB / 81.25MB 53.4s
+#18 pushing layer bf8cedc62fb3 12.2s
+#18 pushing layer 18321db63cff 37.56MB / 84.11MB 79.0s
+#18 pushing layer 4a1e9f85ca04 27.64MB / 81.25MB 63.2s
+#18 pushing layer 18321db63cff 42.02MB / 84.11MB 85.6s
+#18 pushing layer 797b234b7782 75.07MB / 174.55MB 139.7s
+#18 pushing layer 4a1e9f85ca04 33.00MB / 81.25MB 73.1s
+#18 pushing layer 18321db63cff 46.47MB / 84.11MB 92.2s
+#18 pushing layer 4a1e9f85ca04 37.90MB / 81.25MB 83.0s
+#18 pushing layer 18321db63cff 52.60MB / 84.11MB 102.1s
+#18 pushing layer 4a1e9f85ca04 42.74MB / 81.25MB 92.8s
+#18 pushing layer 797b234b7782 85.10MB / 174.55MB 159.5s
+#18 pushing layer 18321db63cff 58.17MB / 84.11MB 111.9s
+#18 pushing layer 18321db63cff 63.73MB / 84.11MB 121.8s
+#18 pushing layer 4a1e9f85ca04 48.22MB / 81.25MB 102.7s
+#18 pushing layer 797b234b7782 95.07MB / 174.55MB 176.0s
+#18 pushing layer eb379694733b 107.05MB / 1.03GB 182.5s
+#18 pushing layer 18321db63cff 69.20MB / 84.11MB 131.7s
+#18 pushing layer 4a1e9f85ca04 53.74MB / 81.25MB 112.6s
+#18 pushing layer 797b234b7782 104.42MB / 174.55MB 189.1s
+#18 pushing layer 18321db63cff 74.09MB / 84.11MB 141.5s
+#18 pushing layer 4a1e9f85ca04 58.71MB / 81.25MB 122.5s
+#18 pushing layer 18321db63cff 78.90MB / 84.11MB 148.1s
+#18 pushing layer 797b234b7782 114.36MB / 174.55MB 202.3s
+#18 pushing layer 4a1e9f85ca04 63.72MB / 81.25MB 132.3s
+#18 pushing layer 18321db63cff 84.77MB / 84.11MB 158.0s
+#18 pushing layer 4a1e9f85ca04 69.29MB / 81.25MB 142.2s
+#18 pushing layer 4a1e9f85ca04 74.31MB / 81.25MB 152.1s
+#18 pushing layer 797b234b7782 123.23MB / 174.55MB 218.8s
+#18 pushing layer 4a1e9f85ca04 79.28MB / 81.25MB 162.0s
+#18 pushing layer 797b234b7782 132.14MB / 174.55MB 235.3s
+#18 pushing layer 797b234b7782 142.17MB / 174.55MB 251.8s
+#18 pushing layer eb379694733b 160.20MB / 1.03GB 268.1s
+#18 pushing layer 797b234b7782 151.62MB / 174.55MB 268.2s
+#18 pushing layer 797b234b7782 162.67MB / 174.55MB 287.9s
+#18 pushing layer 18321db63cff 170.7s done
+#18 pushing layer 797b234b7782 173.22MB / 174.55MB 304.3s
+#18 pushing layer 4a1e9f85ca04 175.1s done
+#18 pushing layer eb379694733b 213.28MB / 1.03GB 363.6s
+#18 pushing layer 797b234b7782 313.7s done
+#18 pushing layer eb379694733b 266.34MB / 1.03GB 452.5s
+#18 pushing layer eb379694733b 318.94MB / 1.03GB 518.2s
+#18 pushing layer eb379694733b 371.85MB / 1.03GB 600.4s
+#18 pushing layer eb379694733b 424.44MB / 1.03GB 679.3s
+#18 pushing layer eb379694733b 476.36MB / 1.03GB 755.0s
+#18 pushing layer eb379694733b 528.43MB / 1.03GB 824.0s
+#18 pushing layer eb379694733b 581.51MB / 1.03GB 906.2s
+#18 pushing layer eb379694733b 634.40MB / 1.03GB 968.7s
+#18 pushing layer eb379694733b 687.69MB / 1.03GB 1035.4s
+#18 pushing layer eb379694733b 740.61MB / 1.03GB 1118.8s
+#18 pushing layer eb379694733b 792.83MB / 1.03GB 1194.7s
+#18 pushing layer eb379694733b 848.39MB / 1.03GB 1294.7s
+#18 pushing layer eb379694733b 900.42MB / 1.03GB 1387.5s
+#18 pushing layer eb379694733b 953.55MB / 1.03GB 1490.2s
+#18 pushing layer eb379694733b 1.01GB / 1.03GB 1582.3s
+#18 pushing layer eb379694733b 1660.8s done
+#18 pushing layer 032fbcaef3aa 80.4s done
+#18 pushing layer bf8cedc62fb3 80.4s done
+#18 DONE 71.1s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/deb-builder:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/deb-builder:latest:
+------

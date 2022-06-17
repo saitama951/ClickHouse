@@ -1,0 +1,106 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/clickhouse/stateless-test:0-amd64
+#3 DONE 0.8s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/clickhouse/stateless-test:0-amd64@sha256:df9bed192aebe1f5dfea69610ee466ce71b1280780369e7cf09f6bc33bbc04b8
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/unit-test:0-amd64
+#6 ERROR: ca.icr.io/clickhouse/unit-test:0-amd64: not found
+
+#7 importing cache manifest from ca.icr.io/clickhouse/unit-test:latest
+#7 ERROR: ca.icr.io/clickhouse/unit-test:latest: not found
+
+#5 [1/4] FROM docker.io/clickhouse/stateless-test:0-amd64@sha256:df9bed192aebe1f5dfea69610ee466ce71b1280780369e7cf09f6bc33bbc04b8
+#5 resolve docker.io/clickhouse/stateless-test:0-amd64@sha256:df9bed192aebe1f5dfea69610ee466ce71b1280780369e7cf09f6bc33bbc04b8 0.0s done
+#5 CACHED
+
+#4 [internal] load build context
+#4 transferring context: 76B 0.0s done
+#4 DONE 0.0s
+
+#8 [2/4] RUN apt-get install gdb
+#8 0.360 Reading package lists...
+#8 1.288 Building dependency tree...
+#8 1.595 Reading state information...
+#8 1.832 gdb is already the newest version (9.2-0ubuntu1~20.04.1).
+#8 1.832 0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
+#8 DONE 2.0s
+
+#9 [3/4] COPY run.sh /
+#9 DONE 0.1s
+
+#10 [4/4] COPY process_unit_tests_result.py /
+#10 DONE 0.1s
+
+#11 exporting to image
+#11 exporting layers done
+#11 writing image sha256:8162e9afa83557ee1f7640687e595ba39109d81823751492eb143d5b76394639
+#11 writing image sha256:8162e9afa83557ee1f7640687e595ba39109d81823751492eb143d5b76394639 done
+#11 naming to ca.icr.io/clickhouse/unit-test:0-amd64 done
+#11 DONE 0.1s
+
+#12 exporting cache
+#12 preparing build cache for export done
+#12 DONE 0.0s
+
+#13 pushing ca.icr.io/clickhouse/unit-test:0-amd64 with docker
+#13 pushing layer fc6c528366c1
+#13 pushing layer 77ccea6a3450
+#13 pushing layer c8b4a3102726
+#13 pushing layer 972fa93ce035
+#13 pushing layer 14e40e116710
+#13 pushing layer f76863251aa0 3.2s
+#13 pushing layer 561b5f18d22a 3.2s
+#13 pushing layer 69cc8a19f067 3.2s
+#13 pushing layer 722bbcbc7071 3.2s
+#13 pushing layer 39de42ade2aa 3.2s
+#13 pushing layer f19cc00d9139 3.2s
+#13 pushing layer 564e765f4a82 3.2s
+#13 pushing layer d92c086d1f7b 3.2s
+#13 pushing layer 763084b768b8 3.2s
+#13 pushing layer 9be62074f536 3.2s
+#13 pushing layer b351887b06be 3.2s
+#13 pushing layer 92eb7a25d635 3.2s
+#13 pushing layer fc41cab6c437
+#13 pushing layer 02f38013b562 3.2s
+#13 pushing layer 4ce542a2d01c 3.2s
+#13 pushing layer af7ed92504ae 3.2s
+#13 pushing layer c8b4a3102726 8.5s done
+#13 pushing layer f76863251aa0 14.8s done
+#13 pushing layer fc6c528366c1 11.6s done
+#13 pushing layer 77ccea6a3450 11.6s done
+#13 pushing layer 972fa93ce035 11.6s done
+#13 pushing layer 14e40e116710 11.6s done
+#13 pushing layer 561b5f18d22a 14.8s done
+#13 pushing layer 69cc8a19f067 14.8s done
+#13 pushing layer 722bbcbc7071 14.8s done
+#13 pushing layer 39de42ade2aa 14.8s done
+#13 pushing layer f19cc00d9139 14.8s done
+#13 pushing layer 564e765f4a82 14.8s done
+#13 pushing layer d92c086d1f7b 14.8s done
+#13 pushing layer 763084b768b8 14.8s done
+#13 pushing layer 9be62074f536 14.8s done
+#13 pushing layer b351887b06be 14.8s done
+#13 pushing layer 92eb7a25d635 14.8s done
+#13 pushing layer fc41cab6c437 11.6s done
+#13 pushing layer 02f38013b562 14.8s done
+#13 pushing layer 4ce542a2d01c 14.8s done
+#13 pushing layer af7ed92504ae 14.8s done
+#13 DONE 5.5s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/unit-test:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/unit-test:latest:
+------

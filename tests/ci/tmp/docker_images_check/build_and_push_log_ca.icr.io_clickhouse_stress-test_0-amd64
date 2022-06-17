@@ -1,0 +1,112 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/stateful-test:0-amd64
+#3 DONE 0.7s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/5] FROM docker.io/clickhouse/stateful-test:0-amd64@sha256:2b43fd212e4d57dde8978d80310c78aaaec3627e4be0b1a01118df964e72508d
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/stress-test:latest
+#6 ERROR: ca.icr.io/clickhouse/stress-test:latest: not found
+
+#7 importing cache manifest from ca.icr.io/clickhouse/stress-test:0-amd64
+#7 ERROR: ca.icr.io/clickhouse/stress-test:0-amd64: not found
+
+#5 [1/5] FROM docker.io/clickhouse/stateful-test:0-amd64@sha256:2b43fd212e4d57dde8978d80310c78aaaec3627e4be0b1a01118df964e72508d
+#5 resolve docker.io/clickhouse/stateful-test:0-amd64@sha256:2b43fd212e4d57dde8978d80310c78aaaec3627e4be0b1a01118df964e72508d 0.0s done
+#5 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 100B 0.0s done
+#4 DONE 0.0s
+
+#8 [2/5] RUN apt-get update -y     && env DEBIAN_FRONTEND=noninteractive         apt-get install --yes --no-install-recommends             bash             tzdata             fakeroot             debhelper             parallel             expect             python3             python3-lxml             python3-termcolor             python3-requests             curl             sudo             openssl             netcat-openbsd             telnet             llvm-9             brotli
+#8 CACHED
+
+#9 [3/5] COPY ./stress /stress
+#9 CACHED
+
+#10 [4/5] COPY ./download_previous_release /download_previous_release
+#10 CACHED
+
+#11 [5/5] COPY run.sh /
+#11 CACHED
+
+#12 exporting to image
+#12 exporting layers done
+#12 writing image sha256:4cb010937d5ba8a5f8d8447df1999c2e4060103b6e16aaf55796a7c421861c4d
+#12 writing image sha256:4cb010937d5ba8a5f8d8447df1999c2e4060103b6e16aaf55796a7c421861c4d done
+#12 naming to ca.icr.io/clickhouse/stress-test:0-amd64 done
+#12 DONE 0.1s
+
+#13 exporting cache
+#13 preparing build cache for export done
+#13 DONE 0.0s
+
+#14 pushing ca.icr.io/clickhouse/stress-test:0-amd64 with docker
+#14 pushing layer b02a007ff5de
+#14 pushing layer e141d913e179
+#14 pushing layer 94f9954a4ec7
+#14 pushing layer dd12e8d065aa
+#14 pushing layer 3e0c8a9b1795
+#14 pushing layer 09eeb205c03c
+#14 pushing layer 103a190b4513 3.1s
+#14 pushing layer 972fa93ce035 3.1s
+#14 pushing layer 14e40e116710 3.1s
+#14 pushing layer f76863251aa0 3.1s
+#14 pushing layer 561b5f18d22a 3.1s
+#14 pushing layer 69cc8a19f067 3.1s
+#14 pushing layer 722bbcbc7071 3.1s
+#14 pushing layer 39de42ade2aa
+#14 pushing layer f19cc00d9139
+#14 pushing layer 564e765f4a82
+#14 pushing layer d92c086d1f7b
+#14 pushing layer 763084b768b8
+#14 pushing layer 9be62074f536 3.1s
+#14 pushing layer b351887b06be 3.1s
+#14 pushing layer 92eb7a25d635
+#14 pushing layer fc41cab6c437
+#14 pushing layer 02f38013b562
+#14 pushing layer 4ce542a2d01c
+#14 pushing layer af7ed92504ae
+#14 pushing layer b02a007ff5de 8.8s done
+#14 pushing layer e141d913e179 8.8s done
+#14 pushing layer 94f9954a4ec7 8.8s done
+#14 pushing layer dd12e8d065aa 8.8s done
+#14 pushing layer 3e0c8a9b1795 8.8s done
+#14 pushing layer 09eeb205c03c 11.9s done
+#14 pushing layer 103a190b4513 11.9s done
+#14 pushing layer 972fa93ce035 11.9s done
+#14 pushing layer 14e40e116710 11.9s done
+#14 pushing layer f76863251aa0 11.9s done
+#14 pushing layer 561b5f18d22a 11.9s done
+#14 pushing layer 69cc8a19f067 11.9s done
+#14 pushing layer 722bbcbc7071 11.9s done
+#14 pushing layer 39de42ade2aa 11.9s done
+#14 pushing layer f19cc00d9139 11.9s done
+#14 pushing layer 564e765f4a82 11.9s done
+#14 pushing layer d92c086d1f7b 11.9s done
+#14 pushing layer 763084b768b8 11.9s done
+#14 pushing layer 9be62074f536 11.9s done
+#14 pushing layer b351887b06be 11.9s done
+#14 pushing layer 92eb7a25d635 11.9s done
+#14 pushing layer fc41cab6c437 11.9s done
+#14 pushing layer 02f38013b562 11.9s done
+#14 pushing layer 4ce542a2d01c 11.9s done
+#14 pushing layer af7ed92504ae 11.9s done
+#14 DONE 2.8s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/stress-test:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/stress-test:latest:
+------

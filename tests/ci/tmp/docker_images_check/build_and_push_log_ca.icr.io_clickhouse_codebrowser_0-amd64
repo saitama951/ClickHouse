@@ -1,0 +1,75 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/binary-builder:0-amd64
+#3 DONE 0.2s
+
+#4 [1/5] FROM docker.io/clickhouse/binary-builder:0-amd64@sha256:393f8b828b1c0f21fa09a18600b38b84af4b4cb510fd1c5112b364685aeccc18
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/codebrowser:latest
+#5 ERROR: ca.icr.io/clickhouse/codebrowser:latest: not found
+
+#6 importing cache manifest from ca.icr.io/clickhouse/codebrowser:0-amd64
+#6 ERROR: ca.icr.io/clickhouse/codebrowser:0-amd64: not found
+
+#4 [1/5] FROM docker.io/clickhouse/binary-builder:0-amd64@sha256:393f8b828b1c0f21fa09a18600b38b84af4b4cb510fd1c5112b364685aeccc18
+#4 resolve docker.io/clickhouse/binary-builder:0-amd64@sha256:393f8b828b1c0f21fa09a18600b38b84af4b4cb510fd1c5112b364685aeccc18 0.0s done
+#4 DONE 0.0s
+
+#7 [2/5] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#7 CACHED
+
+#8 [3/5] RUN apt-get update && apt-get --yes --allow-unauthenticated install clang-13 libllvm13 libclang-13-dev libmlir-13-dev
+#8 0.478 Get:1 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+#8 0.566 Get:2 https://apt.llvm.org/focal llvm-toolchain-focal-14 InRelease [6827 B]
+#8 0.660 Hit:3 http://archive.ubuntu.com/ubuntu focal InRelease
+#8 0.766 Get:4 https://apt.llvm.org/focal llvm-toolchain-focal-14/main amd64 Packages [10.6 kB]
+#8 0.767 Get:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+#8 0.782 Hit:6 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal InRelease
+#8 1.068 Get:7 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [1931 kB]
+#8 1.221 Get:8 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
+#8 1.371 Get:9 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [1286 kB]
+#8 1.390 Get:10 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [880 kB]
+#8 1.418 Get:11 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2364 kB]
+#8 2.006 Get:12 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [1169 kB]
+#8 2.049 Get:13 http://archive.ubuntu.com/ubuntu focal-updates/restricted amd64 Packages [1365 kB]
+#8 2.211 Fetched 9348 kB in 2s (5161 kB/s)
+#8 2.211 Reading package lists...
+#8 3.120 Reading package lists...
+#8 3.970 Building dependency tree...
+#8 4.266 Reading state information...
+#8 4.297 Package clang-13 is not available, but is referred to by another package.
+#8 4.297 This may mean that the package is missing, has been obsoleted, or
+#8 4.297 is only available from another source
+#8 4.297 
+#8 4.304 E: Package 'clang-13' has no installation candidate
+#8 4.304 E: Unable to locate package libllvm13
+#8 4.304 E: Unable to locate package libclang-13-dev
+#8 4.304 E: Unable to locate package libmlir-13-dev
+#8 ERROR: executor failed running [/bin/sh -c apt-get update && apt-get --yes --allow-unauthenticated install clang-13 libllvm13 libclang-13-dev libmlir-13-dev]: exit code: 100
+------
+ > importing cache manifest from ca.icr.io/clickhouse/codebrowser:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/codebrowser:latest:
+------
+------
+ > [3/5] RUN apt-get update && apt-get --yes --allow-unauthenticated install clang-13 libllvm13 libclang-13-dev libmlir-13-dev:
+
+
+#8 4.297 Package clang-13 is not available, but is referred to by another package.
+#8 4.297 This may mean that the package is missing, has been obsoleted, or
+#8 4.297 is only available from another source
+#8 4.297 
+#8 4.304 E: Package 'clang-13' has no installation candidate
+#8 4.304 E: Unable to locate package libllvm13
+#8 4.304 E: Unable to locate package libclang-13-dev
+#8 4.304 E: Unable to locate package libmlir-13-dev
+------
+error: failed to solve: executor failed running [/bin/sh -c apt-get update && apt-get --yes --allow-unauthenticated install clang-13 libllvm13 libclang-13-dev libmlir-13-dev]: exit code: 100

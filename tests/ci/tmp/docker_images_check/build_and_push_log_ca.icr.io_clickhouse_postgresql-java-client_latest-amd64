@@ -1,0 +1,22 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:18.04
+#3 DONE 1.1s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/library/ubuntu:18.04@sha256:478caf1bec1afd54a58435ec681c8755883b7eb843a8630091890130b15a79af
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/postgresql-java-client:latest
+#6 ...
+
+#7 importing cache manifest from ca.icr.io/clickhouse/postgresql-java-client:latest-amd64
+error: failed to receive status: rpc error: code = Unavailable desc = error reading from server: read tcp 172.23.115.1:44496->9.21.104.197:2375: read: connection reset by peer

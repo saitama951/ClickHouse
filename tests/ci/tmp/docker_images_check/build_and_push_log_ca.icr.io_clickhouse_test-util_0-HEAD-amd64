@@ -1,0 +1,52 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 31B 0.1s done
+#1 DONE 0.1s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:20.04
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/2] FROM docker.io/library/ubuntu:20.04
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/test-util:latest
+#6 ERROR: ca.icr.io/clickhouse/test-util:latest: not found
+
+#7 importing cache manifest from ca.icr.io/clickhouse/test-util:0-HEAD-amd64
+#7 ERROR: ca.icr.io/clickhouse/test-util:0-HEAD-amd64: not found
+
+#4 [internal] load build context
+#4 transferring context: 56B 0.1s done
+#4 DONE 0.1s
+
+#8 [2/2] COPY process_functional_tests_result.py /
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers done
+#9 writing image sha256:db1b4ea295ff970741209506ea195b36ab2276ff024e613abcff9ba2cacdc323 done
+#9 naming to ca.icr.io/clickhouse/test-util:0-HEAD-amd64 done
+#9 DONE 0.0s
+
+#10 exporting cache
+#10 preparing build cache for export done
+#10 DONE 0.0s
+
+#11 pushing ca.icr.io/clickhouse/test-util:0-HEAD-amd64 with docker
+#11 pushing layer 562ea4e53e0d
+#11 pushing layer bf8cedc62fb3
+#11 pushing layer 562ea4e53e0d 3.7s done
+#11 pushing layer bf8cedc62fb3 3.5s done
+#11 DONE 1.8s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/test-util:0-HEAD-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/test-util:latest:
+------

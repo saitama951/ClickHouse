@@ -1,0 +1,508 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/centos:6
+#3 DONE 0.3s
+
+#4 [1/4] FROM docker.io/library/centos:6@sha256:a93df2e96e07f56ea48f215425c6f1673ab922927894595bb5c0ee4c5a955133
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/kerberos-kdc:latest
+#5 ERROR: ca.icr.io/clickhouse/kerberos-kdc:latest: not found
+
+#6 importing cache manifest from ca.icr.io/clickhouse/kerberos-kdc:latest-amd64
+#6 ERROR: ca.icr.io/clickhouse/kerberos-kdc:latest-amd64: not found
+
+#7 [2/4] RUN sed -i '/^mirrorlist/s/^/#/;/^#baseurl/{s/#//;s/mirror.centos.org\/centos\/$releasever/vault.centos.org\/6.10/}' /etc/yum.repos.d/*B*
+#7 CACHED
+
+#8 [3/4] RUN yum install -y ca-certificates krb5-server krb5-libs krb5-auth-dialog krb5-workstation
+#8 0.440 Loaded plugins: fastestmirror, ovl
+#8 0.509 Setting up Install Process
+#8 5.101 Package krb5-libs-1.10.3-65.el6.x86_64 already installed and latest version
+#8 5.132 Resolving Dependencies
+#8 5.133 --> Running transaction check
+#8 5.133 ---> Package ca-certificates.noarch 0:2018.2.22-65.1.el6 will be updated
+#8 5.141 ---> Package ca-certificates.noarch 0:2020.2.41-65.1.el6_10 will be an update
+#8 5.158 ---> Package krb5-auth-dialog.x86_64 0:0.13-6.el6 will be installed
+#8 5.200 --> Processing Dependency: libgnomeui >= 2.9.1 for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.203 --> Processing Dependency: GConf2 for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.205 --> Processing Dependency: GConf2 for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.205 --> Processing Dependency: libpangoft2-1.0.so.0()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.206 --> Processing Dependency: libpangocairo-1.0.so.0()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.207 --> Processing Dependency: libpango-1.0.so.0()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.207 --> Processing Dependency: libnotify.so.1()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.208 --> Processing Dependency: libgtk-x11-2.0.so.0()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.210 --> Processing Dependency: libgdk_pixbuf-2.0.so.0()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.211 --> Processing Dependency: libgdk-x11-2.0.so.0()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.212 --> Processing Dependency: libgconf-2.so.4()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.212 --> Processing Dependency: libfreetype.so.6()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.214 --> Processing Dependency: libfontconfig.so.1()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.215 --> Processing Dependency: libdbus-glib-1.so.2()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.216 --> Processing Dependency: libcairo.so.2()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.218 --> Processing Dependency: libatk-1.0.so.0()(64bit) for package: krb5-auth-dialog-0.13-6.el6.x86_64
+#8 5.219 ---> Package krb5-server.x86_64 0:1.10.3-65.el6 will be installed
+#8 9.367 --> Processing Dependency: libkadm5(x86-64) = 1.10.3-65.el6 for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.369 --> Processing Dependency: initscripts >= 8.99-1 for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.369 --> Processing Dependency: portreserve for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.370 --> Processing Dependency: logrotate for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.371 --> Processing Dependency: libkadm5srv_mit.so.8(kadm5srv_mit_8_MIT)(64bit) for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.371 --> Processing Dependency: libkadm5clnt_mit.so.8(kadm5clnt_mit_8_MIT)(64bit) for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.372 --> Processing Dependency: initscripts for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.372 --> Processing Dependency: initscripts for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.372 --> Processing Dependency: /usr/share/dict/words for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.373 --> Processing Dependency: libss.so.2()(64bit) for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.374 --> Processing Dependency: libkadm5srv_mit.so.8()(64bit) for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.375 --> Processing Dependency: libkadm5clnt_mit.so.8()(64bit) for package: krb5-server-1.10.3-65.el6.x86_64
+#8 9.375 ---> Package krb5-workstation.x86_64 0:1.10.3-65.el6 will be installed
+#8 9.381 --> Running transaction check
+#8 9.382 ---> Package GConf2.x86_64 0:2.28.0-7.el6 will be installed
+#8 9.396 --> Processing Dependency: sgml-common for package: GConf2-2.28.0-7.el6.x86_64
+#8 9.397 --> Processing Dependency: dbus for package: GConf2-2.28.0-7.el6.x86_64
+#8 9.398 --> Processing Dependency: libpolkit-gobject-1.so.0()(64bit) for package: GConf2-2.28.0-7.el6.x86_64
+#8 9.400 --> Processing Dependency: libORBit-2.so.0()(64bit) for package: GConf2-2.28.0-7.el6.x86_64
+#8 9.401 ---> Package atk.x86_64 0:1.30.0-1.el6 will be installed
+#8 9.403 ---> Package cairo.x86_64 0:1.8.8-6.el6_6 will be installed
+#8 9.409 --> Processing Dependency: libpng12.so.0(PNG12_0)(64bit) for package: cairo-1.8.8-6.el6_6.x86_64
+#8 9.410 --> Processing Dependency: libpng12.so.0()(64bit) for package: cairo-1.8.8-6.el6_6.x86_64
+#8 9.410 --> Processing Dependency: libpixman-1.so.0()(64bit) for package: cairo-1.8.8-6.el6_6.x86_64
+#8 9.412 --> Processing Dependency: libXrender.so.1()(64bit) for package: cairo-1.8.8-6.el6_6.x86_64
+#8 9.413 --> Processing Dependency: libX11.so.6()(64bit) for package: cairo-1.8.8-6.el6_6.x86_64
+#8 9.415 ---> Package dbus-glib.x86_64 0:0.86-6.el6 will be installed
+#8 9.418 ---> Package fontconfig.x86_64 0:2.8.0-5.el6 will be installed
+#8 9.419 ---> Package freetype.x86_64 0:2.3.11-19.el6_10 will be installed
+#8 9.421 ---> Package gdk-pixbuf2.x86_64 0:2.24.1-6.el6_7 will be installed
+#8 9.424 --> Processing Dependency: libjpeg.so.62(LIBJPEG_6.2)(64bit) for package: gdk-pixbuf2-2.24.1-6.el6_7.x86_64
+#8 9.426 --> Processing Dependency: libtiff.so.3()(64bit) for package: gdk-pixbuf2-2.24.1-6.el6_7.x86_64
+#8 9.427 --> Processing Dependency: libjpeg.so.62()(64bit) for package: gdk-pixbuf2-2.24.1-6.el6_7.x86_64
+#8 9.427 --> Processing Dependency: libjasper.so.1()(64bit) for package: gdk-pixbuf2-2.24.1-6.el6_7.x86_64
+#8 9.429 ---> Package gtk2.x86_64 0:2.24.23-9.el6 will be installed
+#8 9.438 --> Processing Dependency: libXrandr >= 1.2.99.4-2 for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.440 --> Processing Dependency: hicolor-icon-theme for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.440 --> Processing Dependency: libcups.so.2()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.443 --> Processing Dependency: libXrandr.so.2()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.443 --> Processing Dependency: libXinerama.so.1()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.444 --> Processing Dependency: libXi.so.6()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.445 --> Processing Dependency: libXfixes.so.3()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.446 --> Processing Dependency: libXext.so.6()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.447 --> Processing Dependency: libXdamage.so.1()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.448 --> Processing Dependency: libXcursor.so.1()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.449 --> Processing Dependency: libXcomposite.so.1()(64bit) for package: gtk2-2.24.23-9.el6.x86_64
+#8 9.450 ---> Package initscripts.x86_64 0:9.03.61-1.el6.centos will be installed
+#8 9.498 --> Processing Dependency: util-linux-ng >= 2.16 for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.501 --> Processing Dependency: upstart >= 0.6.5-11 for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.502 --> Processing Dependency: udev >= 125-1 for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.503 --> Processing Dependency: sysvinit-tools >= 2.87-6 for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.504 --> Processing Dependency: plymouth for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.505 --> Processing Dependency: /sbin/pidof for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.505 --> Processing Dependency: /sbin/ip for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.506 --> Processing Dependency: /sbin/blkid for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.506 --> Processing Dependency: /sbin/arping for package: initscripts-9.03.61-1.el6.centos.x86_64
+#8 9.507 ---> Package libgnomeui.x86_64 0:2.24.1-4.el6 will be installed
+#8 9.515 --> Processing Dependency: libgnomevfs-2.so.0()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.517 --> Processing Dependency: libgnomecanvas-2.so.0()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.518 --> Processing Dependency: libgnome-keyring.so.0()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.519 --> Processing Dependency: libgnome-2.so.0()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.520 --> Processing Dependency: libglade-2.0.so.0()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.522 --> Processing Dependency: libbonoboui-2.so.0()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.523 --> Processing Dependency: libart_lgpl_2.so.2()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.524 --> Processing Dependency: libSM.so.6()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.525 --> Processing Dependency: libICE.so.6()(64bit) for package: libgnomeui-2.24.1-4.el6.x86_64
+#8 9.526 ---> Package libkadm5.x86_64 0:1.10.3-65.el6 will be installed
+#8 9.528 ---> Package libnotify.x86_64 0:0.5.0-1.el6 will be installed
+#8 9.531 --> Processing Dependency: desktop-notification-daemon for package: libnotify-0.5.0-1.el6.x86_64
+#8 9.532 ---> Package libss.x86_64 0:1.41.12-24.el6 will be installed
+#8 9.534 ---> Package logrotate.x86_64 0:3.7.8-28.el6 will be installed
+#8 9.538 ---> Package pango.x86_64 0:1.28.1-11.el6 will be installed
+#8 9.544 --> Processing Dependency: libthai >= 0.1.9 for package: pango-1.28.1-11.el6.x86_64
+#8 9.546 --> Processing Dependency: libthai.so.0(LIBTHAI_0.1)(64bit) for package: pango-1.28.1-11.el6.x86_64
+#8 9.546 --> Processing Dependency: libthai.so.0()(64bit) for package: pango-1.28.1-11.el6.x86_64
+#8 9.546 --> Processing Dependency: libXft.so.2()(64bit) for package: pango-1.28.1-11.el6.x86_64
+#8 9.547 ---> Package portreserve.x86_64 0:0.0.4-11.el6 will be installed
+#8 9.548 ---> Package words.noarch 0:3.0-17.el6 will be installed
+#8 9.548 --> Running transaction check
+#8 9.549 ---> Package ORBit2.x86_64 0:2.14.17-7.el6 will be installed
+#8 9.551 --> Processing Dependency: libIDL-2.so.0()(64bit) for package: ORBit2-2.14.17-7.el6.x86_64
+#8 9.552 ---> Package cups-libs.x86_64 1:1.4.2-81.el6_10 will be installed
+#8 9.561 --> Processing Dependency: libgnutls.so.26(GNUTLS_1_4)(64bit) for package: 1:cups-libs-1.4.2-81.el6_10.x86_64
+#8 9.562 --> Processing Dependency: libgnutls.so.26()(64bit) for package: 1:cups-libs-1.4.2-81.el6_10.x86_64
+#8 9.563 --> Processing Dependency: libavahi-common.so.3()(64bit) for package: 1:cups-libs-1.4.2-81.el6_10.x86_64
+#8 9.564 --> Processing Dependency: libavahi-client.so.3()(64bit) for package: 1:cups-libs-1.4.2-81.el6_10.x86_64
+#8 9.564 ---> Package dbus.x86_64 1:1.2.24-11.el6_10 will be installed
+#8 9.570 --> Processing Dependency: dbus-libs = 1:1.2.24-11.el6_10 for package: 1:dbus-1.2.24-11.el6_10.x86_64
+#8 9.572 --> Processing Dependency: libcap-ng.so.0()(64bit) for package: 1:dbus-1.2.24-11.el6_10.x86_64
+#8 9.573 ---> Package gnome-keyring.x86_64 0:2.28.2-8.el6_3 will be installed
+#8 9.579 ---> Package gnome-vfs2.x86_64 0:2.24.2-8.el6 will be installed
+#8 9.589 --> Processing Dependency: libhal.so.1()(64bit) for package: gnome-vfs2-2.24.2-8.el6.x86_64
+#8 9.590 --> Processing Dependency: libhal-storage.so.1()(64bit) for package: gnome-vfs2-2.24.2-8.el6.x86_64
+#8 9.590 --> Processing Dependency: libavahi-glib.so.1()(64bit) for package: gnome-vfs2-2.24.2-8.el6.x86_64
+#8 9.591 ---> Package hicolor-icon-theme.noarch 0:0.11-1.1.el6 will be installed
+#8 9.592 ---> Package iproute.x86_64 0:2.6.32-57.el6 will be installed
+#8 9.594 --> Processing Dependency: iptables >= 1.4.5 for package: iproute-2.6.32-57.el6.x86_64
+#8 9.598 --> Processing Dependency: libxtables.so.4()(64bit) for package: iproute-2.6.32-57.el6.x86_64
+#8 9.598 ---> Package iputils.x86_64 0:20071127-24.el6 will be installed
+#8 9.600 ---> Package jasper-libs.x86_64 0:1.900.1-22.el6 will be installed
+#8 9.601 ---> Package libICE.x86_64 0:1.0.6-1.el6 will be installed
+#8 9.602 ---> Package libSM.x86_64 0:1.2.1-2.el6 will be installed
+#8 9.603 ---> Package libX11.x86_64 0:1.6.4-4.el6_10 will be installed
+#8 9.605 --> Processing Dependency: libX11-common = 1.6.4-4.el6_10 for package: libX11-1.6.4-4.el6_10.x86_64
+#8 9.606 --> Processing Dependency: libxcb.so.1()(64bit) for package: libX11-1.6.4-4.el6_10.x86_64
+#8 9.607 ---> Package libXcomposite.x86_64 0:0.4.3-4.el6 will be installed
+#8 9.607 ---> Package libXcursor.x86_64 0:1.1.14-2.1.el6 will be installed
+#8 9.608 ---> Package libXdamage.x86_64 0:1.1.3-4.el6 will be installed
+#8 9.609 ---> Package libXext.x86_64 0:1.3.3-1.el6 will be installed
+#8 9.610 ---> Package libXfixes.x86_64 0:5.0.3-1.el6 will be installed
+#8 9.611 ---> Package libXft.x86_64 0:2.3.2-1.el6 will be installed
+#8 9.612 ---> Package libXi.x86_64 0:1.7.8-1.el6 will be installed
+#8 9.613 ---> Package libXinerama.x86_64 0:1.1.3-2.1.el6 will be installed
+#8 9.614 ---> Package libXrandr.x86_64 0:1.5.1-1.el6 will be installed
+#8 9.615 ---> Package libXrender.x86_64 0:0.9.10-1.el6 will be installed
+#8 9.615 ---> Package libart_lgpl.x86_64 0:2.3.20-5.1.el6 will be installed
+#8 9.616 ---> Package libbonoboui.x86_64 0:2.24.2-3.el6 will be installed
+#8 9.620 --> Processing Dependency: libbonobo-activation.so.4()(64bit) for package: libbonoboui-2.24.2-3.el6.x86_64
+#8 9.621 --> Processing Dependency: libbonobo-2.so.0()(64bit) for package: libbonoboui-2.24.2-3.el6.x86_64
+#8 9.621 ---> Package libglade2.x86_64 0:2.6.4-3.1.el6 will be installed
+#8 9.624 --> Processing Dependency: xml-common for package: libglade2-2.6.4-3.1.el6.x86_64
+#8 9.624 ---> Package libgnome.x86_64 0:2.28.0-11.el6 will be installed
+#8 9.627 --> Processing Dependency: system-gnome-theme >= 60.0.0 for package: libgnome-2.28.0-11.el6.x86_64
+#8 9.628 ---> Package libgnomecanvas.x86_64 0:2.26.0-4.el6 will be installed
+#8 9.630 ---> Package libjpeg-turbo.x86_64 0:1.2.1-3.el6_5 will be installed
+#8 9.631 ---> Package libpng.x86_64 2:1.2.49-2.el6_7 will be installed
+#8 9.632 ---> Package libthai.x86_64 0:0.1.12-3.el6 will be installed
+#8 9.632 ---> Package libtiff.x86_64 0:3.9.4-21.el6_8 will be installed
+#8 9.634 ---> Package notification-daemon.x86_64 0:0.5.0-1.el6 will be installed
+#8 9.637 --> Processing Dependency: libwnck-1.so.22()(64bit) for package: notification-daemon-0.5.0-1.el6.x86_64
+#8 9.638 --> Processing Dependency: libcanberra.so.0()(64bit) for package: notification-daemon-0.5.0-1.el6.x86_64
+#8 9.639 --> Processing Dependency: libcanberra-gtk.so.0()(64bit) for package: notification-daemon-0.5.0-1.el6.x86_64
+#8 9.640 ---> Package pixman.x86_64 0:0.32.8-1.el6 will be installed
+#8 9.642 ---> Package plymouth.x86_64 0:0.8.3-29.el6.centos will be installed
+#8 9.648 --> Processing Dependency: system-logos for package: plymouth-0.8.3-29.el6.centos.x86_64
+#8 9.648 --> Processing Dependency: libdrm_radeon.so.1()(64bit) for package: plymouth-0.8.3-29.el6.centos.x86_64
+#8 9.649 --> Processing Dependency: libdrm_nouveau.so.1()(64bit) for package: plymouth-0.8.3-29.el6.centos.x86_64
+#8 9.650 --> Processing Dependency: libdrm_intel.so.1()(64bit) for package: plymouth-0.8.3-29.el6.centos.x86_64
+#8 9.650 --> Processing Dependency: libdrm.so.2()(64bit) for package: plymouth-0.8.3-29.el6.centos.x86_64
+#8 9.650 ---> Package polkit.x86_64 0:0.96-11.el6_10.1 will be installed
+#8 9.652 --> Processing Dependency: ConsoleKit for package: polkit-0.96-11.el6_10.1.x86_64
+#8 9.653 --> Processing Dependency: libeggdbus-1.so.0()(64bit) for package: polkit-0.96-11.el6_10.1.x86_64
+#8 9.654 ---> Package sgml-common.noarch 0:0.6.3-33.el6 will be installed
+#8 9.656 ---> Package sysvinit-tools.x86_64 0:2.87-6.dsf.el6 will be installed
+#8 9.657 ---> Package udev.x86_64 0:147-2.74.el6_10 will be installed
+#8 9.667 --> Processing Dependency: hwdata for package: udev-147-2.74.el6_10.x86_64
+#8 9.667 ---> Package upstart.x86_64 0:0.6.5-17.el6 will be installed
+#8 9.671 ---> Package util-linux-ng.x86_64 0:2.17.2-12.28.el6_9.2 will be installed
+#8 9.680 --> Running transaction check
+#8 9.681 ---> Package ConsoleKit.x86_64 0:0.4.1-6.el6 will be installed
+#8 9.683 --> Processing Dependency: libck-connector.so.0()(64bit) for package: ConsoleKit-0.4.1-6.el6.x86_64
+#8 9.684 ---> Package avahi-glib.x86_64 0:0.6.25-17.el6 will be installed
+#8 9.685 ---> Package avahi-libs.x86_64 0:0.6.25-17.el6 will be installed
+#8 9.686 ---> Package dbus-libs.x86_64 1:1.2.24-9.el6 will be updated
+#8 9.687 ---> Package dbus-libs.x86_64 1:1.2.24-11.el6_10 will be an update
+#8 9.688 ---> Package eggdbus.x86_64 0:0.6-3.el6 will be installed
+#8 9.689 ---> Package gnutls.x86_64 0:2.12.23-22.el6 will be installed
+#8 9.690 ---> Package hal-libs.x86_64 0:0.5.14-14.el6 will be installed
+#8 9.691 ---> Package hwdata.noarch 0:0.233-20.1.el6 will be installed
+#8 9.692 ---> Package iptables.x86_64 0:1.4.7-19.el6 will be installed
+#8 9.693 --> Processing Dependency: policycoreutils for package: iptables-1.4.7-19.el6.x86_64
+#8 9.694 ---> Package libIDL.x86_64 0:0.8.13-2.1.el6 will be installed
+#8 9.695 ---> Package libX11-common.noarch 0:1.6.4-4.el6_10 will be installed
+#8 9.695 ---> Package libbonobo.x86_64 0:2.24.2-5.el6 will be installed
+#8 9.697 ---> Package libcanberra.x86_64 0:0.22-3.el6 will be installed
+#8 9.702 --> Processing Dependency: pulseaudio-libs >= 0.9.15 for package: libcanberra-0.22-3.el6.x86_64
+#8 9.704 --> Processing Dependency: sound-theme-freedesktop for package: libcanberra-0.22-3.el6.x86_64
+#8 9.705 --> Processing Dependency: libtdb.so.1(TDB_1.2.1)(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.706 --> Processing Dependency: libpulse.so.0(PULSE_0)(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.706 --> Processing Dependency: libasound.so.2(ALSA_0.9.0rc4)(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.708 --> Processing Dependency: libasound.so.2(ALSA_0.9)(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.708 --> Processing Dependency: libvorbisfile.so.3()(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.709 --> Processing Dependency: libvorbis.so.0()(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.709 --> Processing Dependency: libtdb.so.1()(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.709 --> Processing Dependency: libpulse.so.0()(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.710 --> Processing Dependency: libogg.so.0()(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.711 --> Processing Dependency: libltdl.so.7()(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.712 --> Processing Dependency: libgstreamer-0.10.so.0()(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.713 --> Processing Dependency: libasound.so.2()(64bit) for package: libcanberra-0.22-3.el6.x86_64
+#8 9.713 ---> Package libcanberra-gtk2.x86_64 0:0.22-3.el6 will be installed
+#8 9.717 ---> Package libcap-ng.x86_64 0:0.6.4-3.el6_0.1 will be installed
+#8 9.718 ---> Package libdrm.x86_64 0:2.4.65-2.el6 will be installed
+#8 9.719 --> Processing Dependency: libpciaccess.so.0()(64bit) for package: libdrm-2.4.65-2.el6.x86_64
+#8 9.720 ---> Package libwnck.x86_64 0:2.28.0-3.el6 will be installed
+#8 9.723 --> Processing Dependency: startup-notification >= 0.5 for package: libwnck-2.28.0-3.el6.x86_64
+#8 9.725 --> Processing Dependency: libstartup-notification-1.so.0()(64bit) for package: libwnck-2.28.0-3.el6.x86_64
+#8 9.725 --> Processing Dependency: libXRes.so.1()(64bit) for package: libwnck-2.28.0-3.el6.x86_64
+#8 9.726 ---> Package libxcb.x86_64 0:1.12-4.el6 will be installed
+#8 9.727 --> Processing Dependency: libXau.so.6()(64bit) for package: libxcb-1.12-4.el6.x86_64
+#8 9.728 ---> Package redhat-logos.noarch 0:60.0.14-12.el6.centos will be installed
+#8 9.728 ---> Package system-gnome-theme.noarch 0:60.0.2-1.el6 will be installed
+#8 9.729 --> Processing Dependency: system-icon-theme for package: system-gnome-theme-60.0.2-1.el6.noarch
+#8 9.729 --> Processing Dependency: dmz-cursor-themes for package: system-gnome-theme-60.0.2-1.el6.noarch
+#8 9.730 ---> Package xml-common.noarch 0:0.6.3-33.el6 will be installed
+#8 9.730 --> Running transaction check
+#8 9.730 ---> Package ConsoleKit-libs.x86_64 0:0.4.1-6.el6 will be installed
+#8 9.732 ---> Package alsa-lib.x86_64 0:1.1.0-4.el6 will be installed
+#8 9.733 ---> Package dmz-cursor-themes.noarch 0:0.4-4.el6 will be installed
+#8 9.733 ---> Package gstreamer.x86_64 0:0.10.29-1.el6 will be installed
+#8 9.735 --> Processing Dependency: gstreamer-tools >= 0.10.29 for package: gstreamer-0.10.29-1.el6.x86_64
+#8 9.736 ---> Package libXau.x86_64 0:1.0.6-4.el6 will be installed
+#8 9.736 ---> Package libXres.x86_64 0:1.0.7-2.1.el6 will be installed
+#8 9.737 ---> Package libogg.x86_64 2:1.1.4-2.1.el6 will be installed
+#8 9.738 ---> Package libpciaccess.x86_64 0:0.13.4-1.el6 will be installed
+#8 9.738 ---> Package libtdb.x86_64 0:1.3.8-3.el6_8.2 will be installed
+#8 9.740 ---> Package libtool-ltdl.x86_64 0:2.2.6-15.5.el6 will be installed
+#8 9.740 ---> Package libvorbis.x86_64 1:1.2.3-5.el6_9.1 will be installed
+#8 9.741 ---> Package policycoreutils.x86_64 0:2.0.83-30.1.el6_8 will be installed
+#8 9.751 ---> Package pulseaudio-libs.x86_64 0:0.9.21-26.el6 will be installed
+#8 9.755 --> Processing Dependency: libsndfile.so.1(libsndfile.so.1.0)(64bit) for package: pulseaudio-libs-0.9.21-26.el6.x86_64
+#8 9.756 --> Processing Dependency: libwrap.so.0()(64bit) for package: pulseaudio-libs-0.9.21-26.el6.x86_64
+#8 9.757 --> Processing Dependency: libsndfile.so.1()(64bit) for package: pulseaudio-libs-0.9.21-26.el6.x86_64
+#8 9.758 --> Processing Dependency: libasyncns.so.0()(64bit) for package: pulseaudio-libs-0.9.21-26.el6.x86_64
+#8 9.759 --> Processing Dependency: libXtst.so.6()(64bit) for package: pulseaudio-libs-0.9.21-26.el6.x86_64
+#8 9.760 ---> Package sound-theme-freedesktop.noarch 0:0.7-3.el6 will be installed
+#8 9.761 ---> Package startup-notification.x86_64 0:0.10-2.1.el6 will be installed
+#8 9.762 --> Processing Dependency: libxcb-event.so.1()(64bit) for package: startup-notification-0.10-2.1.el6.x86_64
+#8 9.764 --> Processing Dependency: libxcb-aux.so.0()(64bit) for package: startup-notification-0.10-2.1.el6.x86_64
+#8 9.764 --> Processing Dependency: libxcb-atom.so.1()(64bit) for package: startup-notification-0.10-2.1.el6.x86_64
+#8 9.764 ---> Package system-icon-theme.noarch 0:6.0.0-2.el6 will be installed
+#8 9.764 --> Processing Dependency: gnome-themes for package: system-icon-theme-6.0.0-2.el6.noarch
+#8 9.765 --> Running transaction check
+#8 9.765 ---> Package compat-xcb-util.x86_64 0:0.4.0-2.2.el6 will be installed
+#8 9.766 ---> Package gnome-themes.noarch 0:2.28.1-7.el6 will be installed
+#8 9.767 --> Processing Dependency: gtk2-engines >= 2.15.3 for package: gnome-themes-2.28.1-7.el6.noarch
+#8 9.769 --> Processing Dependency: gnome-icon-theme for package: gnome-themes-2.28.1-7.el6.noarch
+#8 9.770 ---> Package gstreamer-tools.x86_64 0:0.10.29-1.el6 will be installed
+#8 9.774 ---> Package libXtst.x86_64 0:1.2.3-1.el6 will be installed
+#8 9.775 ---> Package libasyncns.x86_64 0:0.8-1.1.el6 will be installed
+#8 9.777 ---> Package libsndfile.x86_64 0:1.0.20-5.el6 will be installed
+#8 9.780 --> Processing Dependency: libFLAC.so.8()(64bit) for package: libsndfile-1.0.20-5.el6.x86_64
+#8 9.781 ---> Package tcp_wrappers-libs.x86_64 0:7.6-58.el6 will be installed
+#8 9.782 --> Running transaction check
+#8 9.782 ---> Package flac.x86_64 0:1.2.1-7.el6_6 will be installed
+#8 9.784 ---> Package gnome-icon-theme.noarch 0:2.28.0-8.el6 will be installed
+#8 9.785 ---> Package gtk2-engines.x86_64 0:2.18.4-5.el6.centos will be installed
+#8 9.825 --> Finished Dependency Resolution
+#8 9.847 
+#8 9.847 Dependencies Resolved
+#8 9.864 
+#8 9.864 ================================================================================
+#8 9.864  Package                    Arch      Version                  Repository  Size
+#8 9.864 ================================================================================
+#8 9.864 Installing:
+#8 9.864  krb5-auth-dialog           x86_64    0.13-6.el6               base       211 k
+#8 9.864  krb5-server                x86_64    1.10.3-65.el6            base       2.0 M
+#8 9.864  krb5-workstation           x86_64    1.10.3-65.el6            base       814 k
+#8 9.864 Updating:
+#8 9.864  ca-certificates            noarch    2020.2.41-65.1.el6_10    updates    908 k
+#8 9.864 Installing for dependencies:
+#8 9.864  ConsoleKit                 x86_64    0.4.1-6.el6              base        83 k
+#8 9.864  ConsoleKit-libs            x86_64    0.4.1-6.el6              base        18 k
+#8 9.864  GConf2                     x86_64    2.28.0-7.el6             base       963 k
+#8 9.864  ORBit2                     x86_64    2.14.17-7.el6            base       172 k
+#8 9.864  alsa-lib                   x86_64    1.1.0-4.el6              base       389 k
+#8 9.864  atk                        x86_64    1.30.0-1.el6             base       195 k
+#8 9.864  avahi-glib                 x86_64    0.6.25-17.el6            base        21 k
+#8 9.864  avahi-libs                 x86_64    0.6.25-17.el6            base        55 k
+#8 9.864  cairo                      x86_64    1.8.8-6.el6_6            base       309 k
+#8 9.864  compat-xcb-util            x86_64    0.4.0-2.2.el6            base        25 k
+#8 9.864  cups-libs                  x86_64    1:1.4.2-81.el6_10        updates    323 k
+#8 9.864  dbus                       x86_64    1:1.2.24-11.el6_10       updates    211 k
+#8 9.864  dbus-glib                  x86_64    0.86-6.el6               base       170 k
+#8 9.864  dmz-cursor-themes          noarch    0.4-4.el6                base       390 k
+#8 9.864  eggdbus                    x86_64    0.6-3.el6                base        91 k
+#8 9.864  flac                       x86_64    1.2.1-7.el6_6            base       242 k
+#8 9.864  fontconfig                 x86_64    2.8.0-5.el6              base       186 k
+#8 9.864  freetype                   x86_64    2.3.11-19.el6_10         updates    361 k
+#8 9.864  gdk-pixbuf2                x86_64    2.24.1-6.el6_7           base       501 k
+#8 9.864  gnome-icon-theme           noarch    2.28.0-8.el6             base       4.0 M
+#8 9.864  gnome-keyring              x86_64    2.28.2-8.el6_3           base       811 k
+#8 9.864  gnome-themes               noarch    2.28.1-7.el6             base       3.4 M
+#8 9.864  gnome-vfs2                 x86_64    2.24.2-8.el6             base       740 k
+#8 9.864  gnutls                     x86_64    2.12.23-22.el6           base       389 k
+#8 9.864  gstreamer                  x86_64    0.10.29-1.el6            base       764 k
+#8 9.864  gstreamer-tools            x86_64    0.10.29-1.el6            base        23 k
+#8 9.864  gtk2                       x86_64    2.24.23-9.el6            base       3.2 M
+#8 9.864  gtk2-engines               x86_64    2.18.4-5.el6.centos      base       282 k
+#8 9.864  hal-libs                   x86_64    0.5.14-14.el6            base        69 k
+#8 9.864  hicolor-icon-theme         noarch    0.11-1.1.el6             base        40 k
+#8 9.864  hwdata                     noarch    0.233-20.1.el6           base       1.4 M
+#8 9.864  initscripts                x86_64    9.03.61-1.el6.centos     base       949 k
+#8 9.864  iproute                    x86_64    2.6.32-57.el6            base       386 k
+#8 9.864  iptables                   x86_64    1.4.7-19.el6             base       255 k
+#8 9.864  iputils                    x86_64    20071127-24.el6          base       121 k
+#8 9.864  jasper-libs                x86_64    1.900.1-22.el6           base       139 k
+#8 9.864  libICE                     x86_64    1.0.6-1.el6              base        53 k
+#8 9.864  libIDL                     x86_64    0.8.13-2.1.el6           base        83 k
+#8 9.864  libSM                      x86_64    1.2.1-2.el6              base        37 k
+#8 9.864  libX11                     x86_64    1.6.4-4.el6_10           updates    587 k
+#8 9.864  libX11-common              noarch    1.6.4-4.el6_10           updates    171 k
+#8 9.864  libXau                     x86_64    1.0.6-4.el6              base        24 k
+#8 9.864  libXcomposite              x86_64    0.4.3-4.el6              base        20 k
+#8 9.864  libXcursor                 x86_64    1.1.14-2.1.el6           base        28 k
+#8 9.864  libXdamage                 x86_64    1.1.3-4.el6              base        18 k
+#8 9.864  libXext                    x86_64    1.3.3-1.el6              base        35 k
+#8 9.864  libXfixes                  x86_64    5.0.3-1.el6              base        17 k
+#8 9.864  libXft                     x86_64    2.3.2-1.el6              base        55 k
+#8 9.864  libXi                      x86_64    1.7.8-1.el6              base        38 k
+#8 9.864  libXinerama                x86_64    1.1.3-2.1.el6            base        13 k
+#8 9.864  libXrandr                  x86_64    1.5.1-1.el6              base        25 k
+#8 9.864  libXrender                 x86_64    0.9.10-1.el6             base        24 k
+#8 9.864  libXres                    x86_64    1.0.7-2.1.el6            base        12 k
+#8 9.864  libXtst                    x86_64    1.2.3-1.el6              base        19 k
+#8 9.864  libart_lgpl                x86_64    2.3.20-5.1.el6           base        65 k
+#8 9.864  libasyncns                 x86_64    0.8-1.1.el6              base        24 k
+#8 9.864  libbonobo                  x86_64    2.24.2-5.el6             base       418 k
+#8 9.864  libbonoboui                x86_64    2.24.2-3.el6             base       326 k
+#8 9.864  libcanberra                x86_64    0.22-3.el6               base        67 k
+#8 9.864  libcanberra-gtk2           x86_64    0.22-3.el6               base        26 k
+#8 9.864  libcap-ng                  x86_64    0.6.4-3.el6_0.1          base        21 k
+#8 9.864  libdrm                     x86_64    2.4.65-2.el6             base       136 k
+#8 9.864  libglade2                  x86_64    2.6.4-3.1.el6            base        60 k
+#8 9.864  libgnome                   x86_64    2.28.0-11.el6            base       502 k
+#8 9.864  libgnomecanvas             x86_64    2.26.0-4.el6             base       208 k
+#8 9.864  libgnomeui                 x86_64    2.24.1-4.el6             base       680 k
+#8 9.864  libjpeg-turbo              x86_64    1.2.1-3.el6_5            base       174 k
+#8 9.864  libkadm5                   x86_64    1.10.3-65.el6            base       143 k
+#8 9.864  libnotify                  x86_64    0.5.0-1.el6              base        35 k
+#8 9.864  libogg                     x86_64    2:1.1.4-2.1.el6          base        21 k
+#8 9.864  libpciaccess               x86_64    0.13.4-1.el6             base        24 k
+#8 9.864  libpng                     x86_64    2:1.2.49-2.el6_7         base       182 k
+#8 9.864  libsndfile                 x86_64    1.0.20-5.el6             base       233 k
+#8 9.864  libss                      x86_64    1.41.12-24.el6           base        42 k
+#8 9.864  libtdb                     x86_64    1.3.8-3.el6_8.2          base        40 k
+#8 9.864  libthai                    x86_64    0.1.12-3.el6             base       183 k
+#8 9.864  libtiff                    x86_64    3.9.4-21.el6_8           base       346 k
+#8 9.864  libtool-ltdl               x86_64    2.2.6-15.5.el6           base        44 k
+#8 9.864  libvorbis                  x86_64    1:1.2.3-5.el6_9.1        base       168 k
+#8 9.864  libwnck                    x86_64    2.28.0-3.el6             base       334 k
+#8 9.864  libxcb                     x86_64    1.12-4.el6               base       180 k
+#8 9.864  logrotate                  x86_64    3.7.8-28.el6             base        59 k
+#8 9.864  notification-daemon        x86_64    0.5.0-1.el6              base        69 k
+#8 9.864  pango                      x86_64    1.28.1-11.el6            base       351 k
+#8 9.864  pixman                     x86_64    0.32.8-1.el6             base       243 k
+#8 9.864  plymouth                   x86_64    0.8.3-29.el6.centos      base        89 k
+#8 9.864  policycoreutils            x86_64    2.0.83-30.1.el6_8        base       663 k
+#8 9.864  polkit                     x86_64    0.96-11.el6_10.1         updates    163 k
+#8 9.864  portreserve                x86_64    0.0.4-11.el6             base        23 k
+#8 9.864  pulseaudio-libs            x86_64    0.9.21-26.el6            base       463 k
+#8 9.864  redhat-logos               noarch    60.0.14-12.el6.centos    base        15 M
+#8 9.864  sgml-common                noarch    0.6.3-33.el6             base        43 k
+#8 9.864  sound-theme-freedesktop    noarch    0.7-3.el6                base       388 k
+#8 9.864  startup-notification       x86_64    0.10-2.1.el6             base        37 k
+#8 9.864  system-gnome-theme         noarch    60.0.2-1.el6             base        11 k
+#8 9.864  system-icon-theme          noarch    6.0.0-2.el6              base       112 k
+#8 9.864  sysvinit-tools             x86_64    2.87-6.dsf.el6           base        60 k
+#8 9.864  tcp_wrappers-libs          x86_64    7.6-58.el6               base        62 k
+#8 9.864  udev                       x86_64    147-2.74.el6_10          updates    358 k
+#8 9.864  upstart                    x86_64    0.6.5-17.el6             base       177 k
+#8 9.864  util-linux-ng              x86_64    2.17.2-12.28.el6_9.2     base       1.6 M
+#8 9.864  words                      noarch    3.0-17.el6               base       1.4 M
+#8 9.864  xml-common                 noarch    0.6.3-33.el6             base        18 k
+#8 9.864 Updating for dependencies:
+#8 9.864  dbus-libs                  x86_64    1:1.2.24-11.el6_10       updates    127 k
+#8 9.864 
+#8 9.864 Transaction Summary
+#8 9.864 ================================================================================
+#8 9.864 Install     106 Package(s)
+#8 9.864 Upgrade       2 Package(s)
+#8 9.864 
+#8 9.865 Total download size: 52 M
+#8 9.865 Downloading Packages:
+#8 24.56 --------------------------------------------------------------------------------
+#8 24.56 Total                                           3.5 MB/s |  52 MB     00:14     
+#8 24.56 warning: rpmts_HdrFromFdno: Header V3 RSA/SHA1 Signature, key ID c105b9de: NOKEY
+#8 24.56 Retrieving key from file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+#8 24.56 Importing GPG key 0xC105B9DE:
+#8 24.56  Userid : CentOS-6 Key (CentOS 6 Official Signing Key) <centos-6-key@centos.org>
+#8 24.56  Package: centos-release-6-10.el6.centos.12.3.x86_64 (@CentOS/6.10)
+#8 24.56  From   : /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+#8 24.67 Running rpm_check_debug
+#8 24.76 Running Transaction Test
+#8 24.94 Transaction Test Succeeded
+#8 25.02 Running Transaction
+#8 25.13   Updating   : 1:dbus-libs-1.2.24-11.el6_10.x86_64                        1/110 
+#8 25.61   Installing : freetype-2.3.11-19.el6_10.x86_64                           2/110 
+#8 25.83   Installing : fontconfig-2.8.0-5.el6.x86_64                              3/110 
+#8 28.11   Installing : atk-1.30.0-1.el6.x86_64                                    4/110 
+#8 28.36   Installing : dbus-glib-0.86-6.el6.x86_64                                5/110 
+#8 28.54   Installing : libICE-1.0.6-1.el6.x86_64                                  6/110 
+#8 28.72   Installing : 2:libogg-1.1.4-2.1.el6.x86_64                              7/110 
+#8 28.90   Installing : libSM-1.2.1-2.el6.x86_64                                   8/110 
+#8 29.09   Installing : libjpeg-turbo-1.2.1-3.el6_5.x86_64                         9/110 
+#8 29.30   Installing : 1:libvorbis-1.2.3-5.el6_9.1.x86_64                        10/110 
+#8 29.48   Installing : avahi-libs-0.6.25-17.el6.x86_64                           11/110 
+#8 29.67   Installing : 2:libpng-1.2.49-2.el6_7.x86_64                            12/110 
+#8 29.86   Installing : libart_lgpl-2.3.20-5.1.el6.x86_64                         13/110 
+#8 30.08   Installing : libtiff-3.9.4-21.el6_8.x86_64                             14/110 
+#8 30.28   Installing : libkadm5-1.10.3-65.el6.x86_64                             15/110 
+#8 30.47   Installing : sysvinit-tools-2.87-6.dsf.el6.x86_64                      16/110 
+#8 30.52   Installing : libtdb-1.3.8-3.el6_8.2.x86_64                             17/110 
+#8 30.73   Installing : libtool-ltdl-2.2.6-15.5.el6.x86_64                        18/110 
+#8 31.05   Installing : hwdata-0.233-20.1.el6.noarch                              19/110 
+#8 31.16   Installing : alsa-lib-1.1.0-4.el6.x86_64                               20/110 
+#8 31.37   Installing : libss-1.41.12-24.el6.x86_64                               21/110 
+#8 31.56   Installing : hicolor-icon-theme-0.11-1.1.el6.noarch                    22/110 
+#8 31.74   Installing : libpciaccess-0.13.4-1.el6.x86_64                          23/110 
+#8 31.91   Installing : avahi-glib-0.6.25-17.el6.x86_64                           24/110 
+#8 32.10   Installing : jasper-libs-1.900.1-22.el6.x86_64                         25/110 
+#8 32.30   Installing : flac-1.2.1-7.el6_6.x86_64                                 26/110 
+#8 32.50   Installing : libsndfile-1.0.20-5.el6.x86_64                            27/110 
+#8 32.69   Installing : eggdbus-0.6-3.el6.x86_64                                  28/110 
+#8 32.88   Installing : upstart-0.6.5-17.el6.x86_64                               29/110 
+#8 32.96   Installing : libthai-0.1.12-3.el6.x86_64                               30/110 
+#8 33.17   Installing : sound-theme-freedesktop-0.7-3.el6.noarch                  31/110 
+#8 33.51   Installing : words-3.0-17.el6.noarch                                   32/110 
+#8 33.55   Installing : logrotate-3.7.8-28.el6.x86_64                             33/110 
+#8 33.59   Installing : xml-common-0.6.3-33.el6.noarch                            34/110 
+#8 33.63   Installing : gstreamer-tools-0.10.29-1.el6.x86_64                      35/110 
+#8 33.76   Installing : gstreamer-0.10.29-1.el6.x86_64                            36/110 
+#8 33.96   Installing : libcap-ng-0.6.4-3.el6_0.1.x86_64                          37/110 
+#8 34.33   Installing : 1:dbus-1.2.24-11.el6_10.x86_64                            38/110 
+#8 34.53   Installing : hal-libs-0.5.14-14.el6.x86_64                             39/110 
+#8 34.58   Installing : ConsoleKit-libs-0.4.1-6.el6.x86_64                        40/110 
+#8 34.64   Installing : polkit-0.96-11.el6_10.1.x86_64                            41/110 
+#8 34.84   Installing : ConsoleKit-0.4.1-6.el6.x86_64                             42/110 
+#8 35.03   Installing : sgml-common-0.6.3-33.el6.noarch                           43/110 
+#8 35.14   Installing : libX11-common-1.6.4-4.el6_10.noarch                       44/110 
+#8 35.21   Installing : libXau-1.0.6-4.el6.x86_64                                 45/110 
+#8 35.42   Installing : libxcb-1.12-4.el6.x86_64                                  46/110 
+#8 35.66   Installing : libX11-1.6.4-4.el6_10.x86_64                              47/110 
+#8 35.92   Installing : gdk-pixbuf2-2.24.1-6.el6_7.x86_64                         48/110 
+#8 36.14   Installing : libXext-1.3.3-1.el6.x86_64                                49/110 
+#8 36.31   Installing : libXrender-0.9.10-1.el6.x86_64                            50/110 
+#8 36.48   Installing : libXfixes-5.0.3-1.el6.x86_64                              51/110 
+#8 36.66   Installing : libXi-1.7.8-1.el6.x86_64                                  52/110 
+#8 36.83   Installing : libXtst-1.2.3-1.el6.x86_64                                53/110 
+#8 37.00   Installing : libXdamage-1.1.3-4.el6.x86_64                             54/110 
+#8 37.18   Installing : libXcursor-1.1.14-2.1.el6.x86_64                          55/110 
+#8 37.36   Installing : libXrandr-1.5.1-1.el6.x86_64                              56/110 
+#8 37.53   Installing : libXft-2.3.2-1.el6.x86_64                                 57/110 
+#8 37.71   Installing : libXres-1.0.7-2.1.el6.x86_64                              58/110 
+#8 37.88   Installing : libXinerama-1.1.3-2.1.el6.x86_64                          59/110 
+#8 38.06   Installing : libXcomposite-0.4.3-4.el6.x86_64                          60/110 
+#8 38.23   Installing : compat-xcb-util-0.4.0-2.2.el6.x86_64                      61/110 
+#8 38.41   Installing : startup-notification-0.10-2.1.el6.x86_64                  62/110 
+#8 38.59   Installing : tcp_wrappers-libs-7.6-58.el6.x86_64                       63/110 
+#8 38.77   Installing : portreserve-0.0.4-11.el6.x86_64                           64/110 
+#8 38.96   Installing : libasyncns-0.8-1.1.el6.x86_64                             65/110 
+#8 39.21   Installing : pulseaudio-libs-0.9.21-26.el6.x86_64                      66/110 
+#8 39.41   Installing : libcanberra-0.22-3.el6.x86_64                             67/110 
+#8 39.62   Installing : pixman-0.32.8-1.el6.x86_64                                68/110 
+#8 39.81   Installing : cairo-1.8.8-6.el6_6.x86_64                                69/110 
+#8 40.03   Installing : pango-1.28.1-11.el6.x86_64                                70/110 
+#8 40.36   Installing : dmz-cursor-themes-0.4-4.el6.noarch                        71/110 
+#8 40.76   Installing : redhat-logos-60.0.14-12.el6.centos.noarch                 72/110 
+#8 41.06   Installing : policycoreutils-2.0.83-30.1.el6_8.x86_64                  73/110 
+#8 41.43   Installing : iptables-1.4.7-19.el6.x86_64                              74/110 
+#8 41.70   Installing : iproute-2.6.32-57.el6.x86_64                              75/110 
+#8 41.78   Installing : libdrm-2.4.65-2.el6.x86_64                                76/110 
+#8 41.97   Installing : iputils-20071127-24.el6.x86_64                            77/110 
+#8 42.16   Installing : plymouth-0.8.3-29.el6.centos.x86_64                       78/110------
+ > importing cache manifest from ca.icr.io/clickhouse/kerberos-kdc:latest-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/kerberos-kdc:latest:
+------
+error: failed to receive status: rpc error: code = Unavailable desc = error reading from server: read tcp 172.23.115.1:43712->9.21.104.197:2375: read: connection reset by peer

@@ -1,0 +1,267 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 30B 0.0s
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/stateful-test:latest-amd64
+#3 DONE 0.1s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/5] FROM docker.io/clickhouse/stateful-test:latest-amd64@sha256:745cbce16ff80ad6883ad3564a58564aadecd6edf8e52b7b9d40148889f6fdd7
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/stress-test:latest
+#6 ERROR: ca.icr.io/clickhouse/stress-test:latest: not found
+
+#7 importing cache manifest from ca.icr.io/clickhouse/stress-test:latest-amd64
+#7 ERROR: ca.icr.io/clickhouse/stress-test:latest-amd64: not found
+
+#5 [1/5] FROM docker.io/clickhouse/stateful-test:latest-amd64@sha256:745cbce16ff80ad6883ad3564a58564aadecd6edf8e52b7b9d40148889f6fdd7
+#5 resolve docker.io/clickhouse/stateful-test:latest-amd64@sha256:745cbce16ff80ad6883ad3564a58564aadecd6edf8e52b7b9d40148889f6fdd7 0.0s done
+#5 ...
+
+#4 [internal] load build context
+#4 transferring context: 37.88kB 0.1s done
+#4 DONE 0.1s
+
+#5 [1/5] FROM docker.io/clickhouse/stateful-test:latest-amd64@sha256:745cbce16ff80ad6883ad3564a58564aadecd6edf8e52b7b9d40148889f6fdd7
+#5 sha256:745cbce16ff80ad6883ad3564a58564aadecd6edf8e52b7b9d40148889f6fdd7 4.72kB / 4.72kB done
+#5 sha256:656194308666a16947c73c393020689d96f0b6f40b24677889c19fc98e750395 15.11kB / 15.11kB done
+#5 sha256:3dbe9087502c02d8cc273b2c4284617cf706cab0be67071d3f4cba03f755b2c5 0B / 186.17kB 0.2s
+#5 sha256:82642b990ceabe398e6f74e2aa046491cb69d536d62f2ff1d74cdb459f0a7ffe 0B / 3.25kB 0.2s
+#5 sha256:71cf226a2a144b5914f18d48451887f8dcfb1b2babc755c7fddbf0d942725908 0B / 1.51kB 0.2s
+#5 sha256:3dbe9087502c02d8cc273b2c4284617cf706cab0be67071d3f4cba03f755b2c5 186.17kB / 186.17kB 0.4s done
+#5 sha256:82642b990ceabe398e6f74e2aa046491cb69d536d62f2ff1d74cdb459f0a7ffe 3.25kB / 3.25kB 0.5s
+#5 extracting sha256:3dbe9087502c02d8cc273b2c4284617cf706cab0be67071d3f4cba03f755b2c5 done
+#5 sha256:82642b990ceabe398e6f74e2aa046491cb69d536d62f2ff1d74cdb459f0a7ffe 3.25kB / 3.25kB 0.5s done
+#5 sha256:71cf226a2a144b5914f18d48451887f8dcfb1b2babc755c7fddbf0d942725908 1.51kB / 1.51kB 0.6s done
+#5 extracting sha256:71cf226a2a144b5914f18d48451887f8dcfb1b2babc755c7fddbf0d942725908 done
+#5 extracting sha256:82642b990ceabe398e6f74e2aa046491cb69d536d62f2ff1d74cdb459f0a7ffe done
+#5 DONE 1.0s
+
+#8 [2/5] RUN apt-get update -y     && env DEBIAN_FRONTEND=noninteractive         apt-get install --yes --no-install-recommends             bash             tzdata             fakeroot             debhelper             parallel             expect             python3             python3-lxml             python3-termcolor             python3-requests             curl             sudo             openssl             netcat-openbsd             telnet             llvm-9             brotli
+#8 0.530 Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
+#8 0.543 Get:3 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+#8 0.557 Get:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+#8 0.723 Hit:2 https://apt.llvm.org/focal llvm-toolchain-focal-14 InRelease
+#8 0.729 Get:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
+#8 0.911 Get:6 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [880 kB]
+#8 1.089 Get:7 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [1169 kB]
+#8 1.130 Get:8 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [1931 kB]
+#8 1.275 Get:9 http://archive.ubuntu.com/ubuntu focal-updates/restricted amd64 Packages [1404 kB]
+#8 1.326 Get:10 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2407 kB]
+#8 1.372 Get:11 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 Packages [53.8 kB]
+#8 1.602 Fetched 8180 kB in 1s (6828 kB/s)
+#8 1.602 Reading package lists...
+#8 2.536 Reading package lists...
+#8 3.374 Building dependency tree...
+#8 3.626 Reading state information...
+#8 3.807 debhelper is already the newest version (12.10ubuntu1).
+#8 3.807 fakeroot is already the newest version (1.24-1).
+#8 3.807 netcat-openbsd is already the newest version (1.206-1ubuntu1).
+#8 3.807 python3 is already the newest version (3.8.2-0ubuntu2).
+#8 3.807 python3-requests is already the newest version (2.22.0-2ubuntu1).
+#8 3.807 telnet is already the newest version (0.17-41.2build1).
+#8 3.807 expect is already the newest version (5.45.4-2build1).
+#8 3.807 python3-termcolor is already the newest version (1.1.0-3).
+#8 3.807 bash is already the newest version (5.0-6ubuntu1.2).
+#8 3.807 curl is already the newest version (7.68.0-1ubuntu2.11).
+#8 3.807 openssl is already the newest version (1.1.1f-1ubuntu2.13).
+#8 3.807 python3-lxml is already the newest version (4.5.0-1ubuntu0.5).
+#8 3.807 sudo is already the newest version (1.8.31-1ubuntu1.2).
+#8 3.807 tzdata is already the newest version (2022a-0ubuntu0.20.04).
+#8 3.807 brotli is already the newest version (1.0.7-6ubuntu0.1).
+#8 3.807 The following additional packages will be installed:
+#8 3.807   binfmt-support libllvm9 libsensors-config libsensors5 llvm-9-runtime sysstat
+#8 3.808 Suggested packages:
+#8 3.808   lm-sensors llvm-9-doc isag
+#8 3.808 Recommended packages:
+#8 3.808   llvm-9-dev cron | cron-daemon
+#8 3.874 The following NEW packages will be installed:
+#8 3.875   binfmt-support libllvm9 libsensors-config libsensors5 llvm-9 llvm-9-runtime
+#8 3.875   parallel sysstat
+#8 4.115 0 upgraded, 8 newly installed, 0 to remove and 18 not upgraded.
+#8 4.115 Need to get 20.6 MB of archives.
+#8 4.115 After this operation, 91.0 MB of additional disk space will be used.
+#8 4.115 Get:1 http://archive.ubuntu.com/ubuntu focal/universe amd64 binfmt-support amd64 2.2.0-2 [58.2 kB]
+#8 4.476 Get:2 http://archive.ubuntu.com/ubuntu focal/main amd64 libllvm9 amd64 1:9.0.1-12 [14.8 MB]
+#8 5.512 Get:3 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libsensors-config all 1:3.6.0-2ubuntu1.1 [6052 B]
+#8 5.512 Get:4 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libsensors5 amd64 1:3.6.0-2ubuntu1.1 [27.2 kB]
+#8 5.513 Get:5 http://archive.ubuntu.com/ubuntu focal/universe amd64 llvm-9-runtime amd64 1:9.0.1-12 [178 kB]
+#8 5.518 Get:6 http://archive.ubuntu.com/ubuntu focal/universe amd64 llvm-9 amd64 1:9.0.1-12 [4816 kB]
+#8 5.706 Get:7 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 sysstat amd64 12.2.0-2ubuntu0.1 [448 kB]
+#8 5.718 Get:8 http://archive.ubuntu.com/ubuntu focal/universe amd64 parallel all 20161222-1.1 [260 kB]
+#8 5.896 debconf: delaying package configuration, since apt-utils is not installed
+#8 5.948 Fetched 20.6 MB in 2s (11.2 MB/s)
+#8 6.001 Selecting previously unselected package binfmt-support.
+#8 6.001 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 41199 files and directories currently installed.)
+#8 6.026 Preparing to unpack .../0-binfmt-support_2.2.0-2_amd64.deb ...
+#8 6.045 Unpacking binfmt-support (2.2.0-2) ...
+#8 6.109 Selecting previously unselected package libllvm9:amd64.
+#8 6.114 Preparing to unpack .../1-libllvm9_1%3a9.0.1-12_amd64.deb ...
+#8 6.124 Unpacking libllvm9:amd64 (1:9.0.1-12) ...
+#8 7.379 Selecting previously unselected package libsensors-config.
+#8 7.385 Preparing to unpack .../2-libsensors-config_1%3a3.6.0-2ubuntu1.1_all.deb ...
+#8 7.390 Unpacking libsensors-config (1:3.6.0-2ubuntu1.1) ...
+#8 7.439 Selecting previously unselected package libsensors5:amd64.
+#8 7.444 Preparing to unpack .../3-libsensors5_1%3a3.6.0-2ubuntu1.1_amd64.deb ...
+#8 7.525 Unpacking libsensors5:amd64 (1:3.6.0-2ubuntu1.1) ...
+#8 7.578 Selecting previously unselected package llvm-9-runtime.
+#8 7.583 Preparing to unpack .../4-llvm-9-runtime_1%3a9.0.1-12_amd64.deb ...
+#8 7.589 Unpacking llvm-9-runtime (1:9.0.1-12) ...
+#8 7.648 Selecting previously unselected package llvm-9.
+#8 7.653 Preparing to unpack .../5-llvm-9_1%3a9.0.1-12_amd64.deb ...
+#8 7.658 Unpacking llvm-9 (1:9.0.1-12) ...
+#8 8.103 Selecting previously unselected package sysstat.
+#8 8.108 Preparing to unpack .../6-sysstat_12.2.0-2ubuntu0.1_amd64.deb ...
+#8 8.123 Unpacking sysstat (12.2.0-2ubuntu0.1) ...
+#8 8.211 Selecting previously unselected package parallel.
+#8 8.216 Preparing to unpack .../7-parallel_20161222-1.1_all.deb ...
+#8 8.232 Adding 'diversion of /usr/bin/parallel to /usr/bin/parallel.moreutils by parallel'
+#8 8.249 Adding 'diversion of /usr/share/man/man1/parallel.1.gz to /usr/share/man/man1/parallel.moreutils.1.gz by parallel'
+#8 8.264 Unpacking parallel (20161222-1.1) ...
+#8 8.342 Setting up libsensors-config (1:3.6.0-2ubuntu1.1) ...
+#8 8.366 Setting up binfmt-support (2.2.0-2) ...
+#8 8.523 Created symlink /etc/systemd/system/multi-user.target.wants/binfmt-support.service → /lib/systemd/system/binfmt-support.service.
+#8 8.554 invoke-rc.d: could not determine current runlevel
+#8 8.562 invoke-rc.d: policy-rc.d denied execution of start.
+#8 8.569 Setting up libsensors5:amd64 (1:3.6.0-2ubuntu1.1) ...
+#8 8.581 Setting up sysstat (12.2.0-2ubuntu0.1) ...
+#8 8.763 
+#8 8.763 Creating config file /etc/default/sysstat with new version
+#8 8.836 update-alternatives: using /usr/bin/sar.sysstat to provide /usr/bin/sar (sar) in auto mode
+#8 8.836 update-alternatives: warning: skip creation of /usr/share/man/man1/sar.1.gz because associated file /usr/share/man/man1/sar.sysstat.1.gz (of link group sar) doesn't exist
+#8 8.976 Created symlink /etc/systemd/system/multi-user.target.wants/sysstat.service → /lib/systemd/system/sysstat.service.
+#8 9.005 Setting up libllvm9:amd64 (1:9.0.1-12) ...
+#8 9.019 Setting up llvm-9-runtime (1:9.0.1-12) ...
+#8 9.038 Setting up parallel (20161222-1.1) ...
+#8 9.062 Setting up llvm-9 (1:9.0.1-12) ...
+#8 9.076 Processing triggers for systemd (245.4-4ubuntu3.17) ...
+#8 9.094 Processing triggers for man-db (2.9.1-1) ...
+#8 9.238 Processing triggers for libc-bin (2.31-0ubuntu9.9) ...
+#8 DONE 9.5s
+
+#9 [3/5] COPY ./stress /stress
+#9 DONE 0.1s
+
+#10 [4/5] COPY ./download_previous_release /download_previous_release
+#10 DONE 0.1s
+
+#11 [5/5] COPY run.sh /
+#11 DONE 0.1s
+
+#12 exporting to image
+#12 exporting layers done
+#12 writing image sha256:4cb010937d5ba8a5f8d8447df1999c2e4060103b6e16aaf55796a7c421861c4d done
+#12 naming to ca.icr.io/clickhouse/stress-test:latest-amd64 done
+#12 DONE 0.1s
+
+#13 exporting cache
+#13 preparing build cache for export done
+#13 DONE 0.0s
+
+#14 pushing ca.icr.io/clickhouse/stress-test:latest-amd64 with docker
+#14 pushing layer b02a007ff5de
+#14 pushing layer e141d913e179
+#14 pushing layer 94f9954a4ec7
+#14 pushing layer dd12e8d065aa
+#14 pushing layer 3e0c8a9b1795
+#14 pushing layer 09eeb205c03c 3.1s
+#14 pushing layer 103a190b4513 3.1s
+#14 pushing layer 972fa93ce035 3.1s
+#14 pushing layer 14e40e116710 3.1s
+#14 pushing layer f76863251aa0 3.1s
+#14 pushing layer 561b5f18d22a 3.1s
+#14 pushing layer 69cc8a19f067 3.1s
+#14 pushing layer 722bbcbc7071 3.1s
+#14 pushing layer 39de42ade2aa 3.1s
+#14 pushing layer f19cc00d9139 3.1s
+#14 pushing layer 564e765f4a82 3.1s
+#14 pushing layer d92c086d1f7b 3.1s
+#14 pushing layer 763084b768b8 3.1s
+#14 pushing layer 9be62074f536 3.1s
+#14 pushing layer b351887b06be 3.1s
+#14 pushing layer 92eb7a25d635 3.1s
+#14 pushing layer fc41cab6c437 3.1s
+#14 pushing layer 02f38013b562 3.1s
+#14 pushing layer 4ce542a2d01c
+#14 pushing layer af7ed92504ae
+#14 pushing layer b02a007ff5de 24.58kB / 22.77kB 7.2s
+#14 pushing layer e141d913e179 6.14kB / 4.27kB 7.6s
+#14 pushing layer 94f9954a4ec7 12.29kB / 10.71kB 7.7s
+#14 pushing layer 3e0c8a9b1795 11.78kB / 10.22kB 7.7s
+#14 pushing layer dd12e8d065aa 5.52MB / 106.41MB 17.3s
+#14 pushing layer dd12e8d065aa 10.93MB / 106.41MB 27.1s
+#14 pushing layer dd12e8d065aa 18.06MB / 106.41MB 40.1s
+#14 pushing layer b02a007ff5de 11.9s done
+#14 pushing layer e141d913e179 12.1s done
+#14 pushing layer 3e0c8a9b1795 12.3s done
+#14 pushing layer 94f9954a4ec7 12.3s done
+#14 pushing layer dd12e8d065aa 25.84MB / 106.41MB 53.1s
+#14 pushing layer dd12e8d065aa 31.96MB / 106.41MB 62.8s
+#14 pushing layer 09eeb205c03c 5.63kB / 3.96kB 12.7s
+#14 pushing layer dd12e8d065aa 38.65MB / 106.41MB 75.9s
+#14 pushing layer 103a190b4513 220.67kB / 607.69kB 13.7s
+#14 pushing layer dd12e8d065aa 45.33MB / 106.41MB 88.9s
+#14 pushing layer 103a190b4513 537.09kB / 607.69kB 17.0s
+#14 pushing layer 103a190b4513 621.06kB / 607.69kB 20.1s
+#14 pushing layer dd12e8d065aa 52.02MB / 106.41MB 101.9s
+#14 pushing layer dd12e8d065aa 58.70MB / 106.41MB 114.8s
+#14 pushing layer 09eeb205c03c 18.0s done
+#14 pushing layer dd12e8d065aa 64.83MB / 106.41MB 127.8s
+#14 pushing layer dd12e8d065aa 70.96MB / 106.41MB 134.3s
+#14 pushing layer dd12e8d065aa 76.53MB / 106.41MB 140.8s
+#14 pushing layer f76863251aa0 12.4s
+#14 pushing layer dd12e8d065aa 82.66MB / 106.41MB 147.3s
+#14 pushing layer dd12e8d065aa 88.23MB / 106.41MB 153.8s
+#14 pushing layer 103a190b4513 25.6s done
+#14 pushing layer 561b5f18d22a 13.1s
+#14 pushing layer dd12e8d065aa 94.29MB / 106.41MB 163.5s
+#14 pushing layer dd12e8d065aa 100.93MB / 106.41MB 176.5s
+#14 pushing layer 69cc8a19f067 13.7s
+#14 pushing layer dd12e8d065aa 106.71MB / 106.41MB 189.4s
+#14 pushing layer 39de42ade2aa 14.8s
+#14 pushing layer 722bbcbc7071 14.8s
+#14 pushing layer f19cc00d9139 15.7s
+#14 pushing layer 763084b768b8 16.8s
+#14 pushing layer dd12e8d065aa 195.4s done
+#14 pushing layer 564e765f4a82 17.2s
+#14 pushing layer d92c086d1f7b 17.5s
+#14 pushing layer 9be62074f536 18.6s
+#14 pushing layer 92eb7a25d635 19.0s
+#14 pushing layer b351887b06be 19.4s
+#14 pushing layer fc41cab6c437 19.6s
+#14 pushing layer 4ce542a2d01c 17.3s
+#14 pushing layer af7ed92504ae 17.5s
+#14 pushing layer 02f38013b562 21.4s
+#14 pushing layer 722bbcbc7071 27.3s done
+#14 pushing layer 972fa93ce035 27.3s done
+#14 pushing layer 14e40e116710 27.3s done
+#14 pushing layer f76863251aa0 27.3s done
+#14 pushing layer 561b5f18d22a 27.3s done
+#14 pushing layer 69cc8a19f067 27.3s done
+#14 pushing layer 39de42ade2aa 27.3s done
+#14 pushing layer f19cc00d9139 27.3s done
+#14 pushing layer 564e765f4a82 27.3s done
+#14 pushing layer d92c086d1f7b 27.3s done
+#14 pushing layer 763084b768b8 27.3s done
+#14 pushing layer 9be62074f536 27.3s done
+#14 pushing layer b351887b06be 27.3s done
+#14 pushing layer 92eb7a25d635 27.3s done
+#14 pushing layer fc41cab6c437 27.3s done
+#14 pushing layer 02f38013b562 27.3s done
+#14 pushing layer 4ce542a2d01c 24.2s done
+#14 pushing layer af7ed92504ae 24.2s done
+#14 DONE 18.2s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/stress-test:latest-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/stress-test:latest:
+------

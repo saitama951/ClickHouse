@@ -91,7 +91,7 @@ def get_images_dict(repo_path: str, image_file_path: str) -> ImagesDict:
 
 
 def get_changed_docker_images(
-    pr_info: PRInfo, images_dict: ImagesDict
+    pr_info: PRInfo, images_dict: ImagesDict, docker_host: str = ''
 ) -> Set[DockerImage]:
 
     if not images_dict:
@@ -111,7 +111,7 @@ def get_changed_docker_images(
     for dockerfile_dir, image_description in images_dict.items():
         for f in files_changed:
             if f.startswith(dockerfile_dir):
-                name = image_description["name"]
+                name = docker_host + "/" + image_description["name"]
                 only_amd64 = image_description.get("only_amd64", False)
                 logging.info(
                     "Found changed file '%s' which affects "
@@ -135,7 +135,7 @@ def get_changed_docker_images(
                 dependent,
                 image,
             )
-            name = images_dict[dependent]["name"]
+            name = docker_host + "/" + images_dict[dependent]["name"]
             only_amd64 = images_dict[dependent].get("only_amd64", False)
             changed_images.append(DockerImage(dependent, name, only_amd64, image))
         index += 1
@@ -368,7 +368,31 @@ def parse_args() -> argparse.Namespace:
         default=argparse.SUPPRESS,
         help="don't push images to docker hub",
     )
-
+    parser.add_argument(
+        "--use-env",
+        action="store_true",
+        dest="use_env",
+        default=argparse.SUPPRESS,
+        help="Use environmental variables instead of SSM",
+    )
+    parser.add_argument(
+        "--docker-user",
+        type=str,
+        default="robotclickhouse",
+        help="Username to use for docker registry",
+    )
+    parser.add_argument(
+        "--docker-password",
+        type=str,
+        default=argparse.SUPPRESS,
+        help="Use docker password as argument rather than ssm",
+    )
+    parser.add_argument(
+        "--docker-host",
+        type=str,
+        default="docker.io",
+        help="The docker host to use for images eg. docker.io",
+    )
     return parser.parse_args()
 
 
@@ -383,11 +407,16 @@ def main():
         changed_json = os.path.join(TEMP_PATH, f"changed_images_{args.suffix}.json")
     else:
         changed_json = os.path.join(TEMP_PATH, "changed_images.json")
-
+        
     if args.push:
+        docker_password = ''
+        if args.docker_password:
+            docker_password = args.docker_password
+        else:
+            docker_password = get_parameter_from_ssm("dockerhub_robot_password")
         subprocess.check_output(  # pylint: disable=unexpected-keyword-arg
-            "docker login --username 'robotclickhouse' --password-stdin",
-            input=get_parameter_from_ssm("dockerhub_robot_password"),
+            "docker login {} --username '{}' --password-stdin".format(args.docker_host, args.docker_user),
+            input=docker_password,
             encoding="utf-8",
             shell=True,
         )
@@ -406,7 +435,7 @@ def main():
     else:
         pr_info.fetch_changed_files()
 
-    changed_images = get_changed_docker_images(pr_info, images_dict)
+    changed_images = get_changed_docker_images(pr_info, images_dict, args.docker_host)
     if changed_images:
         logging.info(
             "Has changed images: %s", ", ".join([im.path for im in changed_images])
@@ -450,8 +479,8 @@ def main():
     if not args.reports:
         return
 
-    gh = Github(get_best_robot_token())
-    post_commit_status(gh, pr_info.sha, NAME, description, status, url)
+    gh = Github(get_best_robot_token(use_env=args.use_env))
+    # post_commit_status(gh, pr_info.sha, NAME, description, status, url)
 
     prepared_events = prepare_tests_results_for_clickhouse(
         pr_info,
@@ -462,7 +491,7 @@ def main():
         url,
         NAME,
     )
-    ch_helper = ClickHouseHelper()
+    ch_helper = ClickHouseHelper(use_env=args.use_env)
     ch_helper.insert_events_into(db="default", table="checks", events=prepared_events)
 
     if status == "error":

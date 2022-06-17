@@ -1,0 +1,245 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 215B 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/node:16.14.2
+#3 DONE 1.3s
+
+#4 [1/4] FROM docker.io/library/node:16.14.2@sha256:6e54786b2ad01667d46524e82806298714f50d2be72b39706770aed55faedbd7
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/mysql-js-client:latest
+#6 ...
+
+#7 [auth] clickhouse/mysql-js-client:pull token for ca.icr.io
+#7 DONE 0.0s
+
+#8 importing cache manifest from ca.icr.io/clickhouse/mysql-js-client:latest-amd64
+#8 ERROR: ca.icr.io/clickhouse/mysql-js-client:latest-amd64: not found
+
+#6 importing cache manifest from ca.icr.io/clickhouse/mysql-js-client:latest
+#6 ERROR: ca.icr.io/clickhouse/mysql-js-client:latest: not found
+
+#4 [1/4] FROM docker.io/library/node:16.14.2@sha256:6e54786b2ad01667d46524e82806298714f50d2be72b39706770aed55faedbd7
+#4 resolve docker.io/library/node:16.14.2@sha256:6e54786b2ad01667d46524e82806298714f50d2be72b39706770aed55faedbd7 0.0s done
+#4 ...
+
+#5 [internal] load build context
+#5 transferring context: 586B 0.0s done
+#5 DONE 0.1s
+
+#4 [1/4] FROM docker.io/library/node:16.14.2@sha256:6e54786b2ad01667d46524e82806298714f50d2be72b39706770aed55faedbd7
+#4 sha256:2c7096c53d46a266fa5b36de89a5070cd9e8791b799973bf6801674f010b94d6 2.21kB / 2.21kB done
+#4 sha256:a76eec769c30e46d15a58a7d2f7f9253b9db0984e494f6caa79d3b3fe5db458e 7.65kB / 7.65kB done
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 0B / 50.44MB 0.1s
+#4 sha256:5fdd409f4b2bf3771fac1cbc2df46d1cbb4b800b154cfc33e8e0cd23e67ab3e0 0B / 7.86MB 0.1s
+#4 sha256:fa3069e6cecf9d5e43ace0a925b53849b2fd189ef41883d45d8f2e12213c2c06 0B / 10.00MB 0.1s
+#4 sha256:6e54786b2ad01667d46524e82806298714f50d2be72b39706770aed55faedbd7 1.21kB / 1.21kB done
+#4 sha256:5fdd409f4b2bf3771fac1cbc2df46d1cbb4b800b154cfc33e8e0cd23e67ab3e0 4.19MB / 7.86MB 0.5s
+#4 sha256:5fdd409f4b2bf3771fac1cbc2df46d1cbb4b800b154cfc33e8e0cd23e67ab3e0 7.86MB / 7.86MB 0.6s
+#4 sha256:fa3069e6cecf9d5e43ace0a925b53849b2fd189ef41883d45d8f2e12213c2c06 1.05MB / 10.00MB 0.6s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 5.24MB / 50.44MB 0.7s
+#4 sha256:5fdd409f4b2bf3771fac1cbc2df46d1cbb4b800b154cfc33e8e0cd23e67ab3e0 7.86MB / 7.86MB 0.6s done
+#4 sha256:fa3069e6cecf9d5e43ace0a925b53849b2fd189ef41883d45d8f2e12213c2c06 3.15MB / 10.00MB 0.7s
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 0B / 51.84MB 0.7s
+#4 sha256:fa3069e6cecf9d5e43ace0a925b53849b2fd189ef41883d45d8f2e12213c2c06 8.39MB / 10.00MB 0.8s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 14.68MB / 50.44MB 1.0s
+#4 sha256:fa3069e6cecf9d5e43ace0a925b53849b2fd189ef41883d45d8f2e12213c2c06 10.00MB / 10.00MB 0.9s done
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 11.53MB / 51.84MB 1.0s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 0B / 192.64MB 1.0s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 17.83MB / 50.44MB 1.1s
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 14.68MB / 51.84MB 1.1s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 20.97MB / 50.44MB 1.2s
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 18.87MB / 51.84MB 1.2s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 27.26MB / 50.44MB 1.4s
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 28.31MB / 51.84MB 1.4s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 11.53MB / 192.64MB 1.4s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 31.46MB / 50.44MB 1.5s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 35.65MB / 50.44MB 1.7s
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 42.99MB / 51.84MB 1.7s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 38.80MB / 50.44MB 1.8s
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 47.19MB / 51.84MB 1.8s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 23.07MB / 192.64MB 1.8s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 46.14MB / 50.44MB 2.0s
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 51.84MB / 51.84MB 2.0s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 49.28MB / 50.44MB 2.1s
+#4 sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 51.84MB / 51.84MB 2.0s done
+#4 sha256:0aa7befa4a1b0bc4aea77c1ccd87bd5b3c94ad4ff4fa0afcba21a610ae8f7805 0B / 4.20kB 2.1s
+#4 sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 50.44MB / 50.44MB 2.1s done
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 34.60MB / 192.64MB 2.2s
+#4 sha256:0aa7befa4a1b0bc4aea77c1ccd87bd5b3c94ad4ff4fa0afcba21a610ae8f7805 4.20kB / 4.20kB 2.2s done
+#4 sha256:c71ce35a137fd1d07f18d5f318a78351d738cd2b14ff8eaa85a8471dcdbcf847 0B / 33.89MB 2.2s
+#4 sha256:ebc7dc08be24d25399e182c6af846f98e019a01f88eeff0da2b862e49ebd7725 0B / 2.28MB 2.2s
+#4 extracting sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 99.61MB / 192.64MB 4.0s
+#4 sha256:c71ce35a137fd1d07f18d5f318a78351d738cd2b14ff8eaa85a8471dcdbcf847 33.89MB / 33.89MB 3.0s done
+#4 sha256:ebc7dc08be24d25399e182c6af846f98e019a01f88eeff0da2b862e49ebd7725 2.28MB / 2.28MB 2.4s done
+#4 extracting sha256:85bed84afb9a834cf090b55d2e584abd55b4792d93b750db896f486680638344 1.6s done
+#4 sha256:edc589697159618e24c4d43df1d2ae44b65096270dd4a888c2dbc8811d37e02d 448B / 448B 2.5s done
+#4 extracting sha256:5fdd409f4b2bf3771fac1cbc2df46d1cbb4b800b154cfc33e8e0cd23e67ab3e0 0.1s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 110.10MB / 192.64MB 4.2s
+#4 extracting sha256:5fdd409f4b2bf3771fac1cbc2df46d1cbb4b800b154cfc33e8e0cd23e67ab3e0 0.2s done
+#4 extracting sha256:fa3069e6cecf9d5e43ace0a925b53849b2fd189ef41883d45d8f2e12213c2c06
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 125.83MB / 192.64MB 4.5s
+#4 extracting sha256:fa3069e6cecf9d5e43ace0a925b53849b2fd189ef41883d45d8f2e12213c2c06 0.2s done
+#4 extracting sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 139.46MB / 192.64MB 4.7s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 152.04MB / 192.64MB 5.0s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 163.58MB / 192.64MB 5.2s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 174.06MB / 192.64MB 5.4s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 185.60MB / 192.64MB 5.7s
+#4 sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 192.64MB / 192.64MB 6.0s done
+#4 extracting sha256:4ee16f45eff97cbe98b74c63ca2375b2c6b2592cd765a86df098f731baab13ad 1.6s done
+#4 extracting sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514
+#4 extracting sha256:2cee68386155951f51cf2088092ed4b624b2ba9c36b2ec378ab041cb5bcea514 4.7s done
+#4 extracting sha256:0aa7befa4a1b0bc4aea77c1ccd87bd5b3c94ad4ff4fa0afcba21a610ae8f7805 done
+#4 extracting sha256:c71ce35a137fd1d07f18d5f318a78351d738cd2b14ff8eaa85a8471dcdbcf847 0.1s
+#4 extracting sha256:c71ce35a137fd1d07f18d5f318a78351d738cd2b14ff8eaa85a8471dcdbcf847 0.9s done
+#4 extracting sha256:ebc7dc08be24d25399e182c6af846f98e019a01f88eeff0da2b862e49ebd7725 0.1s
+#4 extracting sha256:ebc7dc08be24d25399e182c6af846f98e019a01f88eeff0da2b862e49ebd7725 0.1s done
+#4 extracting sha256:edc589697159618e24c4d43df1d2ae44b65096270dd4a888c2dbc8811d37e02d done
+#4 DONE 13.0s
+
+#9 [2/4] WORKDIR /usr/app
+#9 DONE 1.2s
+
+#10 [3/4] RUN npm install mysql
+#10 2.282 
+#10 2.282 added 11 packages, and audited 12 packages in 1s
+#10 2.283 
+#10 2.283 found 0 vulnerabilities
+#10 2.284 npm notice 
+#10 2.284 npm notice New minor version of npm available! 8.5.0 -> 8.12.1
+#10 2.284 npm notice Changelog: <https://github.com/npm/cli/releases/tag/v8.12.1>
+#10 2.284 npm notice Run `npm install -g npm@8.12.1` to update!
+#10 2.284 npm notice 
+#10 DONE 2.4s
+
+#11 [4/4] COPY ./test.js ./test.js
+#11 DONE 0.1s
+
+#12 exporting to image
+#12 exporting layers done
+#12 writing image sha256:d40f62b0d8c5736caec1fee12bcdf97fae38799371444902c429d9a2c8945425 done
+#12 naming to ca.icr.io/clickhouse/mysql-js-client:latest-amd64 done
+#12 DONE 0.0s
+
+#13 exporting cache
+#13 preparing build cache for export
+#13 preparing build cache for export done
+#13 DONE 0.0s
+
+#14 pushing ca.icr.io/clickhouse/mysql-js-client:latest-amd64 with docker
+#14 pushing layer 1f2e3ee6bee8
+#14 pushing layer bcd70625c1c7
+#14 pushing layer 941e337a4ba7
+#14 pushing layer 3e4801a3cfe3
+#14 pushing layer 52101239f8c7
+#14 pushing layer e0bd9c8e45b3 1.1s
+#14 pushing layer 6fd97e423126 1.1s
+#14 pushing layer ca58f1c44290 1.1s
+#14 pushing layer 957a6eed8d1f 1.1s
+#14 pushing layer 85fe00380881 1.1s
+#14 pushing layer 5d253e59e523 1.1s
+#14 pushing layer b9fd5db9c9a6 1.1s
+#14 pushing layer 1f2e3ee6bee8 512B / 550B 2.0s
+#14 pushing layer 1f2e3ee6bee8 3.58kB / 550B 3.1s
+#14 pushing layer bcd70625c1c7 3.68MB / 3.44MB 6.6s
+#14 pushing layer 3e4801a3cfe3 3.58kB / 388B 3.2s
+#14 pushing layer 52101239f8c7 2.05MB / 7.60MB 5.6s
+#14 pushing layer 52101239f8c7 4.11MB / 7.60MB 6.8s
+#14 pushing layer 52101239f8c7 5.75MB / 7.60MB 8.0s
+#14 pushing layer 52101239f8c7 7.62MB / 7.60MB 10.3s
+#14 pushing layer 1f2e3ee6bee8 5.8s done
+#14 pushing layer bcd70625c1c7 9.0s done
+#14 pushing layer 941e337a4ba7 4.8s done
+#14 pushing layer 52101239f8c7 12.7s done
+#14 pushing layer 6fd97e423126 349.70kB / 333.53kB 6.3s
+#14 pushing layer 3e4801a3cfe3 6.6s done
+#14 pushing layer e0bd9c8e45b3 8.88MB / 94.14MB 14.1s
+#14 pushing layer ca58f1c44290 5.99MB / 510.48MB 13.0s
+#14 pushing layer e0bd9c8e45b3 32.28MB / 94.14MB 28.2s
+#14 pushing layer 6fd97e423126 10.9s done
+#14 pushing layer 957a6eed8d1f 20.83MB / 145.54MB 22.9s
+#14 pushing layer 85fe00380881 16.15MB / 17.54MB 21.5s
+#14 pushing layer 5d253e59e523 1.85MB / 16.55MB 11.9s
+#14 pushing layer e0bd9c8e45b3 51.78MB / 94.14MB 39.9s
+#14 pushing layer ca58f1c44290 50.65MB / 510.48MB 39.0s
+#14 pushing layer 957a6eed8d1f 36.28MB / 145.54MB 33.7s
+#14 pushing layer 85fe00380881 17.87MB / 17.54MB 22.9s
+#14 pushing layer 5d253e59e523 17.21MB / 16.55MB 23.9s
+#14 pushing layer e0bd9c8e45b3 57.90MB / 94.14MB 43.3s
+#14 pushing layer 85fe00380881 24.1s done
+#14 pushing layer e0bd9c8e45b3 63.47MB / 94.14MB 46.8s
+#14 pushing layer 957a6eed8d1f 44.30MB / 145.54MB 39.4s
+#14 pushing layer e0bd9c8e45b3 69.60MB / 94.14MB 50.3s
+#14 pushing layer b9fd5db9c9a6 525.31kB / 114.11MB 10.2s
+#14 pushing layer 957a6eed8d1f 52.36MB / 145.54MB 45.3s
+#14 pushing layer 5d253e59e523 26.2s done
+#14 pushing layer e0bd9c8e45b3 75.73MB / 94.14MB 55.1s
+#14 pushing layer ca58f1c44290 77.22MB / 510.48MB 55.2s
+#14 pushing layer b9fd5db9c9a6 6.46MB / 114.11MB 14.9s
+#14 pushing layer e0bd9c8e45b3 81.27MB / 94.14MB 58.6s
+#14 pushing layer 957a6eed8d1f 60.35MB / 145.54MB 51.2s
+#14 pushing layer e0bd9c8e45b3 87.69MB / 94.14MB 62.1s
+#14 pushing layer b9fd5db9c9a6 13.08MB / 114.11MB 19.7s
+#14 pushing layer 957a6eed8d1f 68.43MB / 145.54MB 57.1s
+#14 pushing layer b9fd5db9c9a6 19.60MB / 114.11MB 24.4s
+#14 pushing layer e0bd9c8e45b3 93.55MB / 94.14MB 66.9s
+#14 pushing layer 957a6eed8d1f 78.20MB / 145.54MB 64.2s
+#14 pushing layer b9fd5db9c9a6 26.06MB / 114.11MB 29.1s
+#14 pushing layer ca58f1c44290 103.40MB / 510.48MB 74.1s
+#14 pushing layer b9fd5db9c9a6 32.00MB / 114.11MB 33.8s
+#14 pushing layer 957a6eed8d1f 86.94MB / 145.54MB 68.9s
+#14 pushing layer b9fd5db9c9a6 39.06MB / 114.11MB 38.6s
+#14 pushing layer 957a6eed8d1f 94.53MB / 145.54MB 73.6s
+#14 pushing layer b9fd5db9c9a6 46.54MB / 114.11MB 42.1s
+#14 pushing layer 957a6eed8d1f 103.33MB / 145.54MB 78.3s
+#14 pushing layer b9fd5db9c9a6 53.07MB / 114.11MB 46.8s
+#14 pushing layer 957a6eed8d1f 111.94MB / 145.54MB 84.3s
+#14 pushing layer e0bd9c8e45b3 72.6s done
+#14 pushing layer ca58f1c44290 131.12MB / 510.48MB 91.9s
+#14 pushing layer b9fd5db9c9a6 60.68MB / 114.11MB 51.6s
+#14 pushing layer 957a6eed8d1f 120.02MB / 145.54MB 90.2s
+#14 pushing layer b9fd5db9c9a6 69.23MB / 114.11MB 57.4s
+#14 pushing layer 957a6eed8d1f 127.62MB / 145.54MB 96.1s
+#14 pushing layer b9fd5db9c9a6 75.69MB / 114.11MB 62.1s
+#14 pushing layer 957a6eed8d1f 135.77MB / 145.54MB 100.8s
+#14 pushing layer b9fd5db9c9a6 82.67MB / 114.11MB 66.9s
+#14 pushing layer ca58f1c44290 157.73MB / 510.48MB 108.4s
+#14 pushing layer 957a6eed8d1f 145.08MB / 145.54MB 106.7s
+#14 pushing layer b9fd5db9c9a6 89.15MB / 114.11MB 71.6s
+#14 pushing layer b9fd5db9c9a6 95.60MB / 114.11MB 76.3s
+#14 pushing layer b9fd5db9c9a6 101.57MB / 114.11MB 79.8s
+#14 pushing layer b9fd5db9c9a6 108.56MB / 114.11MB 84.9s
+#14 pushing layer ca58f1c44290 190.96MB / 510.48MB 129.8s
+#14 pushing layer b9fd5db9c9a6 119.20MB / 114.11MB 91.7s
+#14 pushing layer 957a6eed8d1f 113.7s done
+#14 pushing layer ca58f1c44290 218.36MB / 510.48MB 145.1s
+#14 pushing layer b9fd5db9c9a6 95.9s done
+#14 pushing layer ca58f1c44290 244.85MB / 510.48MB 162.8s
+#14 pushing layer ca58f1c44290 271.67MB / 510.48MB 181.6s
+#14 pushing layer ca58f1c44290 298.26MB / 510.48MB 198.1s
+#14 pushing layer ca58f1c44290 324.98MB / 510.48MB 213.4s
+#14 pushing layer ca58f1c44290 350.54MB / 510.48MB 228.8s
+#14 pushing layer ca58f1c44290 376.72MB / 510.48MB 246.4s
+#14 pushing layer ca58f1c44290 402.60MB / 510.48MB 264.1s
+#14 pushing layer ca58f1c44290 429.55MB / 510.48MB 277.1s
+#14 pushing layer ca58f1c44290 456.61MB / 510.48MB 292.4s
+#14 pushing layer ca58f1c44290 482.82MB / 510.48MB 310.0s
+#14 pushing layer ca58f1c44290 511.94MB / 510.48MB 330.1s
+#14 pushing layer ca58f1c44290 339.6s done
+#14 DONE 42.1s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/mysql-js-client:latest-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/mysql-js-client:latest:
+------

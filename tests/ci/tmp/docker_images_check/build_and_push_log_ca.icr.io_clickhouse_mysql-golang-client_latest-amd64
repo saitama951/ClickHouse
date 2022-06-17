@@ -1,0 +1,176 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 290B 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/golang:1.17
+#3 DONE 1.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest
+#4 ...
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [1/4] FROM docker.io/library/golang:1.17@sha256:b1ff3263f543b4c458e172f3df429a3e7dfed29d4359ab839a614f903252e1df
+#6 DONE 0.0s
+
+#7 importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest-amd64
+#7 ...
+
+#8 [auth] clickhouse/mysql-golang-client:pull token for ca.icr.io
+#8 DONE 0.0s
+
+#7 importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest-amd64
+#7 ...
+
+#4 importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest
+#4 ERROR: ca.icr.io/clickhouse/mysql-golang-client:latest: not found
+
+#7 importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest-amd64
+#7 ERROR: ca.icr.io/clickhouse/mysql-golang-client:latest-amd64: not found
+
+#5 [internal] load build context
+#5 transferring context: 2.00kB 0.0s done
+#5 DONE 0.1s
+
+#6 [1/4] FROM docker.io/library/golang:1.17@sha256:b1ff3263f543b4c458e172f3df429a3e7dfed29d4359ab839a614f903252e1df
+#6 resolve docker.io/library/golang:1.17@sha256:b1ff3263f543b4c458e172f3df429a3e7dfed29d4359ab839a614f903252e1df 0.0s done
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 0B / 85.87MB 0.2s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 0B / 134.96MB 0.2s
+#6 sha256:dceb25b534d8da2aa50da5c6489fc4120db24f24dcf8b3b1862d1a8cebf1210b 1.80kB / 1.80kB done
+#6 sha256:0e970dee9aa41b53e9096c0fe39d64d8e4e96dfbffaa7b47a9d1897ae965b9b0 7.11kB / 7.11kB done
+#6 sha256:b1ff3263f543b4c458e172f3df429a3e7dfed29d4359ab839a614f903252e1df 2.35kB / 2.35kB done
+#6 sha256:bbec5306b106b1062838a5fa65c34731772b8da7ff56a9aec828890a5bf1f226 0B / 156B 0.2s
+#6 sha256:bbec5306b106b1062838a5fa65c34731772b8da7ff56a9aec828890a5bf1f226 156B / 156B 0.3s done
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 12.58MB / 85.87MB 0.6s
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 19.92MB / 85.87MB 0.7s
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 34.60MB / 85.87MB 0.9s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 11.53MB / 134.96MB 0.9s
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 40.89MB / 85.87MB 1.0s
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 48.23MB / 85.87MB 1.1s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 22.02MB / 134.96MB 1.1s
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 59.77MB / 85.87MB 1.3s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 30.41MB / 134.96MB 1.3s
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 70.25MB / 85.87MB 1.5s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 39.85MB / 134.96MB 1.5s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 53.48MB / 134.96MB 1.7s
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 82.84MB / 85.87MB 1.9s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 65.01MB / 134.96MB 1.9s
+#6 sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 85.87MB / 85.87MB 2.0s done
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 83.89MB / 134.96MB 2.2s
+#6 extracting sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 91.23MB / 134.96MB 2.3s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 103.81MB / 134.96MB 2.5s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 116.39MB / 134.96MB 2.7s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 130.02MB / 134.96MB 2.9s
+#6 sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 134.96MB / 134.96MB 3.1s done
+#6 extracting sha256:93c221c34e03cb2bc3c5cb0e1fcf029b793cfe2c10362287dd05270d80333db9 1.9s done
+#6 extracting sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95
+#6 extracting sha256:ad491e6a2878e96d876127fb0107f5063e90c343528b58151170cd95ce9b0a95 3.4s done
+#6 extracting sha256:bbec5306b106b1062838a5fa65c34731772b8da7ff56a9aec828890a5bf1f226 done
+#6 DONE 7.9s
+
+#9 [2/4] WORKDIR /opt
+#9 DONE 0.9s
+
+#10 [3/4] COPY ./main.go main.go
+#10 DONE 0.1s
+
+#11 [4/4] RUN go mod init none     && go get github.com/go-sql-driver/mysql@217d05049     && go build main.go
+#11 0.440 go: creating new go.mod: module none
+#11 0.441 go: to add module requirements and sums:
+#11 0.441 	go mod tidy
+#11 3.241 go: downloading github.com/go-sql-driver/mysql v1.6.1-0.20220119085220-217d05049e5a
+#11 4.362 go get: added github.com/go-sql-driver/mysql v1.6.1-0.20220119085220-217d05049e5a
+#11 DONE 5.1s
+
+#12 exporting to image
+#12 exporting layers done
+#12 writing image sha256:f9cf97efe474faa3c88c4b49493bc6ee7dc290b16fc287ea171664259b8fb98e
+#12 writing image sha256:f9cf97efe474faa3c88c4b49493bc6ee7dc290b16fc287ea171664259b8fb98e done
+#12 naming to ca.icr.io/clickhouse/mysql-golang-client:latest-amd64 done
+#12 DONE 0.0s
+
+#13 exporting cache
+#13 preparing build cache for export done
+#13 DONE 0.0s
+
+#14 pushing ca.icr.io/clickhouse/mysql-golang-client:latest-amd64 with docker
+#14 pushing layer 5982ef58df1c
+#14 pushing layer a92bdd3670e8
+#14 pushing layer 5f70bf18a086
+#14 pushing layer 29e1218321f4
+#14 pushing layer c51ad70ee5ab
+#14 pushing layer aa12cb66a673 3.1s
+#14 pushing layer ee509ed6e976 3.1s
+#14 pushing layer 9177197c67d0
+#14 pushing layer 7dbadf2b9bd8 3.1s
+#14 pushing layer e7597c345c2e
+#14 pushing layer a92bdd3670e8 4.10kB / 1.96kB 7.2s
+#14 pushing layer 5982ef58df1c 1.66MB / 7.25MB 14.0s
+#14 pushing layer 5982ef58df1c 2.94MB / 7.25MB 17.2s
+#14 pushing layer 5982ef58df1c 4.61MB / 7.25MB 20.5s
+#14 pushing layer 5982ef58df1c 6.06MB / 7.25MB 23.7s
+#14 pushing layer 5982ef58df1c 7.47MB / 7.25MB 27.0s
+#14 pushing layer a92bdd3670e8 12.5s done
+#14 pushing layer 5982ef58df1c 31.5s done
+#14 pushing layer c51ad70ee5ab 21.63MB / 408.15MB 57.0s
+#14 pushing layer aa12cb66a673 11.50MB / 227.60MB 28.7s
+#14 pushing layer 29e1218321f4 10.5s done
+#14 pushing layer aa12cb66a673 23.20MB / 227.60MB 51.6s
+#14 pushing layer c51ad70ee5ab 42.29MB / 408.15MB 89.5s
+#14 pushing layer aa12cb66a673 35.44MB / 227.60MB 71.1s
+#14 pushing layer 9177197c67d0 11.6s
+#14 pushing layer c51ad70ee5ab 64.64MB / 408.15MB 122.0s
+#14 pushing layer aa12cb66a673 48.27MB / 227.60MB 90.6s
+#14 pushing layer 7dbadf2b9bd8 12.3s
+#14 pushing layer e7597c345c2e 12.6s
+#14 pushing layer aa12cb66a673 61.29MB / 227.60MB 116.6s
+#14 pushing layer c51ad70ee5ab 86.51MB / 408.15MB 154.4s
+#14 pushing layer aa12cb66a673 74.10MB / 227.60MB 139.4s
+#14 pushing layer c51ad70ee5ab 108.53MB / 408.15MB 186.8s
+#14 pushing layer aa12cb66a673 85.80MB / 227.60MB 158.9s
+#14 pushing layer c51ad70ee5ab 131.45MB / 408.15MB 219.2s
+#14 pushing layer aa12cb66a673 97.50MB / 227.60MB 181.8s
+#14 pushing layer aa12cb66a673 110.75MB / 227.60MB 201.3s
+#14 pushing layer c51ad70ee5ab 153.43MB / 408.15MB 251.7s
+#14 pushing layer aa12cb66a673 124.53MB / 227.60MB 220.8s
+#14 pushing layer c51ad70ee5ab 175.77MB / 408.15MB 284.2s
+#14 pushing layer aa12cb66a673 137.26MB / 227.60MB 243.6s
+#14 pushing layer c51ad70ee5ab 196.66MB / 408.15MB 313.4s
+#14 pushing layer aa12cb66a673 149.52MB / 227.60MB 266.5s
+#14 pushing layer aa12cb66a673 161.14MB / 227.60MB 286.1s
+#14 pushing layer c51ad70ee5ab 218.17MB / 408.15MB 342.6s
+#14 pushing layer aa12cb66a673 172.79MB / 227.60MB 305.6s
+#14 pushing layer c51ad70ee5ab 240.21MB / 408.15MB 381.6s
+#14 pushing layer aa12cb66a673 184.92MB / 227.60MB 335.1s
+#14 pushing layer c51ad70ee5ab 261.35MB / 408.15MB 417.5s
+#14 pushing layer aa12cb66a673 197.65MB / 227.60MB 368.0s
+#14 pushing layer c51ad70ee5ab 282.97MB / 408.15MB 463.2s
+#14 pushing layer aa12cb66a673 209.23MB / 227.60MB 391.0s
+#14 pushing layer aa12cb66a673 221.13MB / 227.60MB 420.4s
+#14 pushing layer c51ad70ee5ab 304.04MB / 408.15MB 509.0s
+#14 pushing layer c51ad70ee5ab 325.20MB / 408.15MB 561.7s
+#14 pushing layer aa12cb66a673 445.9s done
+#14 pushing layer c51ad70ee5ab 345.79MB / 408.15MB 597.8s
+#14 pushing layer c51ad70ee5ab 367.80MB / 408.15MB 636.8s
+#14 pushing layer c51ad70ee5ab 388.56MB / 408.15MB 679.1s
+#14 pushing layer c51ad70ee5ab 410.03MB / 408.15MB 718.1s
+#14 pushing layer c51ad70ee5ab 734.1s done
+#14 pushing layer 5f70bf18a086 42.1s done
+#14 pushing layer ee509ed6e976 45.3s done
+#14 pushing layer 9177197c67d0 45.3s done
+#14 pushing layer 7dbadf2b9bd8 45.3s done
+#14 pushing layer e7597c345c2e 45.3s done
+#14 DONE 36.1s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest:
+------

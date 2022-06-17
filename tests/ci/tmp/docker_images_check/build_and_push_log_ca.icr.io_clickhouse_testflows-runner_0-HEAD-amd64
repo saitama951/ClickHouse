@@ -1,0 +1,89 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:20.04
+#3 DONE 0.0s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/testflows-runner:0-HEAD-amd64
+#4 ERROR: ca.icr.io/clickhouse/testflows-runner:0-HEAD-amd64: not found
+
+#5 [ 1/10] FROM docker.io/library/ubuntu:20.04
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/testflows-runner:latest
+#6 ERROR: ca.icr.io/clickhouse/testflows-runner:latest: not found
+
+#7 [internal] load build context
+#7 transferring context: 121B 0.0s done
+#7 DONE 0.0s
+
+#8 [ 4/10] RUN ln -snf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo Europe/Moscow > /etc/timezone
+#8 CACHED
+
+#9 [ 5/10] RUN pip3 install urllib3 testflows==1.7.20 docker-compose==1.29.1 docker==5.0.0 dicttoxml kazoo tzlocal==2.1 pytz python-dateutil numpy
+#9 CACHED
+
+#10 [ 9/10] COPY process_testflows_result.py /usr/local/bin/
+#10 CACHED
+
+#11 [ 3/10] RUN apt-get update     && env DEBIAN_FRONTEND=noninteractive apt-get install --yes     ca-certificates     bash     btrfs-progs     e2fsprogs     iptables     xfsprogs     tar     pigz     wget     git     iproute2     cgroupfs-mount     python3-pip     tzdata     libicu-dev     bsdutils     curl     liblua5.1-dev     luajit     libssl-dev     libcurl4-openssl-dev     gdb     && rm -rf         /var/lib/apt/lists/*         /var/cache/debconf         /tmp/*     && apt-get clean
+#11 CACHED
+
+#12 [ 6/10] RUN arch=amd64   && case $arch in       amd64) rarch=x86_64 ;;       arm64) rarch=aarch64 ;;     esac   && set -eux   && if ! wget -nv -O docker.tgz "https://download.docker.com/linux/static/stable/${rarch}/docker-20.10.6.tgz"; then     echo >&2 "error: failed to download 'docker-20.10.6' from 'stable' for '${rarch}'"     && exit 1;   fi   && tar --extract     --file docker.tgz     --strip-components 1     --directory /usr/local/bin/   && rm docker.tgz   && dockerd --version   && docker --version
+#12 CACHED
+
+#13 [ 7/10] COPY modprobe.sh /usr/local/bin/modprobe
+#13 CACHED
+
+#14 [ 8/10] COPY dockerd-entrypoint.sh /usr/local/bin/
+#14 CACHED
+
+#15 [ 2/10] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#15 CACHED
+
+#16 [10/10] RUN set -x   && addgroup --system dockremap     && adduser --system dockremap   && adduser dockremap dockremap   && echo 'dockremap:165536:65536' >> /etc/subuid     && echo 'dockremap:165536:65536' >> /etc/subgid
+#16 CACHED
+
+#17 exporting to image
+#17 exporting layers done
+#17 writing image sha256:7f3df298b3ca16f9e1af67bdd4d541ed2f8810d7bec0463547edf560e1bd05f4 done
+#17 naming to ca.icr.io/clickhouse/testflows-runner:0-HEAD-amd64 done
+#17 DONE 0.0s
+
+#18 exporting cache
+#18 preparing build cache for export done
+#18 DONE 0.0s
+
+#19 pushing ca.icr.io/clickhouse/testflows-runner:0-HEAD-amd64 with docker
+#19 pushing layer a5b7d3cb1867
+#19 pushing layer 390a2aca82e7
+#19 pushing layer 188092b0faf9
+#19 pushing layer 422eb74c530d
+#19 pushing layer eb6c245d8538
+#19 pushing layer 7523ff4c889e 1.0s
+#19 pushing layer bba54b89c9ed 1.0s
+#19 pushing layer e4d81ebf4a20 1.0s
+#19 pushing layer 032fbcaef3aa 1.0s
+#19 pushing layer bf8cedc62fb3 1.0s
+#19 pushing layer 7523ff4c889e 4.7s done
+#19 pushing layer a5b7d3cb1867 3.6s done
+#19 pushing layer 390a2aca82e7 3.6s done
+#19 pushing layer 188092b0faf9 3.6s done
+#19 pushing layer 422eb74c530d 3.6s done
+#19 pushing layer eb6c245d8538 3.6s done
+#19 pushing layer bba54b89c9ed 4.7s done
+#19 pushing layer e4d81ebf4a20 4.6s done
+#19 pushing layer 032fbcaef3aa 4.6s done
+#19 pushing layer bf8cedc62fb3 4.6s done
+#19 DONE 1.8s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/testflows-runner:0-HEAD-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/testflows-runner:latest:
+------

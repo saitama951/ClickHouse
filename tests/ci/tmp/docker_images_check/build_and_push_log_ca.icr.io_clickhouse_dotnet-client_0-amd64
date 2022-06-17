@@ -1,0 +1,78 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for mcr.microsoft.com/dotnet/sdk:3.1
+#3 DONE 0.3s
+
+#4 [1/4] FROM mcr.microsoft.com/dotnet/sdk:3.1@sha256:fbdb5c5c380936679d91ffb40e66bccda34e821e1ec32c020c31aa6abde7a8c8
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/dotnet-client:latest
+#6 ...
+
+#7 importing cache manifest from ca.icr.io/clickhouse/dotnet-client:0-amd64
+#7 ERROR: ca.icr.io/clickhouse/dotnet-client:0-amd64: not found
+
+#6 importing cache manifest from ca.icr.io/clickhouse/dotnet-client:latest
+#6 ERROR: ca.icr.io/clickhouse/dotnet-client:latest: not found
+
+#5 [internal] load build context
+#5 transferring context: 74B 0.0s done
+#5 DONE 0.1s
+
+#8 [3/4] COPY *.cs *.csproj /client/
+#8 CACHED
+
+#9 [2/4] WORKDIR /client
+#9 CACHED
+
+#10 [4/4] RUN dotnet add package ClickHouse.Client -v 4.1.0
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 writing image sha256:b96c4ba0fb5a1b858276ddf2d2a4c7de9c1a3a921f97ff525df2a2e15115824d 0.0s done
+#11 naming to ca.icr.io/clickhouse/dotnet-client:0-amd64
+#11 naming to ca.icr.io/clickhouse/dotnet-client:0-amd64 done
+#11 DONE 0.0s
+
+#12 exporting cache
+#12 preparing build cache for export done
+#12 DONE 0.0s
+
+#13 pushing ca.icr.io/clickhouse/dotnet-client:0-amd64 with docker
+#13 pushing layer 239ae4fd308c
+#13 pushing layer 48385308d72a
+#13 pushing layer b38003bcd243
+#13 pushing layer f03af01fd318
+#13 pushing layer 0b51f2495443
+#13 pushing layer c1c5edb10af6 1.0s
+#13 pushing layer 80d46995af06 1.0s
+#13 pushing layer 597ea5af36e6 1.0s
+#13 pushing layer 8f534d0617ce 1.0s
+#13 pushing layer f14da82c36e2 1.0s
+#13 pushing layer 239ae4fd308c 3.7s done
+#13 pushing layer 48385308d72a 3.7s done
+#13 pushing layer b38003bcd243 3.7s done
+#13 pushing layer f03af01fd318 3.7s done
+#13 pushing layer 0b51f2495443 3.7s done
+#13 pushing layer c1c5edb10af6 4.7s done
+#13 pushing layer 80d46995af06 4.7s done
+#13 pushing layer 597ea5af36e6 4.7s done
+#13 pushing layer 8f534d0617ce 4.7s done
+#13 pushing layer f14da82c36e2 4.7s done
+#13 DONE 2.1s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/dotnet-client:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/dotnet-client:latest:
+------

@@ -1276,6 +1276,10 @@ class ClickHouseCluster:
             "LLVM_PROFILE_FILE"
         ] = "/var/lib/clickhouse/server_%h_%p_%m.profraw"
 
+        env_variables[
+            "CLICKHOUSE_TESTS_SERVER_BIN_PATH"
+        ] = "/root/ClickHouse/build/programs/clickhouse-server"
+
         instance = ClickHouseInstance(
             cluster=self,
             base_path=self.base_dir,

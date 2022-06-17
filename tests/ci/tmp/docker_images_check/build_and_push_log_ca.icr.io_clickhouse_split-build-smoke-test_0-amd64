@@ -1,0 +1,88 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/binary-builder:0-amd64
+#3 DONE 0.3s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/3] FROM docker.io/clickhouse/binary-builder:0-amd64@sha256:05bb7860476c4bf18f09ba378e08a8e62998f5232413284f77f18ac8d4f7ad2a
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/split-build-smoke-test:latest
+#6 ERROR: ca.icr.io/clickhouse/split-build-smoke-test:latest: not found
+
+#7 importing cache manifest from ca.icr.io/clickhouse/split-build-smoke-test:0-amd64
+#7 ERROR: ca.icr.io/clickhouse/split-build-smoke-test:0-amd64: not found
+
+#5 [1/3] FROM docker.io/clickhouse/binary-builder:0-amd64@sha256:05bb7860476c4bf18f09ba378e08a8e62998f5232413284f77f18ac8d4f7ad2a
+#5 resolve docker.io/clickhouse/binary-builder:0-amd64@sha256:05bb7860476c4bf18f09ba378e08a8e62998f5232413284f77f18ac8d4f7ad2a 0.0s done
+#5 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 88B 0.0s done
+#4 DONE 0.0s
+
+#8 [2/3] COPY run.sh /run.sh
+#8 CACHED
+
+#9 [3/3] COPY process_split_build_smoke_test_result.py /
+#9 CACHED
+
+#10 exporting to image
+#10 exporting layers done
+#10 writing image sha256:49ae2726a6b5d336c01b10927dd5d02441a53c30322d759a0538f9aa2c5b7269
+#10 writing image sha256:49ae2726a6b5d336c01b10927dd5d02441a53c30322d759a0538f9aa2c5b7269 done
+#10 naming to ca.icr.io/clickhouse/split-build-smoke-test:0-amd64 done
+#10 DONE 0.1s
+
+#11 exporting cache
+#11 preparing build cache for export done
+#11 DONE 0.0s
+
+#12 pushing ca.icr.io/clickhouse/split-build-smoke-test:0-amd64 with docker
+#12 pushing layer 851bc57feaad
+#12 pushing layer 79e36a154ad7
+#12 pushing layer 57bd215039a7
+#12 pushing layer 5f70bf18a086
+#12 pushing layer 4603a61f3bfc
+#12 pushing layer 2b6166c7d489 1.1s
+#12 pushing layer 7edf5c9e8f07 1.1s
+#12 pushing layer b3465067a5b6 1.1s
+#12 pushing layer 65d704f8bfc9 1.1s
+#12 pushing layer 98d20fd9cf3a 1.1s
+#12 pushing layer 9efca301564c 1.1s
+#12 pushing layer 166e1cbb4c1f 1.1s
+#12 pushing layer e23fcd0e15a1
+#12 pushing layer 24b7588c74de 1.1s
+#12 pushing layer f31b1d119e3b 1.1s
+#12 pushing layer af7ed92504ae 1.1s
+#12 pushing layer 851bc57feaad 4.5s done
+#12 pushing layer 79e36a154ad7 4.5s done
+#12 pushing layer 57bd215039a7 4.5s done
+#12 pushing layer 5f70bf18a086 4.5s done
+#12 pushing layer 4603a61f3bfc 4.5s done
+#12 pushing layer 2b6166c7d489 5.6s done
+#12 pushing layer 7edf5c9e8f07 5.6s done
+#12 pushing layer b3465067a5b6 5.6s done
+#12 pushing layer 65d704f8bfc9 5.6s done
+#12 pushing layer 98d20fd9cf3a 5.6s done
+#12 pushing layer 9efca301564c 5.6s done
+#12 pushing layer 166e1cbb4c1f 5.6s done
+#12 pushing layer e23fcd0e15a1 4.5s done
+#12 pushing layer 24b7588c74de 5.6s done
+#12 pushing layer f31b1d119e3b 5.6s done
+#12 pushing layer af7ed92504ae 5.6s done
+#12 DONE 2.5s
+------
+ > importing cache manifest from ca.icr.io/clickhouse/split-build-smoke-test:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/split-build-smoke-test:latest:
+------
