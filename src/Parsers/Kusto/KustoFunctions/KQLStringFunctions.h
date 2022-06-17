@@ -116,7 +116,7 @@ protected:
     bool convertImpl(String &out,IParser::Pos &pos) override;
 };
 
-class ParseCSV : public IParserKQLFunction
+class ParseCsv : public IParserKQLFunction
 {
 protected:
     const char * getName() const override { return "parse_csv()"; }
@@ -130,14 +130,14 @@ protected:
     bool convertImpl(String &out,IParser::Pos &pos) override;
 };
 
-class ParseURL : public IParserKQLFunction
+class ParseUrl : public IParserKQLFunction
 {
 protected:
     const char * getName() const override { return "parse_url()"; }
     bool convertImpl(String &out,IParser::Pos &pos) override;
 };
 
-class ParseURLQuery : public IParserKQLFunction
+class ParseUrlQuery : public IParserKQLFunction
 {
 protected:
     const char * getName() const override { return "parse_urlquery()"; }
@@ -214,13 +214,6 @@ protected:
     bool convertImpl(String &out,IParser::Pos &pos) override;
 };
 
-class ToLower : public IParserKQLFunction
-{
-protected:
-    const char * getName() const override { return "tolower()"; }
-    bool convertImpl(String &out,IParser::Pos &pos) override;
-};
-
 class ToUpper : public IParserKQLFunction
 {
 protected:
@@ -256,14 +249,14 @@ protected:
     bool convertImpl(String &out,IParser::Pos &pos) override;
 };
 
-class URLDecode : public IParserKQLFunction
+class UrlDecode : public IParserKQLFunction
 {
 protected:
     const char * getName() const override { return "url_decode()"; }
     bool convertImpl(String &out,IParser::Pos &pos) override;
 };
 
-class URLEncode : public IParserKQLFunction
+class UrlEncode : public IParserKQLFunction
 {
 protected:
     const char * getName() const override { return "url_encode()"; }
