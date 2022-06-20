@@ -12,15 +12,15 @@ class ClickHouseHelper:
     def __init__(self, url=None, use_env=False):
         if url is None:
             if use_env:
-                url = os.getenv("clickhouse-test-stat-url")
+                url = os.getenv("clickhouse_test_stat_url")
             else:
                 url = get_parameter_from_ssm("clickhouse-test-stat-url")
 
         self.url = url
         if use_env:
             self.auth = {
-                "X-ClickHouse-User": os.getenv("clickhouse-test-stat-login"),
-                "X-ClickHouse-Key": os.getenv("clickhouse-test-stat-password"),
+                "X-ClickHouse-User": os.getenv("clickhouse_test_stat_login"),
+                "X-ClickHouse-Key": os.getenv("clickhouse_test_stat_password"),
             }
         else:
             self.auth = {
