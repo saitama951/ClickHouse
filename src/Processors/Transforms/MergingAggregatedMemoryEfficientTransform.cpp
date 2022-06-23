@@ -524,6 +524,16 @@ void addMergingAggregatedMemoryEfficientTransform(
     AggregatingTransformParamsPtr params,
     size_t num_merging_processors)
 {
+    std::cout<<"Heena - times called addMergingAggregatedMemoryEfficientTransform .";
+    auto thread_group = CurrentThread::getGroup();
+    auto stats = thread_group->getProfileEventsCountersAndMemoryForThreads();
+
+
+    Int64 query_memory_limit = thread_group->memory_tracker.getHardLimit();
+    Int64 query_memory_usage = thread_group->memory_tracker.get();
+    std::cout<<"Heena - hardlimit  in initGenrate() =   "<<formatReadableSizeWithBinarySuffix(query_memory_limit);
+    std::cout<<"\n Heena - memory usage in initGenrate() =  "<<formatReadableSizeWithBinarySuffix(query_memory_usage);
+    
     pipe.addTransform(std::make_shared<GroupingAggregatedTransform>(pipe.getHeader(), pipe.numOutputPorts(), params));
 
     if (num_merging_processors <= 1)

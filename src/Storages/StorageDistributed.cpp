@@ -457,7 +457,13 @@ QueryProcessingStage::Enum StorageDistributed::getQueryProcessingStage(
             LOG_DEBUG(log, "Unable to figure out irrelevant shards from WHERE/PREWHERE clauses - the query will be sent to all shards of the cluster{}",
                     has_sharding_key ? "" : " (no sharding key)");
         }
+      
     }
+    
+    LOG_DEBUG(log, "No of nodes in cluster =: {}",nodes);
+    LOG_DEBUG(log, "processing stage of cluster node =: {}",QueryProcessingStage::toString(stage));
+    LOG_DEBUG(log, "What is sharding key here  =: {}",has_sharding_key ? "" : " (no sharding key)"));
+
 
     if (settings.distributed_group_by_no_merge)
     {
@@ -485,7 +491,7 @@ QueryProcessingStage::Enum StorageDistributed::getQueryProcessingStage(
 
     /// If there is only one node, the query can be fully processed by the
     /// shard, initiator will work as a proxy only.
-    if (nodes == 1)
+    /*if (nodes == 1)
     {
         /// In case the query was processed to
         /// WithMergeableStateAfterAggregation/WithMergeableStateAfterAggregationAndLimit
@@ -494,7 +500,8 @@ QueryProcessingStage::Enum StorageDistributed::getQueryProcessingStage(
         /// relevant for Distributed over Distributed
         return std::max(to_stage, QueryProcessingStage::Complete);
     }
-    else if (nodes == 0)
+    else*/
+    if (nodes == 0)
     {
         /// In case of 0 shards, the query should be processed fully on the initiator,
         /// since we need to apply aggregations.
@@ -515,6 +522,7 @@ QueryProcessingStage::Enum StorageDistributed::getQueryProcessingStage(
 
 std::optional<QueryProcessingStage::Enum> StorageDistributed::getOptimizedQueryProcessingStage(const SelectQueryInfo & query_info, const Settings & settings) const
 {
+    LOG_DEBUG(log,"Processing stage of query = " , QueryProcessingStage::toString(stage));
     bool optimize_sharding_key_aggregation =
         settings.optimize_skip_unused_shards &&
         settings.optimize_distributed_group_by_sharding_key &&
