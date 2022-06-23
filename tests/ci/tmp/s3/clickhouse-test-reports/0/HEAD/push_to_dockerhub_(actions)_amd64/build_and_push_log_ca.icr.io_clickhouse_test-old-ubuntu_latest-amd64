@@ -1,0 +1,55 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.1s
+
+#2 [internal] load .dockerignore
+#2 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:12.04
+#3 DONE 0.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/test-old-ubuntu:latest-amd64
+#4 DONE 0.0s
+
+#5 [1/1] FROM docker.io/library/ubuntu:12.04@sha256:18305429afa14ea462f810146ba44d4363ae76e4c8dfc38288cf73aa07485005
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/test-old-ubuntu:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#5 [1/1] FROM docker.io/library/ubuntu:12.04@sha256:18305429afa14ea462f810146ba44d4363ae76e4c8dfc38288cf73aa07485005
+#5 CACHED
+
+#7 exporting to image
+#7 exporting layers done
+#7 writing image sha256:d330a1693940eff6c2e643027f3501ea84897bd41ac7f48f39de1d71e7acfd17 done
+#7 naming to ca.icr.io/clickhouse/test-old-ubuntu:latest-amd64 done
+#7 DONE 0.0s
+
+#8 exporting cache
+#8 preparing build cache for export done
+#8 DONE 0.0s
+
+#9 pushing ca.icr.io/clickhouse/test-old-ubuntu:latest-amd64 with docker
+#9 pushing layer 3efd1f7c01f6
+#9 pushing layer 73b4683e66e8 0.8s
+#9 pushing layer ee60293db08f 0.8s
+#9 pushing layer 9dc188d975fd 0.8s
+#9 pushing layer 58bcc73dcf40 0.8s
+#9 pushing layer 3efd1f7c01f6 3.6s done
+#9 pushing layer 73b4683e66e8 3.6s done
+#9 pushing layer ee60293db08f 3.6s done
+#9 pushing layer 9dc188d975fd 3.6s done
+#9 pushing layer 58bcc73dcf40 3.6s done
+#9 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/test-old-ubuntu:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/test-old-ubuntu:latest-amd64 with docker:
+------
+error: denied: insufficient scope

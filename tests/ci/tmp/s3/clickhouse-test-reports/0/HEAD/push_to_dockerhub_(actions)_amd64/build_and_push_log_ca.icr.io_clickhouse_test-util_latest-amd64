@@ -1,29 +1,26 @@
 #1 [internal] load build definition from Dockerfile
 #1 transferring dockerfile: 31B done
-#1 DONE 0.0s
+#1 DONE 0.1s
 
 #2 [internal] load .dockerignore
 #2 transferring context: 2B done
-#2 DONE 0.1s
+#2 DONE 0.0s
 
 #3 [internal] load metadata for docker.io/library/ubuntu:20.04
 #3 DONE 0.3s
 
-#4 [internal] load build context
+#4 importing cache manifest from ca.icr.io/clickhouse/test-util:latest-amd64
 #4 DONE 0.0s
 
-#5 importing cache manifest from ca.icr.io/clickhouse/test-util:latest-amd64
+#5 [1/2] FROM docker.io/library/ubuntu:20.04@sha256:fd92c36d3cb9b1d027c4d2a72c6bf0125da82425fc2ca37c414d4f010180dc19
 #5 DONE 0.0s
 
-#6 [1/2] FROM docker.io/library/ubuntu:20.04@sha256:fd92c36d3cb9b1d027c4d2a72c6bf0125da82425fc2ca37c414d4f010180dc19
-#6 DONE 0.0s
+#6 importing cache manifest from ca.icr.io/clickhouse/test-util:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
 
-#7 importing cache manifest from ca.icr.io/clickhouse/test-util:latest
-#7 ERROR: unexpected status code [manifests latest]: 403 Forbidden
-
-#4 [internal] load build context
-#4 transferring context: 56B done
-#4 DONE 0.0s
+#7 [internal] load build context
+#7 transferring context: 56B done
+#7 DONE 0.0s
 
 #8 [2/2] COPY process_functional_tests_result.py /
 #8 CACHED
@@ -41,8 +38,8 @@
 #11 pushing ca.icr.io/clickhouse/test-util:latest-amd64 with docker
 #11 pushing layer abe97900b187
 #11 pushing layer af7ed92504ae
-#11 pushing layer abe97900b187 1.0s done
-#11 pushing layer af7ed92504ae 1.0s done
+#11 pushing layer af7ed92504ae 1.1s done
+#11 pushing layer abe97900b187 1.1s done
 #11 ERROR: denied: insufficient scope
 ------
  > importing cache manifest from ca.icr.io/clickhouse/test-util:latest:

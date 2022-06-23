@@ -1,0 +1,87 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/php:8.0.18-cli
+#3 DONE 0.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/mysql-php-client:0-amd64
+#4 DONE 0.0s
+
+#5 [1/6] FROM docker.io/library/php:8.0.18-cli@sha256:37c8da498764dd78663f28271d47ccad21ad848230d09aafd0f6481ba9477364
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/mysql-php-client:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 122B done
+#7 DONE 0.0s
+
+#8 [4/6] COPY ./test.php test.php
+#8 CACHED
+
+#9 [5/6] COPY ./test_ssl.php test_ssl.php
+#9 CACHED
+
+#10 [2/6] COPY ./client.crt client.crt
+#10 CACHED
+
+#11 [3/6] COPY ./client.key client.key
+#11 CACHED
+
+#12 [6/6] RUN docker-php-ext-install pdo pdo_mysql
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 writing image sha256:aff5be131743b8c0f663b27afc1e989be85e43fa543a985778c8da95cd60599f
+#13 writing image sha256:aff5be131743b8c0f663b27afc1e989be85e43fa543a985778c8da95cd60599f done
+#13 naming to ca.icr.io/clickhouse/mysql-php-client:0-amd64 done
+#13 DONE 0.1s
+
+#14 exporting cache
+#14 preparing build cache for export done
+#14 DONE 0.0s
+
+#15 pushing ca.icr.io/clickhouse/mysql-php-client:0-amd64 with docker
+#15 pushing layer b15781cad68f
+#15 pushing layer 3c756be4ea95
+#15 pushing layer 666c8fd4f804
+#15 pushing layer 77437e95d865
+#15 pushing layer 09601bf61de6
+#15 pushing layer 7e123894e028 0.4s
+#15 pushing layer 309c3901de72 0.4s
+#15 pushing layer 945d81a7fbbd 0.4s
+#15 pushing layer f0ee92c18c8c 0.4s
+#15 pushing layer 94744f4cf8dd 0.4s
+#15 pushing layer f5cf072b7fe0 0.4s
+#15 pushing layer 156a40af189d 0.4s
+#15 pushing layer 2543fd1f256d 0.4s
+#15 pushing layer fd95118eade9
+#15 pushing layer b15781cad68f 1.3s done
+#15 pushing layer 3c756be4ea95 1.3s done
+#15 pushing layer 666c8fd4f804 1.3s done
+#15 pushing layer 77437e95d865 1.3s done
+#15 pushing layer 09601bf61de6 1.3s done
+#15 pushing layer 7e123894e028 1.7s done
+#15 pushing layer 309c3901de72 1.7s done
+#15 pushing layer 945d81a7fbbd 1.7s done
+#15 pushing layer f0ee92c18c8c 1.7s done
+#15 pushing layer 94744f4cf8dd 1.7s done
+#15 pushing layer f5cf072b7fe0 1.7s done
+#15 pushing layer 156a40af189d 1.7s done
+#15 pushing layer 2543fd1f256d 1.7s done
+#15 pushing layer fd95118eade9 1.7s done
+#15 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/mysql-php-client:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/mysql-php-client:0-amd64 with docker:
+------
+error: denied: insufficient scope

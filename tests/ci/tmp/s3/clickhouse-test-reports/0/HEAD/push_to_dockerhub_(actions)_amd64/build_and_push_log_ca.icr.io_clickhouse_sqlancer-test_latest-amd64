@@ -1,0 +1,80 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:20.04
+#3 DONE 0.7s
+
+#4 [1/8] FROM docker.io/library/ubuntu:20.04@sha256:fd92c36d3cb9b1d027c4d2a72c6bf0125da82425fc2ca37c414d4f010180dc19
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/sqlancer-test:latest-amd64
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/sqlancer-test:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 74B done
+#7 DONE 0.0s
+
+#8 [2/8] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#8 CACHED
+
+#9 [5/8] RUN mkdir /sqlancer && 	cd /sqlancer && 	unzip /sqlancer.zip
+#9 CACHED
+
+#10 [7/8] COPY run.sh /
+#10 CACHED
+
+#11 [3/8] RUN apt-get update --yes && env DEBIAN_FRONTEND=noninteractive apt-get install wget unzip git default-jdk maven python3 --yes --no-install-recommends
+#11 CACHED
+
+#12 [6/8] RUN cd /sqlancer/sqlancer-master && mvn package -DskipTests
+#12 CACHED
+
+#13 [4/8] RUN wget https://github.com/sqlancer/sqlancer/archive/master.zip -O /sqlancer.zip
+#13 CACHED
+
+#14 [8/8] COPY process_sqlancer_result.py /
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers done
+#15 writing image sha256:771d103de90b1f38185da8098d5f49b0faa5336e564b8defa2fa237c43d6c656 done
+#15 naming to ca.icr.io/clickhouse/sqlancer-test:latest-amd64 done
+#15 DONE 0.0s
+
+#16 exporting cache
+#16 preparing build cache for export done
+#16 DONE 0.0s
+
+#17 pushing ca.icr.io/clickhouse/sqlancer-test:latest-amd64 with docker
+#17 pushing layer ff84141a78d6
+#17 pushing layer 95a7e528a622
+#17 pushing layer efeddf7fe152
+#17 pushing layer df8f4f3701cd
+#17 pushing layer 1c3e62b85d30
+#17 pushing layer 05faec77e3d9 0.4s
+#17 pushing layer 49127ec8de4f 0.4s
+#17 pushing layer af7ed92504ae 0.4s
+#17 pushing layer ff84141a78d6 1.3s done
+#17 pushing layer 95a7e528a622 1.3s done
+#17 pushing layer efeddf7fe152 1.3s done
+#17 pushing layer df8f4f3701cd 1.3s done
+#17 pushing layer 1c3e62b85d30 1.3s done
+#17 pushing layer 05faec77e3d9 1.7s done
+#17 pushing layer 49127ec8de4f 1.7s done
+#17 pushing layer af7ed92504ae 1.7s done
+#17 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/sqlancer-test:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/sqlancer-test:latest-amd64 with docker:
+------
+error: denied: insufficient scope

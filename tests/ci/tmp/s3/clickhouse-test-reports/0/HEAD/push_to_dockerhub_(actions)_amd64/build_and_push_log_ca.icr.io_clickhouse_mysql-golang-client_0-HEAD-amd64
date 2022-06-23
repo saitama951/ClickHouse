@@ -1,0 +1,76 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/golang:1.17
+#3 DONE 0.3s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/golang:1.17@sha256:095eb1b2178f83935a6f43e53d61b54d0426149e54a82e9789f4b8f7f20c8125
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:0-HEAD-amd64
+#6 DONE 0.0s
+
+#7 importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest
+#7 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#4 [internal] load build context
+#4 transferring context: 29B done
+#4 DONE 0.0s
+
+#8 [2/4] WORKDIR /opt
+#8 CACHED
+
+#9 [3/4] COPY ./main.go main.go
+#9 CACHED
+
+#10 [4/4] RUN go mod init none     && go get github.com/go-sql-driver/mysql@217d05049     && go build main.go
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 writing image sha256:323ace86abed6ba28f30c9f4c13a9eb2568a0e5d25ecbdb4a7e81a724be610d2 done
+#11 naming to ca.icr.io/clickhouse/mysql-golang-client:0-HEAD-amd64 done
+#11 DONE 0.1s
+
+#12 exporting cache
+#12 preparing build cache for export done
+#12 DONE 0.0s
+
+#13 pushing ca.icr.io/clickhouse/mysql-golang-client:0-HEAD-amd64 with docker
+#13 pushing layer 00eca8c93c8d
+#13 pushing layer 157f9906eb9c
+#13 pushing layer 5f70bf18a086
+#13 pushing layer 29e1218321f4
+#13 pushing layer c51ad70ee5ab
+#13 pushing layer aa12cb66a673 0.5s
+#13 pushing layer ee509ed6e976 0.5s
+#13 pushing layer 9177197c67d0 0.5s
+#13 pushing layer 7dbadf2b9bd8 0.5s
+#13 pushing layer e7597c345c2e 0.5s
+#13 pushing layer 00eca8c93c8d 1.4s done
+#13 pushing layer 157f9906eb9c 1.4s done
+#13 pushing layer 5f70bf18a086 1.3s done
+#13 pushing layer 29e1218321f4 1.3s done
+#13 pushing layer c51ad70ee5ab 1.3s done
+#13 pushing layer aa12cb66a673 1.8s done
+#13 pushing layer ee509ed6e976 1.8s done
+#13 pushing layer 9177197c67d0 1.8s done
+#13 pushing layer 7dbadf2b9bd8 1.8s done
+#13 pushing layer e7597c345c2e 1.8s done
+#13 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/mysql-golang-client:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/mysql-golang-client:0-HEAD-amd64 with docker:
+------
+error: denied: insufficient scope

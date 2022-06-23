@@ -1,0 +1,111 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:20.04
+#3 DONE 0.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/integration-tests-runner:latest-amd64
+#4 DONE 0.0s
+
+#5 [ 1/14] FROM docker.io/library/ubuntu:20.04@sha256:fd92c36d3cb9b1d027c4d2a72c6bf0125da82425fc2ca37c414d4f010180dc19
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/integration-tests-runner:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 2.12kB done
+#7 DONE 0.0s
+
+#8 [11/14] COPY dockerd-entrypoint.sh /usr/local/bin/
+#8 CACHED
+
+#9 [10/14] COPY modprobe.sh /usr/local/bin/modprobe
+#9 CACHED
+
+#10 [12/14] COPY compose/ /compose/
+#10 CACHED
+
+#11 [13/14] COPY misc/ /misc/
+#11 CACHED
+
+#12 [ 8/14] RUN dockerd --version; docker --version
+#12 CACHED
+
+#13 [ 4/14] RUN ln -snf /usr/share/zoneinfo/Etc/UTC /etc/localtime && echo Etc/UTC > /etc/timezone
+#13 CACHED
+
+#14 [ 9/14] RUN python3 -m pip install     PyMySQL     aerospike==4.0.0     avro==1.10.2     cassandra-driver     confluent-kafka==1.5.0     dict2xml     dicttoxml     docker     docker-compose==1.28.2     grpcio     grpcio-tools     kafka-python     kazoo     lz4     minio     protobuf     psycopg2-binary==2.8.6     pymongo==3.11.0     pytest     pytest-order==1.0.0     pytest-timeout     pytest-xdist     pytest-repeat     pytz     redis     tzlocal==2.1     urllib3     requests-kerberos     pyhdfs     azure-storage-blob     meilisearch
+#14 CACHED
+
+#15 [ 5/14] RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+#15 CACHED
+
+#16 [ 7/14] RUN apt-get update     && env DEBIAN_FRONTEND=noninteractive apt-get install --yes         docker-ce     && rm -rf         /var/lib/apt/lists/*         /var/cache/debconf         /tmp/*     && apt-get clean
+#16 CACHED
+
+#17 [ 6/14] RUN add-apt-repository "deb https://download.docker.com/linux/ubuntu $(lsb_release -c -s) stable"
+#17 CACHED
+
+#18 [ 2/14] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#18 CACHED
+
+#19 [ 3/14] RUN apt-get update     && env DEBIAN_FRONTEND=noninteractive apt-get install --yes     ca-certificates     bash     btrfs-progs     e2fsprogs     iptables     xfsprogs     tar     pigz     wget     git     iproute2     cgroupfs-mount     python3-pip     tzdata     libicu-dev     bsdutils     curl     python3-pika     liblua5.1-dev     luajit     libssl-dev     libcurl4-openssl-dev     gdb     software-properties-common     libkrb5-dev     krb5-user     g++     && rm -rf         /var/lib/apt/lists/*         /var/cache/debconf         /tmp/*     && apt-get clean
+#19 CACHED
+
+#20 [14/14] RUN set -x   && addgroup --system dockremap     && adduser --system dockremap   && adduser dockremap dockremap   && echo 'dockremap:165536:65536' >> /etc/subuid     && echo 'dockremap:165536:65536' >> /etc/subgid
+#20 CACHED
+
+#21 exporting to image
+#21 exporting layers done
+#21 writing image sha256:4b3f47e5eeca4908d0507cdb0d07496bd82c20a77712e3f0e1854afc074ca912
+#21 writing image sha256:4b3f47e5eeca4908d0507cdb0d07496bd82c20a77712e3f0e1854afc074ca912 done
+#21 naming to ca.icr.io/clickhouse/integration-tests-runner:latest-amd64 done
+#21 DONE 0.1s
+
+#22 exporting cache
+#22 preparing build cache for export done
+#22 DONE 0.0s
+
+#23 pushing ca.icr.io/clickhouse/integration-tests-runner:latest-amd64 with docker
+#23 pushing layer 70421e5baa55
+#23 pushing layer 8257c7a89424
+#23 pushing layer c5385dc0371e
+#23 pushing layer 781137f9f013
+#23 pushing layer 566324ae80fa
+#23 pushing layer d8445cd73429 0.4s
+#23 pushing layer 5f70bf18a086 0.4s
+#23 pushing layer 1b65def79cdc 0.4s
+#23 pushing layer 6a0812cf53bb 0.4s
+#23 pushing layer ddc14a61402b 0.4s
+#23 pushing layer 7d5ad3ff652b 0.4s
+#23 pushing layer 0c5a85f36db1 0.4s
+#23 pushing layer 49127ec8de4f 0.4s
+#23 pushing layer af7ed92504ae
+#23 pushing layer 70421e5baa55 1.1s done
+#23 pushing layer 8257c7a89424 1.1s done
+#23 pushing layer c5385dc0371e 1.1s done
+#23 pushing layer 781137f9f013 1.1s done
+#23 pushing layer 566324ae80fa 1.1s done
+#23 pushing layer d8445cd73429 1.5s done
+#23 pushing layer 5f70bf18a086 1.5s done
+#23 pushing layer 1b65def79cdc 1.5s done
+#23 pushing layer 6a0812cf53bb 1.5s done
+#23 pushing layer ddc14a61402b 1.5s done
+#23 pushing layer 7d5ad3ff652b 1.5s done
+#23 pushing layer 0c5a85f36db1 1.5s done
+#23 pushing layer 49127ec8de4f 1.5s done
+#23 pushing layer af7ed92504ae 1.5s done
+#23 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/integration-tests-runner:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/integration-tests-runner:latest-amd64 with docker:
+------
+error: denied: insufficient scope

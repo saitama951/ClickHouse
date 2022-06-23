@@ -1,0 +1,72 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for mcr.microsoft.com/dotnet/sdk:3.1
+#3 DONE 0.1s
+
+#4 [1/4] FROM mcr.microsoft.com/dotnet/sdk:3.1@sha256:fca24fb335a31fba6913891f21b59c06dbaee71eff4db44fca159eb69b753994
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/dotnet-client:0-amd64
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/dotnet-client:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 74B done
+#7 DONE 0.0s
+
+#8 [2/4] WORKDIR /client
+#8 CACHED
+
+#9 [3/4] COPY *.cs *.csproj /client/
+#9 CACHED
+
+#10 [4/4] RUN dotnet add package ClickHouse.Client -v 4.1.0
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 writing image sha256:7307ad0ad96116b7e42bbfacee0d6806cf57582409b2c479b86fbfd137f148bc done
+#11 naming to ca.icr.io/clickhouse/dotnet-client:0-amd64 done
+#11 DONE 0.1s
+
+#12 exporting cache
+#12 preparing build cache for export done
+#12 DONE 0.0s
+
+#13 pushing ca.icr.io/clickhouse/dotnet-client:0-amd64 with docker
+#13 pushing layer 6e5c976551d3
+#13 pushing layer 7fc71aedf404
+#13 pushing layer 3c136933be0c
+#13 pushing layer f03af01fd318
+#13 pushing layer 0b51f2495443
+#13 pushing layer c1c5edb10af6 0.4s
+#13 pushing layer 80d46995af06 0.4s
+#13 pushing layer 597ea5af36e6 0.4s
+#13 pushing layer 8f534d0617ce 0.4s
+#13 pushing layer f14da82c36e2 0.4s
+#13 pushing layer 6e5c976551d3 1.1s done
+#13 pushing layer 7fc71aedf404 1.1s done
+#13 pushing layer 3c136933be0c 1.1s done
+#13 pushing layer f03af01fd318 1.1s done
+#13 pushing layer 0b51f2495443 1.1s done
+#13 pushing layer c1c5edb10af6 1.5s done
+#13 pushing layer 80d46995af06 1.5s done
+#13 pushing layer 597ea5af36e6 1.5s done
+#13 pushing layer 8f534d0617ce 1.5s done
+#13 pushing layer f14da82c36e2 1.5s done
+#13 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/dotnet-client:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/dotnet-client:0-amd64 with docker:
+------
+error: denied: insufficient scope

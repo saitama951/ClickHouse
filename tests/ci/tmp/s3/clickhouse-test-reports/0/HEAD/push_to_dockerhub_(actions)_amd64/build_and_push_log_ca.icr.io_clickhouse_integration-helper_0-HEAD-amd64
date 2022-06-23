@@ -1,0 +1,47 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context:
+#2 transferring context: 2B done
+#2 DONE 0.2s
+
+#3 [internal] load metadata for docker.io/library/alpine:latest
+#3 DONE 0.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/integration-helper:0-HEAD-amd64
+#4 DONE 0.0s
+
+#5 [1/2] FROM docker.io/library/alpine@sha256:686d8c9dfa6f3ccfc8230bc3178d23f84eeaf7e457f36f271ab1acc53015037c
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/integration-helper:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [2/2] RUN apk add -U iproute2
+#7 CACHED
+
+#8 exporting to image
+#8 exporting layers done
+#8 writing image sha256:04c64297aa06b0bc764b2eb49e067b7b20d56a51e6b6c11b4aaaccd0b0379b65 done
+#8 naming to ca.icr.io/clickhouse/integration-helper:0-HEAD-amd64 done
+#8 DONE 0.0s
+
+#9 exporting cache
+#9 preparing build cache for export done
+#9 DONE 0.0s
+
+#10 pushing ca.icr.io/clickhouse/integration-helper:0-HEAD-amd64 with docker
+#10 pushing layer 53585b123209
+#10 pushing layer 24302eb7d908
+#10 pushing layer 53585b123209 1.1s done
+#10 pushing layer 24302eb7d908 1.1s done
+#10 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/integration-helper:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/integration-helper:0-HEAD-amd64 with docker:
+------
+error: denied: insufficient scope

@@ -1,0 +1,76 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/node:16.14.2
+#3 DONE 0.2s
+
+#4 [1/4] FROM docker.io/library/node:16.14.2@sha256:6e54786b2ad01667d46524e82806298714f50d2be72b39706770aed55faedbd7
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/mysql-js-client:latest-amd64
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/mysql-js-client:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 29B done
+#7 DONE 0.0s
+
+#8 [2/4] WORKDIR /usr/app
+#8 CACHED
+
+#9 [3/4] RUN npm install mysql
+#9 CACHED
+
+#10 [4/4] COPY ./test.js ./test.js
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 writing image sha256:32a73112345cdca8e9f048b291aa0f0fadee300862c8135a159ab6e0f9976ced done
+#11 naming to ca.icr.io/clickhouse/mysql-js-client:latest-amd64 done
+#11 DONE 0.1s
+
+#12 exporting cache
+#12 preparing build cache for export done
+#12 DONE 0.0s
+
+#13 pushing ca.icr.io/clickhouse/mysql-js-client:latest-amd64 with docker
+#13 pushing layer 087d9858fb2d
+#13 pushing layer 2fb9d124ceef
+#13 pushing layer bd0eab9af6d3
+#13 pushing layer 3e4801a3cfe3
+#13 pushing layer 52101239f8c7
+#13 pushing layer e0bd9c8e45b3 0.4s
+#13 pushing layer 6fd97e423126 0.4s
+#13 pushing layer ca58f1c44290 0.4s
+#13 pushing layer 957a6eed8d1f 0.4s
+#13 pushing layer 85fe00380881 0.4s
+#13 pushing layer 5d253e59e523 0.4s
+#13 pushing layer b9fd5db9c9a6 0.4s
+#13 pushing layer 087d9858fb2d 1.2s done
+#13 pushing layer 2fb9d124ceef 1.2s done
+#13 pushing layer bd0eab9af6d3 1.2s done
+#13 pushing layer 3e4801a3cfe3 1.2s done
+#13 pushing layer 52101239f8c7 1.2s done
+#13 pushing layer e0bd9c8e45b3 1.6s done
+#13 pushing layer 6fd97e423126 1.6s done
+#13 pushing layer ca58f1c44290 1.6s done
+#13 pushing layer 957a6eed8d1f 1.6s done
+#13 pushing layer 85fe00380881 1.6s done
+#13 pushing layer 5d253e59e523 1.6s done
+#13 pushing layer b9fd5db9c9a6 1.6s done
+#13 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/mysql-js-client:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/mysql-js-client:latest-amd64 with docker:
+------
+error: denied: insufficient scope

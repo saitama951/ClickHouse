@@ -1,0 +1,63 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/python:3
+#3 DONE 0.2s
+
+#4 [1/2] FROM docker.io/library/python:3@sha256:1f26efc025a4a696ae773ef4084427fe54c2edc2f23a523fbdb73608766403dd
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/python-bottle:latest-amd64
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/python-bottle:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [2/2] RUN python -m pip install bottle
+#7 CACHED
+
+#8 exporting to image
+#8 exporting layers done
+#8 writing image sha256:a93b693caddc1103bc953f57be41c3abd0baed75436f3e0785f2f8b9151f2e95 done
+#8 naming to ca.icr.io/clickhouse/python-bottle:latest-amd64 done
+#8 DONE 0.1s
+
+#9 exporting cache
+#9 preparing build cache for export done
+#9 DONE 0.0s
+
+#10 pushing ca.icr.io/clickhouse/python-bottle:latest-amd64 with docker
+#10 pushing layer fd92feaecd3b
+#10 pushing layer 07424576deb8
+#10 pushing layer 56d4e3495fd7
+#10 pushing layer 5b7440eabd3e
+#10 pushing layer 13b045a1dfd2
+#10 pushing layer 2fbabeba902e 0.4s
+#10 pushing layer ee509ed6e976 0.4s
+#10 pushing layer 9177197c67d0 0.4s
+#10 pushing layer 7dbadf2b9bd8
+#10 pushing layer e7597c345c2e
+#10 pushing layer fd92feaecd3b 1.0s done
+#10 pushing layer 07424576deb8 1.0s done
+#10 pushing layer 56d4e3495fd7 1.0s done
+#10 pushing layer 5b7440eabd3e 1.0s done
+#10 pushing layer 13b045a1dfd2 1.0s done
+#10 pushing layer 2fbabeba902e 1.4s done
+#10 pushing layer ee509ed6e976 1.4s done
+#10 pushing layer 9177197c67d0 1.4s done
+#10 pushing layer 7dbadf2b9bd8 1.4s done
+#10 pushing layer e7597c345c2e 1.4s done
+#10 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/python-bottle:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/python-bottle:latest-amd64 with docker:
+------
+error: denied: insufficient scope

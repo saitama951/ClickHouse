@@ -1,0 +1,98 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/clickhouse/test-base:0-amd64
+#3 DONE 0.3s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/stateless-test:0-amd64
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/stateless-test:latest
+#5 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#6 [1/8] FROM docker.io/clickhouse/test-base:0-amd64@sha256:252eefc88adab891e1e6222c191c5a5b99aa3531ae5099d2d26985721321c24e
+#6 resolve docker.io/clickhouse/test-base:0-amd64@sha256:252eefc88adab891e1e6222c191c5a5b99aa3531ae5099d2d26985721321c24e 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 62B done
+#7 DONE 0.0s
+
+#8 [5/8] RUN ln -snf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo Europe/Moscow > /etc/timezone
+#8 CACHED
+
+#9 [6/8] RUN arch=amd64     && wget "https://dl.min.io/server/minio/release/linux-${arch}/minio"     && chmod +x ./minio     && wget "https://dl.min.io/client/mc/release/linux-${arch}/mc"     && chmod +x ./mc
+#9 CACHED
+
+#10 [7/8] COPY run.sh /
+#10 CACHED
+
+#11 [2/8] RUN apt-get update -y     && env DEBIAN_FRONTEND=noninteractive         apt-get install --yes --no-install-recommends             brotli             expect             zstd             lsof             ncdu             netcat-openbsd             openssl             protobuf-compiler             python3             python3-lxml             python3-requests             python3-termcolor             python3-pip             qemu-user-static             sudo             golang             telnet             tree             unixodbc             wget             mysql-client=8.0*             postgresql-client             sqlite3             awscli
+#11 CACHED
+
+#12 [3/8] RUN pip3 install numpy scipy pandas Jinja2
+#12 CACHED
+
+#13 [4/8] RUN mkdir -p /tmp/clickhouse-odbc-tmp    && wget -nv -O - https://github.com/ClickHouse/clickhouse-odbc/releases/download/v1.1.4.20200302/clickhouse-odbc-1.1.4-Linux.tar.gz | tar --strip-components=1 -xz -C /tmp/clickhouse-odbc-tmp    && cp /tmp/clickhouse-odbc-tmp/lib64/*.so /usr/local/lib/    && odbcinst -i -d -f /tmp/clickhouse-odbc-tmp/share/doc/clickhouse-odbc/config/odbcinst.ini.sample    && odbcinst -i -s -l -f /tmp/clickhouse-odbc-tmp/share/doc/clickhouse-odbc/config/odbc.ini.sample    && rm -rf /tmp/clickhouse-odbc-tmp
+#13 CACHED
+
+#14 [8/8] COPY setup_minio.sh /
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers done
+#15 writing image sha256:6b3662da07e35a2a78b3ad386eb7305cd6c565ce675686f0a4d1f11b31cba13e
+#15 writing image sha256:6b3662da07e35a2a78b3ad386eb7305cd6c565ce675686f0a4d1f11b31cba13e done
+#15 naming to ca.icr.io/clickhouse/stateless-test:0-amd64 done
+#15 DONE 0.1s
+
+#16 exporting cache
+#16 preparing build cache for export done
+#16 DONE 0.0s
+
+#17 pushing ca.icr.io/clickhouse/stateless-test:0-amd64 with docker
+#17 pushing layer 57cd84b3c593
+#17 pushing layer 396d2d536233
+#17 pushing layer 9ff01477c445
+#17 pushing layer 94de48d17db4
+#17 pushing layer 8dff65f25b80
+#17 pushing layer fc2c8d721047 0.4s
+#17 pushing layer 5dccc7bc86a8 0.4s
+#17 pushing layer 38439febcae0 0.4s
+#17 pushing layer 8b866bc206d2 0.4s
+#17 pushing layer 606b946ff7c8 0.4s
+#17 pushing layer 118454903c0b 0.4s
+#17 pushing layer bc8b0e06fbd1 0.4s
+#17 pushing layer a7a60c6f7920 0.4s
+#17 pushing layer e3714345049f 0.4s
+#17 pushing layer 5367b14997f4 0.4s
+#17 pushing layer af7ed92504ae 0.4s
+#17 pushing layer 57cd84b3c593 1.0s done
+#17 pushing layer 396d2d536233 1.0s done
+#17 pushing layer 9ff01477c445 1.0s done
+#17 pushing layer 94de48d17db4 1.0s done
+#17 pushing layer 8dff65f25b80 1.0s done
+#17 pushing layer fc2c8d721047 1.4s done
+#17 pushing layer 5dccc7bc86a8 1.4s done
+#17 pushing layer 38439febcae0 1.4s done
+#17 pushing layer 8b866bc206d2 1.4s done
+#17 pushing layer 606b946ff7c8 1.4s done
+#17 pushing layer 118454903c0b 1.4s done
+#17 pushing layer bc8b0e06fbd1 1.4s done
+#17 pushing layer a7a60c6f7920 1.4s done
+#17 pushing layer e3714345049f 1.4s done
+#17 pushing layer 5367b14997f4 1.4s done
+#17 pushing layer af7ed92504ae 1.4s done
+#17 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/stateless-test:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/stateless-test:0-amd64 with docker:
+------
+error: denied: insufficient scope

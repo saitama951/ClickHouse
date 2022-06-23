@@ -1,0 +1,91 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/test-base:latest-amd64
+#3 DONE 0.3s
+
+#4 [1/7] FROM docker.io/clickhouse/test-base:latest-amd64@sha256:ae1c08678829a2cd1eabeede13c8d2b4ed9c486cab795aa4c91d6ad0c309698f
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/keeper-jepsen-test:latest-amd64
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/keeper-jepsen-test:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 28B done
+#7 DONE 0.0s
+
+#8 [3/7] RUN touch "/root/.ssh/known_hosts"
+#8 CACHED
+
+#9 [4/7] RUN apt-get update && apt-get install default-jre default-jdk libjna-java libjna-jni ssh gnuplot graphviz --yes --no-install-recommends
+#9 CACHED
+
+#10 [6/7] RUN curl -O "https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein" &&     chmod +x ./lein &&     mv ./lein /usr/bin
+#10 CACHED
+
+#11 [2/7] RUN mkdir "/root/.ssh"
+#11 CACHED
+
+#12 [5/7] RUN curl -O "https://download.clojure.org/install/linux-install-1.10.3.814.sh" &&     chmod +x "linux-install-1.10.3.814.sh" &&     bash "./linux-install-1.10.3.814.sh"
+#12 CACHED
+
+#13 [7/7] COPY run.sh /
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 writing image sha256:7460571f0a29f4fddcb907302343ea4383ba1f806c12f49734fb6bfa532aad5d done
+#14 naming to ca.icr.io/clickhouse/keeper-jepsen-test:latest-amd64 done
+#14 DONE 0.1s
+
+#15 exporting cache
+#15 preparing build cache for export done
+#15 DONE 0.0s
+
+#16 pushing ca.icr.io/clickhouse/keeper-jepsen-test:latest-amd64 with docker
+#16 pushing layer eaf061c3ae09
+#16 pushing layer 1e33e8b8b97e
+#16 pushing layer e6a9c0f90af3
+#16 pushing layer d2e8ad2ec2ee
+#16 pushing layer d8b13fc86fd0
+#16 pushing layer 600e31cb3f91 0.4s
+#16 pushing layer 38439febcae0 0.4s
+#16 pushing layer 8b866bc206d2 0.4s
+#16 pushing layer 606b946ff7c8 0.4s
+#16 pushing layer 118454903c0b 0.4s
+#16 pushing layer bc8b0e06fbd1 0.4s
+#16 pushing layer a7a60c6f7920 0.4s
+#16 pushing layer e3714345049f 0.4s
+#16 pushing layer 5367b14997f4 0.4s
+#16 pushing layer af7ed92504ae 0.4s
+#16 pushing layer eaf061c3ae09 1.0s done
+#16 pushing layer 1e33e8b8b97e 1.0s done
+#16 pushing layer e6a9c0f90af3 1.0s done
+#16 pushing layer d2e8ad2ec2ee 1.0s done
+#16 pushing layer d8b13fc86fd0 1.0s done
+#16 pushing layer 600e31cb3f91 1.4s done
+#16 pushing layer 38439febcae0 1.4s done
+#16 pushing layer 8b866bc206d2 1.4s done
+#16 pushing layer 606b946ff7c8 1.4s done
+#16 pushing layer 118454903c0b 1.4s done
+#16 pushing layer bc8b0e06fbd1 1.4s done
+#16 pushing layer a7a60c6f7920 1.4s done
+#16 pushing layer e3714345049f 1.4s done
+#16 pushing layer 5367b14997f4 1.4s done
+#16 pushing layer af7ed92504ae 1.4s done
+#16 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/keeper-jepsen-test:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/keeper-jepsen-test:latest-amd64 with docker:
+------
+error: denied: insufficient scope

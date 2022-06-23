@@ -1,0 +1,93 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/clickhouse/test-base:0-amd64
+#3 DONE 0.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/integration-test:0-amd64
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/integration-test:latest
+#5 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#6 [1/8] FROM docker.io/clickhouse/test-base:0-amd64@sha256:252eefc88adab891e1e6222c191c5a5b99aa3531ae5099d2d26985721321c24e
+#6 resolve docker.io/clickhouse/test-base:0-amd64@sha256:252eefc88adab891e1e6222c191c5a5b99aa3531ae5099d2d26985721321c24e 0.0s done
+#6 DONE 0.0s
+
+#7 [2/8] RUN apt-get update     && env DEBIAN_FRONTEND=noninteractive apt-get -y install         bsdutils         curl         default-jre         g++         gdb         iproute2         krb5-user         libicu-dev         libsqlite3-dev         libsqliteodbc         lsof         lz4         odbc-postgresql         odbcinst         python3         rpm2cpio         sqlite3         tar         tzdata         unixodbc     && apt-get clean     && rm -rf /var/lib/apt/lists/* /var/cache/debconf /tmp/*
+#7 CACHED
+
+#8 [3/8] RUN arch=amd64   && case $arch in       amd64) rarch=x86_64 ;;       arm64) rarch=aarch64 ;;     esac   && cd /tmp   && curl -o mysql-odbc.rpm "https://cdn.mysql.com/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.27-1.el8.${rarch}.rpm"   && rpm2archive mysql-odbc.rpm   && tar xf mysql-odbc.rpm.tgz -C / ./usr/lib64/   && LINK_DIR=$(dpkg -L libodbc1 | grep '^/usr/lib/.*-linux-gnu/odbc$')   && ln -s /usr/lib64/libmyodbc8a.so "$LINK_DIR"   && ln -s /usr/lib64/libmyodbc8a.so "$LINK_DIR"/libmyodbc.so
+#8 CACHED
+
+#9 [4/8] RUN curl -O "https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz"
+#9 CACHED
+
+#10 [5/8] RUN tar -zxvf apache-zookeeper-3.6.3-bin.tar.gz && mv apache-zookeeper-3.6.3-bin /opt/zookeeper && chmod -R 777 /opt/zookeeper && rm apache-zookeeper-3.6.3-bin.tar.gz
+#10 CACHED
+
+#11 [6/8] RUN echo $'tickTime=2500 \ntickTime=2500 \ndataDir=/zookeeper \nclientPort=2181 \nmaxClientCnxns=80' > /opt/zookeeper/conf/zoo.cfg
+#11 CACHED
+
+#12 [7/8] RUN mkdir /zookeeper && chmod -R 777 /zookeeper
+#12 CACHED
+
+#13 [8/8] RUN ln -snf /usr/share/zoneinfo/Etc/UTC /etc/localtime && echo Etc/UTC > /etc/timezone
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 writing image sha256:d4b11fd2d9cc4a22d2d64c9f6ceea229b504d6b3ef3566d4680de4854236b856 done
+#14 naming to ca.icr.io/clickhouse/integration-test:0-amd64 done
+#14 DONE 0.1s
+
+#15 exporting cache
+#15 preparing build cache for export done
+#15 DONE 0.0s
+
+#16 pushing ca.icr.io/clickhouse/integration-test:0-amd64 with docker
+#16 pushing layer 13bb05b0fea8
+#16 pushing layer a8474e1dac07
+#16 pushing layer b6e09e134cd3
+#16 pushing layer b3c2cb1a4ffd
+#16 pushing layer 45192492d3d5
+#16 pushing layer 16247439b0bb 0.5s
+#16 pushing layer e0c48e2d43b7 0.5s
+#16 pushing layer 38439febcae0 0.5s
+#16 pushing layer 8b866bc206d2 0.5s
+#16 pushing layer 606b946ff7c8 0.5s
+#16 pushing layer 118454903c0b 0.5s
+#16 pushing layer bc8b0e06fbd1 0.5s
+#16 pushing layer a7a60c6f7920 0.5s
+#16 pushing layer e3714345049f 0.5s
+#16 pushing layer 5367b14997f4 0.5s
+#16 pushing layer af7ed92504ae 0.5s
+#16 pushing layer 13bb05b0fea8 1.2s done
+#16 pushing layer a8474e1dac07 1.2s done
+#16 pushing layer b6e09e134cd3 1.2s done
+#16 pushing layer b3c2cb1a4ffd 1.2s done
+#16 pushing layer 45192492d3d5 1.2s done
+#16 pushing layer 16247439b0bb 1.7s done
+#16 pushing layer e0c48e2d43b7 1.7s done
+#16 pushing layer 38439febcae0 1.7s done
+#16 pushing layer 8b866bc206d2 1.7s done
+#16 pushing layer 606b946ff7c8 1.7s done
+#16 pushing layer 118454903c0b 1.7s done
+#16 pushing layer bc8b0e06fbd1 1.7s done
+#16 pushing layer a7a60c6f7920 1.7s done
+#16 pushing layer e3714345049f 1.7s done
+#16 pushing layer 5367b14997f4 1.7s done
+#16 pushing layer af7ed92504ae 1.7s done
+#16 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/integration-test:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/integration-test:0-amd64 with docker:
+------
+error: denied: insufficient scope

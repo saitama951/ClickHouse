@@ -1,0 +1,69 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/clickhouse/binary-builder:0-amd64
+#3 DONE 0.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/codebrowser:0-amd64
+#4 ERROR: unexpected status code [manifests 0-amd64]: 403 Forbidden
+
+#5 importing cache manifest from ca.icr.io/clickhouse/codebrowser:latest
+#5 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#6 [1/5] FROM docker.io/clickhouse/binary-builder:0-amd64@sha256:4c11791427c4cb85d4fc22f8df36a3749b649c4643ca5f40211946af860b75f5
+#6 resolve docker.io/clickhouse/binary-builder:0-amd64@sha256:4c11791427c4cb85d4fc22f8df36a3749b649c4643ca5f40211946af860b75f5 0.0s done
+#6 DONE 0.0s
+
+#7 [2/5] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#7 CACHED
+
+#8 [3/5] RUN apt-get update && apt-get --yes --allow-unauthenticated install clang-13 libllvm13 libclang-13-dev libmlir-13-dev
+#8 0.840 Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
+#8 0.841 Hit:2 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu focal InRelease
+#8 0.855 Get:3 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+#8 0.964 Hit:4 https://apt.llvm.org/focal llvm-toolchain-focal-14 InRelease
+#8 0.964 Get:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+#8 1.444 Get:6 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
+#8 2.222 Get:7 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [1974 kB]
+#8 2.543 Get:8 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [1161 kB]
+#8 2.875 Get:9 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [881 kB]
+#8 3.040 Get:10 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2415 kB]
+#8 3.455 Fetched 6767 kB in 3s (2352 kB/s)
+#8 3.455 Reading package lists...
+#8 4.641 Reading package lists...
+#8 5.756 Building dependency tree...
+#8 5.993 Reading state information...
+#8 6.020 Package clang-13 is not available, but is referred to by another package.
+#8 6.020 This may mean that the package is missing, has been obsoleted, or
+#8 6.020 is only available from another source
+#8 6.020 
+#8 6.025 E: Package 'clang-13' has no installation candidate
+#8 6.025 E: Unable to locate package libllvm13
+#8 6.025 E: Unable to locate package libclang-13-dev
+#8 6.025 E: Unable to locate package libmlir-13-dev
+#8 ERROR: executor failed running [/bin/sh -c apt-get update && apt-get --yes --allow-unauthenticated install clang-13 libllvm13 libclang-13-dev libmlir-13-dev]: exit code: 100
+------
+ > importing cache manifest from ca.icr.io/clickhouse/codebrowser:0-amd64:
+------
+------
+ > importing cache manifest from ca.icr.io/clickhouse/codebrowser:latest:
+------
+------
+ > [3/5] RUN apt-get update && apt-get --yes --allow-unauthenticated install clang-13 libllvm13 libclang-13-dev libmlir-13-dev:
+#8 3.040 Get:10 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2415 kB]
+
+#8 6.020 Package clang-13 is not available, but is referred to by another package.
+#8 6.020 This may mean that the package is missing, has been obsoleted, or
+#8 6.020 is only available from another source
+#8 6.020 
+#8 6.025 E: Package 'clang-13' has no installation candidate
+#8 6.025 E: Unable to locate package libllvm13
+#8 6.025 E: Unable to locate package libclang-13-dev
+#8 6.025 E: Unable to locate package libmlir-13-dev
+------
+error: failed to solve: executor failed running [/bin/sh -c apt-get update && apt-get --yes --allow-unauthenticated install clang-13 libllvm13 libclang-13-dev libmlir-13-dev]: exit code: 100

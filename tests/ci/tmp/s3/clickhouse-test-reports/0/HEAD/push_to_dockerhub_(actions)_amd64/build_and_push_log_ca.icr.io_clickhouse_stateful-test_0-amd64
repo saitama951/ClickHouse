@@ -1,0 +1,106 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/stateless-test:0-amd64
+#3 DONE 0.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/stateful-test:0-amd64
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/stateful-test:latest
+#5 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#6 [internal] load build context
+#6 transferring context: 94B done
+#6 DONE 0.0s
+
+#7 [1/6] FROM docker.io/clickhouse/stateless-test:0-amd64@sha256:473ec2c42995e709f9be53f67f69f010e2cc00991898c3f074b89625e669718b
+#7 resolve docker.io/clickhouse/stateless-test:0-amd64@sha256:473ec2c42995e709f9be53f67f69f010e2cc00991898c3f074b89625e669718b 0.0s done
+#7 DONE 0.0s
+
+#8 [3/6] COPY s3downloader /s3downloader
+#8 CACHED
+
+#9 [4/6] RUN arch=${TARGETARCH:-amd64}     && wget "https://dl.min.io/server/minio/release/linux-${arch}/minio"     && chmod +x ./minio     && wget "https://dl.min.io/client/mc/release/linux-${arch}/mc"     && chmod +x ./mc
+#9 CACHED
+
+#10 [5/6] COPY setup_minio.sh /
+#10 CACHED
+
+#11 [2/6] RUN apt-get update -y     && env DEBIAN_FRONTEND=noninteractive         apt-get install --yes --no-install-recommends         python3-requests         llvm-9
+#11 CACHED
+
+#12 [6/6] COPY run.sh /
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 writing image sha256:3daf37794dab18277889bcd81d34da18ce0a53d3aebea4e875e31b88a7a13c20
+#13 writing image sha256:3daf37794dab18277889bcd81d34da18ce0a53d3aebea4e875e31b88a7a13c20 0.0s done
+#13 naming to ca.icr.io/clickhouse/stateful-test:0-amd64 done
+#13 DONE 0.2s
+
+#14 exporting cache
+#14 preparing build cache for export done
+#14 DONE 0.0s
+
+#15 pushing ca.icr.io/clickhouse/stateful-test:0-amd64 with docker
+#15 pushing layer 72df4ffaa22d
+#15 pushing layer e701f90b8ea2
+#15 pushing layer 9afdc3282efa
+#15 pushing layer dc874b8880ce
+#15 pushing layer 1b40182c3e28
+#15 pushing layer ad1a99da2e5e 0.4s
+#15 pushing layer d30f4ac88a80 0.4s
+#15 pushing layer 677481cc77c8 0.4s
+#15 pushing layer 561b5f18d22a 0.4s
+#15 pushing layer 69cc8a19f067 0.4s
+#15 pushing layer f0bf24b94b13 0.4s
+#15 pushing layer b88ecdffc22a 0.4s
+#15 pushing layer ed6ff0f1039d 0.4s
+#15 pushing layer 5cd0753d82b4 0.4s
+#15 pushing layer 38439febcae0 0.4s
+#15 pushing layer 8b866bc206d2 0.4s
+#15 pushing layer 606b946ff7c8 0.4s
+#15 pushing layer 118454903c0b 0.4s
+#15 pushing layer bc8b0e06fbd1 0.4s
+#15 pushing layer a7a60c6f7920 0.4s
+#15 pushing layer e3714345049f 0.4s
+#15 pushing layer 5367b14997f4 0.4s
+#15 pushing layer af7ed92504ae 0.4s
+#15 pushing layer 72df4ffaa22d 1.3s done
+#15 pushing layer e701f90b8ea2 1.3s done
+#15 pushing layer 9afdc3282efa 1.3s done
+#15 pushing layer dc874b8880ce 1.3s done
+#15 pushing layer 1b40182c3e28 1.3s done
+#15 pushing layer ad1a99da2e5e 1.7s done
+#15 pushing layer d30f4ac88a80 1.7s done
+#15 pushing layer 677481cc77c8 1.7s done
+#15 pushing layer 561b5f18d22a 1.7s done
+#15 pushing layer 69cc8a19f067 1.7s done
+#15 pushing layer f0bf24b94b13 1.7s done
+#15 pushing layer b88ecdffc22a 1.7s done
+#15 pushing layer ed6ff0f1039d 1.7s done
+#15 pushing layer 5cd0753d82b4 1.7s done
+#15 pushing layer 38439febcae0 1.7s done
+#15 pushing layer 8b866bc206d2 1.7s done
+#15 pushing layer 606b946ff7c8 1.7s done
+#15 pushing layer 118454903c0b 1.7s done
+#15 pushing layer bc8b0e06fbd1 1.7s done
+#15 pushing layer a7a60c6f7920 1.7s done
+#15 pushing layer e3714345049f 1.7s done
+#15 pushing layer 5367b14997f4 1.7s done
+#15 pushing layer af7ed92504ae 1.7s done
+#15 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/stateful-test:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/stateful-test:0-amd64 with docker:
+------
+error: denied: insufficient scope

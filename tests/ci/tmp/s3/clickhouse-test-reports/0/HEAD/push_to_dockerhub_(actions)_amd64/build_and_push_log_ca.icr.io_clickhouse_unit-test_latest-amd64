@@ -1,0 +1,98 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/stateless-test:latest-amd64
+#3 DONE 0.2s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/clickhouse/stateless-test:latest-amd64@sha256:692ea41fdc9c22ac4b098dceed0bd0223caf38fe91ef42d4364af6dcf19fad0f
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/unit-test:latest-amd64
+#6 DONE 0.0s
+
+#7 importing cache manifest from ca.icr.io/clickhouse/unit-test:latest
+#7 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#4 [internal] load build context
+#4 transferring context: 76B done
+#4 DONE 0.0s
+
+#8 [2/4] RUN apt-get install gdb
+#8 CACHED
+
+#9 [3/4] COPY run.sh /
+#9 CACHED
+
+#10 [4/4] COPY process_unit_tests_result.py /
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 writing image sha256:497b5e8ba62c14a0b88339481b1189044a60aa4164ff0d2a1a06c77ec16463f1
+#11 writing image sha256:497b5e8ba62c14a0b88339481b1189044a60aa4164ff0d2a1a06c77ec16463f1 done
+#11 naming to ca.icr.io/clickhouse/unit-test:latest-amd64 done
+#11 DONE 0.1s
+
+#12 exporting cache
+#12 preparing build cache for export done
+#12 DONE 0.0s
+
+#13 pushing ca.icr.io/clickhouse/unit-test:latest-amd64 with docker
+#13 pushing layer 80526c02b1f1
+#13 pushing layer 22ba884a3d5c
+#13 pushing layer 28ed40bd6796
+#13 pushing layer ad1a99da2e5e
+#13 pushing layer d30f4ac88a80
+#13 pushing layer 677481cc77c8 0.4s
+#13 pushing layer 561b5f18d22a 0.4s
+#13 pushing layer 69cc8a19f067 0.4s
+#13 pushing layer f0bf24b94b13 0.4s
+#13 pushing layer b88ecdffc22a 0.4s
+#13 pushing layer ed6ff0f1039d 0.4s
+#13 pushing layer 5cd0753d82b4 0.4s
+#13 pushing layer 38439febcae0 0.4s
+#13 pushing layer 8b866bc206d2 0.4s
+#13 pushing layer 606b946ff7c8 0.4s
+#13 pushing layer 118454903c0b 0.4s
+#13 pushing layer bc8b0e06fbd1 0.4s
+#13 pushing layer a7a60c6f7920 0.4s
+#13 pushing layer e3714345049f 0.4s
+#13 pushing layer 5367b14997f4 0.4s
+#13 pushing layer af7ed92504ae 0.4s
+#13 pushing layer 80526c02b1f1 1.0s done
+#13 pushing layer 22ba884a3d5c 1.0s done
+#13 pushing layer 28ed40bd6796 1.0s done
+#13 pushing layer ad1a99da2e5e 1.0s done
+#13 pushing layer d30f4ac88a80 1.0s done
+#13 pushing layer 677481cc77c8 1.5s done
+#13 pushing layer 561b5f18d22a 1.5s done
+#13 pushing layer 69cc8a19f067 1.5s done
+#13 pushing layer f0bf24b94b13 1.5s done
+#13 pushing layer b88ecdffc22a 1.5s done
+#13 pushing layer ed6ff0f1039d 1.5s done
+#13 pushing layer 5cd0753d82b4 1.5s done
+#13 pushing layer 38439febcae0 1.5s done
+#13 pushing layer 8b866bc206d2 1.5s done
+#13 pushing layer 606b946ff7c8 1.5s done
+#13 pushing layer 118454903c0b 1.5s done
+#13 pushing layer bc8b0e06fbd1 1.5s done
+#13 pushing layer a7a60c6f7920 1.5s done
+#13 pushing layer e3714345049f 1.5s done
+#13 pushing layer 5367b14997f4 1.5s done
+#13 pushing layer af7ed92504ae 1.5s done
+#13 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/unit-test:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/unit-test:latest-amd64 with docker:
+------
+error: denied: insufficient scope

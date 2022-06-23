@@ -1,0 +1,90 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:20.04
+#3 DONE 0.3s
+
+#4 [ 1/10] FROM docker.io/library/ubuntu:20.04@sha256:fd92c36d3cb9b1d027c4d2a72c6bf0125da82425fc2ca37c414d4f010180dc19
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/testflows-runner:0-amd64
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/testflows-runner:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 121B done
+#7 DONE 0.0s
+
+#8 [ 7/10] COPY modprobe.sh /usr/local/bin/modprobe
+#8 CACHED
+
+#9 [ 8/10] COPY dockerd-entrypoint.sh /usr/local/bin/
+#9 CACHED
+
+#10 [ 5/10] RUN pip3 install urllib3 testflows==1.7.20 docker-compose==1.29.1 docker==5.0.0 dicttoxml kazoo tzlocal==2.1 pytz python-dateutil numpy
+#10 CACHED
+
+#11 [ 9/10] COPY process_testflows_result.py /usr/local/bin/
+#11 CACHED
+
+#12 [ 4/10] RUN ln -snf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo Europe/Moscow > /etc/timezone
+#12 CACHED
+
+#13 [ 6/10] RUN arch=amd64   && case $arch in       amd64) rarch=x86_64 ;;       arm64) rarch=aarch64 ;;     esac   && set -eux   && if ! wget -nv -O docker.tgz "https://download.docker.com/linux/static/stable/${rarch}/docker-20.10.6.tgz"; then     echo >&2 "error: failed to download 'docker-20.10.6' from 'stable' for '${rarch}'"     && exit 1;   fi   && tar --extract     --file docker.tgz     --strip-components 1     --directory /usr/local/bin/   && rm docker.tgz   && dockerd --version   && docker --version
+#13 CACHED
+
+#14 [ 2/10] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#14 CACHED
+
+#15 [ 3/10] RUN apt-get update     && env DEBIAN_FRONTEND=noninteractive apt-get install --yes     ca-certificates     bash     btrfs-progs     e2fsprogs     iptables     xfsprogs     tar     pigz     wget     git     iproute2     cgroupfs-mount     python3-pip     tzdata     libicu-dev     bsdutils     curl     liblua5.1-dev     luajit     libssl-dev     libcurl4-openssl-dev     gdb     && rm -rf         /var/lib/apt/lists/*         /var/cache/debconf         /tmp/*     && apt-get clean
+#15 CACHED
+
+#16 [10/10] RUN set -x   && addgroup --system dockremap     && adduser --system dockremap   && adduser dockremap dockremap   && echo 'dockremap:165536:65536' >> /etc/subuid     && echo 'dockremap:165536:65536' >> /etc/subgid
+#16 CACHED
+
+#17 exporting to image
+#17 exporting layers done
+#17 writing image sha256:d86a78e3dc9f416151f8d545b2e01b6d7ac976946bf46e2005f47a73567dde8e done
+#17 naming to ca.icr.io/clickhouse/testflows-runner:0-amd64 done
+#17 DONE 0.1s
+
+#18 exporting cache
+#18 preparing build cache for export done
+#18 DONE 0.0s
+
+#19 pushing ca.icr.io/clickhouse/testflows-runner:0-amd64 with docker
+#19 pushing layer b1213b3b573d
+#19 pushing layer b30aeed89783
+#19 pushing layer e55fbcb1f492
+#19 pushing layer 7fd2c7bbda8a
+#19 pushing layer 8f48227641bf
+#19 pushing layer 5f8ac9f8c448 0.4s
+#19 pushing layer ab7126b13c17 0.4s
+#19 pushing layer 11e551042cd3 0.4s
+#19 pushing layer 49127ec8de4f 0.4s
+#19 pushing layer af7ed92504ae 0.4s
+#19 pushing layer e55fbcb1f492 1.2s done
+#19 pushing layer b1213b3b573d 1.2s done
+#19 pushing layer b30aeed89783 1.2s done
+#19 pushing layer 7fd2c7bbda8a 1.2s done
+#19 pushing layer 8f48227641bf 1.2s done
+#19 pushing layer 5f8ac9f8c448 1.6s done
+#19 pushing layer ab7126b13c17 1.6s done
+#19 pushing layer 11e551042cd3 1.6s done
+#19 pushing layer 49127ec8de4f 1.6s done
+#19 pushing layer af7ed92504ae 1.6s done
+#19 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/testflows-runner:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/testflows-runner:0-amd64 with docker:
+------
+error: denied: insufficient scope

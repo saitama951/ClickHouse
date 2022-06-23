@@ -1,0 +1,10 @@
+************* Module docker_images_check
+/ClickHouse/tests/ci/docker_images_check.py:410:0: C0303: Trailing whitespace (trailing-whitespace)
+/ClickHouse/tests/ci/docker_images_check.py:482:4: W0612: Unused variable 'gh' (unused-variable)
+/ClickHouse/tests/ci/docker_images_check.py:20:0: W0611: Unused post_commit_status imported from commit_status_helper (unused-import)
+************* Module get_robot_token
+/ClickHouse/tests/ci/get_robot_token.py:3:0: C0411: standard import "import os" should be placed before "import boto3" (wrong-import-order)
+************* Module style_check
+/ClickHouse/tests/ci/style_check.py:203:0: C0305: Trailing newlines (trailing-newlines)
+/ClickHouse/tests/ci/style_check.py:16:0: W0611: Unused post_commit_status imported from commit_status_helper (unused-import)
+/ClickHouse/tests/ci/style_check.py:23:0: W0611: Unused RerunHelper imported from rerun_helper (unused-import)

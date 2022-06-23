@@ -1,0 +1,82 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/clickhouse/test-util:0-amd64
+#3 DONE 0.2s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/test-base:0-amd64
+#4 DONE 0.0s
+
+#5 [1/8] FROM docker.io/clickhouse/test-util:0-amd64@sha256:83055627d82ef70349b06619573171d8bc665d6fef253e0c2a106f9b9d41b5d4
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/test-base:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#5 [1/8] FROM docker.io/clickhouse/test-util:0-amd64@sha256:83055627d82ef70349b06619573171d8bc665d6fef253e0c2a106f9b9d41b5d4
+#5 resolve docker.io/clickhouse/test-util:0-amd64@sha256:83055627d82ef70349b06619573171d8bc665d6fef253e0c2a106f9b9d41b5d4 0.0s done
+#5 DONE 0.0s
+
+#7 [4/8] RUN apt-get update     && apt-get install         bash         fakeroot         ccache         curl         software-properties-common         --yes --no-install-recommends
+#7 CACHED
+
+#8 [7/8] RUN echo "TSAN_OPTIONS='verbosity=1000 halt_on_error=1 history_size=7 memory_limit_mb=46080'" >> /etc/environment;   echo "UBSAN_OPTIONS='print_stacktrace=1'" >> /etc/environment;   echo "MSAN_OPTIONS='abort_on_error=1 poison_in_dtor=1'" >> /etc/environment;   echo "LSAN_OPTIONS='suppressions=/usr/share/clickhouse-test/config/lsan_suppressions.txt'" >> /etc/environment;   ln -s /usr/lib/llvm-13/bin/llvm-symbolizer /usr/bin/llvm-symbolizer;
+#8 CACHED
+
+#9 [2/8] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#9 CACHED
+
+#10 [5/8] RUN arch=amd64   && curl -Lo /usr/bin/dpkg-deb https://github.com/ClickHouse-Extras/dpkg/releases/download/1.21.1-clickhouse/dpkg-deb-${arch}
+#10 CACHED
+
+#11 [3/8] RUN apt-get update     && apt-get install ca-certificates lsb-release wget gnupg apt-transport-https         --yes --no-install-recommends --verbose-versions     && export LLVM_PUBKEY_HASH="bda960a8da687a275a2078d43c111d66b1c6a893a3275271beedf266c1ff4a0cdecb429c7a5cccf9f486ea7aa43fd27f"     && wget -nv -O /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key     && echo "${LLVM_PUBKEY_HASH} /tmp/llvm-snapshot.gpg.key" | sha384sum -c     && apt-key add /tmp/llvm-snapshot.gpg.key     && export CODENAME="$(lsb_release --codename --short | tr 'A-Z' 'a-z')"     && echo "deb [trusted=yes] http://apt.llvm.org/${CODENAME}/ llvm-toolchain-${CODENAME}-13 main" >>         /etc/apt/sources.list
+#11 CACHED
+
+#12 [6/8] RUN apt-get update     && apt-get install         clang-13         debhelper         devscripts         gdb          git         gperf         lcov         llvm-13         moreutils         perl         pigz         pkg-config         tzdata         pv         --yes --no-install-recommends
+#12 CACHED
+
+#13 [8/8] RUN ln -snf "/usr/share/zoneinfo/Europe/Moscow" /etc/localtime && echo "Europe/Moscow" > /etc/timezone
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 writing image sha256:1326749c46efdd5d650714affce2ebee1ff218fa86374df0e0e09a721b1937f6 done
+#14 naming to ca.icr.io/clickhouse/test-base:0-amd64 done
+#14 DONE 0.0s
+
+#15 exporting cache
+#15 preparing build cache for export done
+#15 DONE 0.0s
+
+#16 pushing ca.icr.io/clickhouse/test-base:0-amd64 with docker
+#16 pushing layer e04ed1a59ba3
+#16 pushing layer 674dce4cfb32
+#16 pushing layer bb7187190677
+#16 pushing layer 1fd966bbb720
+#16 pushing layer 206a8d1ef133
+#16 pushing layer c0904548da7b 0.4s
+#16 pushing layer ad1793a914d3 0.4s
+#16 pushing layer 5367b14997f4 0.4s
+#16 pushing layer af7ed92504ae 0.4s
+#16 pushing layer 5367b14997f4 1.5s done
+#16 pushing layer e04ed1a59ba3 1.1s done
+#16 pushing layer 674dce4cfb32 1.1s done
+#16 pushing layer bb7187190677 1.1s done
+#16 pushing layer 1fd966bbb720 1.1s done
+#16 pushing layer 206a8d1ef133 1.1s done
+#16 pushing layer c0904548da7b 1.6s done
+#16 pushing layer ad1793a914d3 1.6s done
+#16 pushing layer af7ed92504ae 1.5s done
+#16 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/test-base:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/test-base:0-amd64 with docker:
+------
+error: denied: insufficient scope

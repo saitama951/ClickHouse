@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
+import argparse
 import logging
 import subprocess
 import os
 import csv
 import sys
-
 from github import Github
 
 from env_helper import RUNNER_TEMP, GITHUB_WORKSPACE
@@ -63,6 +63,83 @@ def process_result(result_folder):
         return state, description, test_results, additional_files
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description="Program to build changed or given docker images with all "
+                    "dependant images. Example for local running: "
+                    "python docker_images_check.py --no-push-images --no-reports "
+                    "--image-path docker/packager/binary",
+    )
+
+    parser.add_argument(
+        "--suffix",
+        type=str,
+        help="suffix for all built images tags and resulting json file; the parameter "
+             "significantly changes the script behavior, e.g. changed_images.json is called "
+             "changed_images_{suffix}.json and contains list of all tags",
+    )
+    parser.add_argument(
+        "--repo",
+        type=str,
+        default="clickhouse",
+        help="docker hub repository prefix",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="rebuild all images",
+    )
+    parser.add_argument(
+        "--image-path",
+        type=str,
+        nargs="*",
+        help="list of image paths to build instead of using pr_info + diff URL, "
+             "e.g. 'docker/packager/binary'",
+    )
+    parser.add_argument("--reports", default=True, help=argparse.SUPPRESS)
+    parser.add_argument(
+        "--no-reports",
+        action="store_false",
+        dest="reports",
+        default=argparse.SUPPRESS,
+        help="don't push reports to S3 and github",
+    )
+    parser.add_argument("--push", default=True, help=argparse.SUPPRESS)
+    parser.add_argument(
+        "--no-push-images",
+        action="store_false",
+        dest="push",
+        default=argparse.SUPPRESS,
+        help="don't push images to docker hub",
+    )
+    parser.add_argument(
+        "--use-env",
+        action="store_true",
+        dest="use_env",
+        default=argparse.SUPPRESS,
+        help="Use environmental variables instead of SSM",
+    )
+    parser.add_argument(
+        "--docker-user",
+        type=str,
+        default="robotclickhouse",
+        help="Username to use for docker registry",
+    )
+    parser.add_argument(
+        "--docker-password",
+        type=str,
+        default=argparse.SUPPRESS,
+        help="Use docker password as argument rather than ssm",
+    )
+    parser.add_argument(
+        "--docker-host",
+        type=str,
+        default="docker.io",
+        help="The docker host to use for images eg. docker.io",
+    )
+    return parser.parse_args()
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
@@ -72,13 +149,13 @@ if __name__ == "__main__":
     temp_path = os.path.join(RUNNER_TEMP, "style_check")
 
     pr_info = PRInfo()
+    args = parse_args()
+    gh = Github(get_best_robot_token(use_env=args.use_env))
 
-    gh = Github(get_best_robot_token())
-
-    rerun_helper = RerunHelper(gh, pr_info, NAME)
-    if rerun_helper.is_already_finished_by_status():
-        logging.info("Check is already finished according to github status, exiting")
-        sys.exit(0)
+   #rerun_helper = RerunHelper(gh, pr_info, NAME)
+    #if rerun_helper.is_already_finished_by_status():
+        #logging.info("Check is already finished according to github status, exiting")
+        #sys.exit(0)
 
     if not os.path.exists(temp_path):
         os.makedirs(temp_path)
@@ -99,14 +176,14 @@ if __name__ == "__main__":
     )
 
     state, description, test_results, additional_files = process_result(temp_path)
-    ch_helper = ClickHouseHelper()
+    ch_helper = ClickHouseHelper(use_env=args.use_env)
     mark_flaky_tests(ch_helper, NAME, test_results)
 
     report_url = upload_results(
         s3_helper, pr_info.number, pr_info.sha, test_results, additional_files, NAME
     )
     print("::notice ::Report url: {}".format(report_url))
-    post_commit_status(gh, pr_info.sha, NAME, description, state, report_url)
+    #post_commit_status(gh, pr_info.sha, NAME, description, state, report_url)
 
     prepared_events = prepare_tests_results_for_clickhouse(
         pr_info,
@@ -121,3 +198,5 @@ if __name__ == "__main__":
 
     if state == "error":
         sys.exit(1)
+
+

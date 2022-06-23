@@ -1,0 +1,89 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/clickhouse/test-base:latest-amd64
+#3 DONE 0.3s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/6] FROM docker.io/clickhouse/test-base:latest-amd64@sha256:ae1c08678829a2cd1eabeede13c8d2b4ed9c486cab795aa4c91d6ad0c309698f
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/fuzzer:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 importing cache manifest from ca.icr.io/clickhouse/fuzzer:latest-amd64
+#7 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 153B done
+#4 DONE 0.0s
+
+#8 [2/6] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#8 CACHED
+
+#9 [3/6] RUN ln -snf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo Europe/Moscow > /etc/timezone
+#9 CACHED
+
+#10 [4/6] RUN apt-get update     && DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends             ca-certificates             libc6-dbg             moreutils             ncdu             p7zip-full             parallel             psmisc             python3             python3-pip             rsync             tree             tzdata             vim             wget     && apt-get autoremove --yes     && apt-get clean     && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [5/6] RUN pip3 install Jinja2
+#11 CACHED
+
+#12 [6/6] COPY * /
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 writing image sha256:d63856b13da348d0ed4ab41332f7a80209b29c1af1ce9c604b70dd972b28a6d2 done
+#13 naming to ca.icr.io/clickhouse/fuzzer:latest-amd64 done
+#13 DONE 0.1s
+
+#14 exporting cache
+#14 preparing build cache for export done
+#14 DONE 0.0s
+
+#15 pushing ca.icr.io/clickhouse/fuzzer:latest-amd64 with docker
+#15 pushing layer 75ca3c05b8d4
+#15 pushing layer fc6edd6ac537
+#15 pushing layer 89fb0425b980
+#15 pushing layer 32b50e3d1a0c
+#15 pushing layer 6905baad4b57
+#15 pushing layer 38439febcae0
+#15 pushing layer 8b866bc206d2 0.5s
+#15 pushing layer 606b946ff7c8 0.5s
+#15 pushing layer 118454903c0b 0.5s
+#15 pushing layer bc8b0e06fbd1 0.5s
+#15 pushing layer a7a60c6f7920 0.5s
+#15 pushing layer e3714345049f 0.5s
+#15 pushing layer 5367b14997f4 0.5s
+#15 pushing layer af7ed92504ae 0.5s
+#15 pushing layer 75ca3c05b8d4 1.1s done
+#15 pushing layer fc6edd6ac537 1.1s done
+#15 pushing layer 89fb0425b980 1.1s done
+#15 pushing layer 32b50e3d1a0c 1.1s done
+#15 pushing layer 6905baad4b57 1.1s done
+#15 pushing layer 38439febcae0 1.6s done
+#15 pushing layer 8b866bc206d2 1.6s done
+#15 pushing layer 606b946ff7c8 1.6s done
+#15 pushing layer 118454903c0b 1.6s done
+#15 pushing layer bc8b0e06fbd1 1.6s done
+#15 pushing layer a7a60c6f7920 1.6s done
+#15 pushing layer e3714345049f 1.6s done
+#15 pushing layer 5367b14997f4 1.6s done
+#15 pushing layer af7ed92504ae 1.6s done
+#15 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/fuzzer:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/fuzzer:latest-amd64 with docker:
+------
+error: denied: insufficient scope

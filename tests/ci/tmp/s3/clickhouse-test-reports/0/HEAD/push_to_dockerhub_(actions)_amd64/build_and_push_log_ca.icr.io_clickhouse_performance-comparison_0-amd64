@@ -1,0 +1,67 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 30B
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context:
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:20.04
+#3 DONE 0.4s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/performance-comparison:0-amd64
+#4 DONE 0.0s
+
+#5 [1/5] FROM docker.io/library/ubuntu:20.04@sha256:fd92c36d3cb9b1d027c4d2a72c6bf0125da82425fc2ca37c414d4f010180dc19
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/performance-comparison:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 707B done
+#7 DONE 0.0s
+
+#8 [3/5] RUN ln -snf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo Europe/Moscow > /etc/timezone
+#8 CACHED
+
+#9 [2/5] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#9 CACHED
+
+#10 [4/5] RUN apt-get update     && DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends             bash             curl             dmidecode             g++             gdb             git             gnuplot             imagemagick             libc6-dbg             moreutils             ncdu             numactl             p7zip-full             parallel             psmisc             python3             python3-dev             python3-pip             python3-setuptools             rsync             tree             tzdata             vim             wget     && pip3 --no-cache-dir install 'clickhouse-driver==0.2.1' scipy     && apt-get purge --yes python3-dev g++     && apt-get autoremove --yes     && apt-get clean     && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [5/5] COPY * /
+#11 CACHED
+
+#12 exporting to image
+#12 exporting layers done
+#12 writing image sha256:e7acba09dcb1800951a7ac6a6e91a35a7c89071589760f8f0a9a0679ae361a19 done
+#12 naming to ca.icr.io/clickhouse/performance-comparison:0-amd64 done
+#12 DONE 0.0s
+
+#13 exporting cache
+#13 preparing build cache for export done
+#13 DONE 0.0s
+
+#14 pushing ca.icr.io/clickhouse/performance-comparison:0-amd64 with docker
+#14 pushing layer d523227141e4
+#14 pushing layer c8c46c5dd5a3
+#14 pushing layer 71310ffa5f3b
+#14 pushing layer 49127ec8de4f
+#14 pushing layer af7ed92504ae
+#14 pushing layer 49127ec8de4f 1.1s done
+#14 pushing layer d523227141e4 1.1s done
+#14 pushing layer c8c46c5dd5a3 1.1s done
+#14 pushing layer 71310ffa5f3b 1.1s done
+#14 pushing layer af7ed92504ae 1.1s done
+#14 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/performance-comparison:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/performance-comparison:0-amd64 with docker:
+------
+error: denied: insufficient scope

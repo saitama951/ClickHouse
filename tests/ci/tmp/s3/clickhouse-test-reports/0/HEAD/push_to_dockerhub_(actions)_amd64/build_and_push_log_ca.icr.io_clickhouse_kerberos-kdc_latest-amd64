@@ -1,0 +1,56 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/centos:6
+#3 DONE 0.2s
+
+#4 [1/4] FROM docker.io/library/centos:6@sha256:a93df2e96e07f56ea48f215425c6f1673ab922927894595bb5c0ee4c5a955133
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/kerberos-kdc:latest-amd64
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/kerberos-kdc:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [2/4] RUN sed -i '/^mirrorlist/s/^/#/;/^#baseurl/{s/#//;s/mirror.centos.org\/centos\/$releasever/vault.centos.org\/6.10/}' /etc/yum.repos.d/*B*
+#7 CACHED
+
+#8 [3/4] RUN yum install -y ca-certificates krb5-server krb5-libs krb5-auth-dialog krb5-workstation
+#8 CACHED
+
+#9 [4/4] RUN touch /config.sh
+#9 CACHED
+
+#10 exporting to image
+#10 exporting layers done
+#10 writing image sha256:6820053931ca1e51f640850929f4177e0fc1c7efd7cf841cf13dcdba65a1f41a done
+#10 naming to ca.icr.io/clickhouse/kerberos-kdc:latest-amd64 done
+#10 DONE 0.0s
+
+#11 exporting cache
+#11 preparing build cache for export done
+#11 DONE 0.0s
+
+#12 pushing ca.icr.io/clickhouse/kerberos-kdc:latest-amd64 with docker
+#12 pushing layer 349090e6afb8
+#12 pushing layer b180b153a2f3
+#12 pushing layer 65d09869594f
+#12 pushing layer af6bf1987c2e
+#12 pushing layer 349090e6afb8 1.0s done
+#12 pushing layer b180b153a2f3 1.0s done
+#12 pushing layer 65d09869594f 1.0s done
+#12 pushing layer af6bf1987c2e 1.0s done
+#12 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/kerberos-kdc:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/kerberos-kdc:latest-amd64 with docker:
+------
+error: denied: insufficient scope

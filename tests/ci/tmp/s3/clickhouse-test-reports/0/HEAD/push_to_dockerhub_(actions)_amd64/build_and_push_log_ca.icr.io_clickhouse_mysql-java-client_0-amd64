@@ -1,0 +1,75 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:18.04
+#3 DONE 0.1s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/mysql-java-client:0-amd64
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/library/ubuntu:18.04@sha256:478caf1bec1afd54a58435ec681c8755883b7eb843a8630091890130b15a79af
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/mysql-java-client:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 31B done
+#7 DONE 0.0s
+
+#8 [5/7] WORKDIR /jdbc
+#8 CACHED
+
+#9 [4/7] RUN curl -L -o /mysql-connector-java-5.1.46.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.46/mysql-connector-java-5.1.46.jar
+#9 CACHED
+
+#10 [6/7] COPY Test.java Test.java
+#10 CACHED
+
+#11 [2/7] RUN apt-get update &&     apt-get install -y software-properties-common build-essential openjdk-8-jdk libmysql-java curl
+#11 CACHED
+
+#12 [3/7] RUN rm -rf         /var/lib/apt/lists/*         /var/cache/debconf         /tmp/* RUN apt-get clean
+#12 CACHED
+
+#13 [7/7] RUN javac Test.java
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 writing image sha256:d18c7f94044463d40d863deb1bacf16bf9db99c5210b35c441ee4d3cce5fcec9 done
+#14 naming to ca.icr.io/clickhouse/mysql-java-client:0-amd64 done
+#14 DONE 0.0s
+
+#15 exporting cache
+#15 preparing build cache for export done
+#15 DONE 0.0s
+
+#16 pushing ca.icr.io/clickhouse/mysql-java-client:0-amd64 with docker
+#16 pushing layer 50ca29ad80db
+#16 pushing layer fc062d53df74
+#16 pushing layer 56dee383ce4c
+#16 pushing layer f66e8aa45d92
+#16 pushing layer de4521f93007
+#16 pushing layer 2aa5ddb6564a 0.5s
+#16 pushing layer 95129a5fe07e 0.5s
+#16 pushing layer 50ca29ad80db 1.2s done
+#16 pushing layer fc062d53df74 1.2s done
+#16 pushing layer 56dee383ce4c 1.2s done
+#16 pushing layer f66e8aa45d92 1.2s done
+#16 pushing layer de4521f93007 1.2s done
+#16 pushing layer 2aa5ddb6564a 1.7s done
+#16 pushing layer 95129a5fe07e 1.7s done
+#16 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/mysql-java-client:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/mysql-java-client:0-amd64 with docker:
+------
+error: denied: insufficient scope

@@ -1,0 +1,191 @@
+--- ../../tests/ci/get_robot_token.py	2022-06-21 01:29:03.979755 +0000
++++ ../../tests/ci/get_robot_token.py	2022-06-23 13:55:49.392669 +0000
+@@ -5,18 +5,23 @@
+ 
+ 
+ def get_parameter_from_ssm(name, decrypt=True, client=None, use_env=False):
+     if not client:
+         client = boto3.client("ssm", region_name="us-east-1")
+-    parameter = ''
++    parameter = ""
+     if use_env:
+         parameter = os.getenv(name)
+     else:
+-        parameter = client.get_parameter(Name=name, WithDecryption=decrypt)["Parameter"]["Value"]
++        parameter = client.get_parameter(Name=name, WithDecryption=decrypt)[
++            "Parameter"
++        ]["Value"]
+     return parameter
+ 
+-def get_best_robot_token(token_prefix_env_name="github_robot_token_", total_tokens=4, use_env=False):
++
++def get_best_robot_token(
++    token_prefix_env_name="github_robot_token_", total_tokens=4, use_env=False
++):
+     client = boto3.client("ssm", region_name="us-east-1")
+     tokens = {}
+     for i in range(1, total_tokens + 1):
+         token_name = token_prefix_env_name + str(i)
+         token = get_parameter_from_ssm(token_name, True, client, use_env)
+would reformat ../../tests/ci/get_robot_token.py
+--- ../../tests/ci/clickhouse_helper.py	2022-06-21 01:29:03.979755 +0000
++++ ../../tests/ci/clickhouse_helper.py	2022-06-23 13:55:49.399477 +0000
+@@ -22,12 +22,16 @@
+                 "X-ClickHouse-User": os.getenv("clickhouse_test_stat_login"),
+                 "X-ClickHouse-Key": os.getenv("clickhouse_test_stat_password"),
+             }
+         else:
+             self.auth = {
+-                "X-ClickHouse-User": get_parameter_from_ssm("clickhouse-test-stat-login"),
+-                "X-ClickHouse-Key": get_parameter_from_ssm("clickhouse-test-stat-password"),
++                "X-ClickHouse-User": get_parameter_from_ssm(
++                    "clickhouse-test-stat-login"
++                ),
++                "X-ClickHouse-Key": get_parameter_from_ssm(
++                    "clickhouse-test-stat-password"
++                ),
+             }
+ 
+     @staticmethod
+     def _insert_json_str_info_impl(url, auth, db, table, json_str):
+         params = {
+would reformat ../../tests/ci/clickhouse_helper.py
+--- ../../tests/ci/style_check.py	2022-06-23 13:52:05.691974 +0000
++++ ../../tests/ci/style_check.py	2022-06-23 13:55:49.654033 +0000
+@@ -65,21 +65,21 @@
+ 
+ def parse_args() -> argparse.Namespace:
+     parser = argparse.ArgumentParser(
+         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+         description="Program to build changed or given docker images with all "
+-                    "dependant images. Example for local running: "
+-                    "python docker_images_check.py --no-push-images --no-reports "
+-                    "--image-path docker/packager/binary",
++        "dependant images. Example for local running: "
++        "python docker_images_check.py --no-push-images --no-reports "
++        "--image-path docker/packager/binary",
+     )
+ 
+     parser.add_argument(
+         "--suffix",
+         type=str,
+         help="suffix for all built images tags and resulting json file; the parameter "
+-             "significantly changes the script behavior, e.g. changed_images.json is called "
+-             "changed_images_{suffix}.json and contains list of all tags",
++        "significantly changes the script behavior, e.g. changed_images.json is called "
++        "changed_images_{suffix}.json and contains list of all tags",
+     )
+     parser.add_argument(
+         "--repo",
+         type=str,
+         default="clickhouse",
+@@ -93,11 +93,11 @@
+     parser.add_argument(
+         "--image-path",
+         type=str,
+         nargs="*",
+         help="list of image paths to build instead of using pr_info + diff URL, "
+-             "e.g. 'docker/packager/binary'",
++        "e.g. 'docker/packager/binary'",
+     )
+     parser.add_argument("--reports", default=True, help=argparse.SUPPRESS)
+     parser.add_argument(
+         "--no-reports",
+         action="store_false",
+@@ -138,10 +138,11 @@
+         default="docker.io",
+         help="The docker host to use for images eg. docker.io",
+     )
+     return parser.parse_args()
+ 
++
+ if __name__ == "__main__":
+     logging.basicConfig(level=logging.INFO)
+ 
+     stopwatch = Stopwatch()
+ 
+@@ -150,14 +151,14 @@
+ 
+     pr_info = PRInfo()
+     args = parse_args()
+     gh = Github(get_best_robot_token(use_env=args.use_env))
+ 
+-   #rerun_helper = RerunHelper(gh, pr_info, NAME)
+-    #if rerun_helper.is_already_finished_by_status():
+-        #logging.info("Check is already finished according to github status, exiting")
+-        #sys.exit(0)
++    # rerun_helper = RerunHelper(gh, pr_info, NAME)
++    # if rerun_helper.is_already_finished_by_status():
++    # logging.info("Check is already finished according to github status, exiting")
++    # sys.exit(0)
+ 
+     if not os.path.exists(temp_path):
+         os.makedirs(temp_path)
+ 
+     docker_image = get_image_with_version(temp_path, "clickhouse/style-test")
+@@ -181,11 +182,11 @@
+ 
+     report_url = upload_results(
+         s3_helper, pr_info.number, pr_info.sha, test_results, additional_files, NAME
+     )
+     print("::notice ::Report url: {}".format(report_url))
+-    #post_commit_status(gh, pr_info.sha, NAME, description, state, report_url)
++    # post_commit_status(gh, pr_info.sha, NAME, description, state, report_url)
+ 
+     prepared_events = prepare_tests_results_for_clickhouse(
+         pr_info,
+         test_results,
+         state,
+@@ -196,7 +197,5 @@
+     )
+     ch_helper.insert_events_into(db="default", table="checks", events=prepared_events)
+ 
+     if state == "error":
+         sys.exit(1)
+-
+-
+would reformat ../../tests/ci/style_check.py
+--- ../../tests/ci/docker_images_check.py	2022-06-21 01:29:03.979755 +0000
++++ ../../tests/ci/docker_images_check.py	2022-06-23 13:55:49.689493 +0000
+@@ -89,11 +89,11 @@
+ 
+     return images_dict
+ 
+ 
+ def get_changed_docker_images(
+-    pr_info: PRInfo, images_dict: ImagesDict, docker_host: str = ''
++    pr_info: PRInfo, images_dict: ImagesDict, docker_host: str = ""
+ ) -> Set[DockerImage]:
+ 
+     if not images_dict:
+         return set()
+ 
+@@ -405,19 +405,21 @@
+         global NAME
+         NAME += f" {args.suffix}"
+         changed_json = os.path.join(TEMP_PATH, f"changed_images_{args.suffix}.json")
+     else:
+         changed_json = os.path.join(TEMP_PATH, "changed_images.json")
+-        
++
+     if args.push:
+-        docker_password = ''
++        docker_password = ""
+         if args.docker_password:
+             docker_password = args.docker_password
+         else:
+             docker_password = get_parameter_from_ssm("dockerhub_robot_password")
+         subprocess.check_output(  # pylint: disable=unexpected-keyword-arg
+-            "docker login {} --username '{}' --password-stdin".format(args.docker_host, args.docker_user),
++            "docker login {} --username '{}' --password-stdin".format(
++                args.docker_host, args.docker_user
++            ),
+             input=docker_password,
+             encoding="utf-8",
+             shell=True,
+         )
+ 
+would reformat ../../tests/ci/docker_images_check.py
+
+Oh no! 💥 💔 💥
+4 files would be reformatted, 867 files would be left unchanged.

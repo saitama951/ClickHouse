@@ -1,0 +1,74 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context:
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:20.04
+#3 DONE 0.2s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/6] FROM docker.io/library/ubuntu:20.04@sha256:fd92c36d3cb9b1d027c4d2a72c6bf0125da82425fc2ca37c414d4f010180dc19
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/style-test:0-amd64
+#6 DONE 0.0s
+
+#7 importing cache manifest from ca.icr.io/clickhouse/style-test:latest
+#7 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#4 [internal] load build context
+#4 transferring context: 77B done
+#4 DONE 0.0s
+
+#8 [3/6] RUN apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get install --yes     curl     git     libxml2-utils     moreutils     pylint     python3-fuzzywuzzy     python3-pip     shellcheck     yamllint     && pip3 install black boto3 codespell dohq-artifactory PyGithub unidiff
+#8 CACHED
+
+#9 [5/6] COPY run.sh /
+#9 CACHED
+
+#10 [4/6] RUN arch=amd64   && case $arch in       amd64) act_arch=x86_64 ;;       arm64) act_arch=$arch ;;     esac   && curl -o /tmp/act.tgz -L     "https://github.com/nektos/act/releases/download/v0.2.25/act_Linux_${act_arch}.tar.gz"   && tar xf /tmp/act.tgz -C /usr/bin act   && rm /tmp/act.tgz   && curl -o /tmp/actiolint.zip -L     "https://github.com/rhysd/actionlint/releases/download/v1.6.8/actionlint_1.6.8_linux_${arch}.tar.gz"   && tar xf /tmp/actiolint.zip -C /usr/bin actionlint   && rm /tmp/actiolint.zip
+#10 CACHED
+
+#11 [2/6] RUN sed -i "s|http://archive.ubuntu.com|http://archive.ubuntu.com|g" /etc/apt/sources.list
+#11 CACHED
+
+#12 [6/6] COPY process_style_check_result.py /
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 writing image sha256:48b8505bb44c752e69561fc339f6b617dd491769cb1cdf24827cce14de6b4080 done
+#13 naming to ca.icr.io/clickhouse/style-test:0-amd64 done
+#13 DONE 0.0s
+
+#14 exporting cache
+#14 preparing build cache for export done
+#14 DONE 0.0s
+
+#15 pushing ca.icr.io/clickhouse/style-test:0-amd64 with docker
+#15 pushing layer 97589dc756f6
+#15 pushing layer 7e21665876e3
+#15 pushing layer b69f2693d11e
+#15 pushing layer 479191afc372
+#15 pushing layer 94a4f36461d6
+#15 pushing layer af7ed92504ae
+#15 pushing layer 97589dc756f6 1.2s done
+#15 pushing layer 7e21665876e3 1.2s done
+#15 pushing layer b69f2693d11e 1.2s done
+#15 pushing layer 479191afc372 1.2s done
+#15 pushing layer 94a4f36461d6 1.2s done
+#15 pushing layer af7ed92504ae 1.6s done
+#15 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/style-test:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/style-test:0-amd64 with docker:
+------
+error: denied: insufficient scope

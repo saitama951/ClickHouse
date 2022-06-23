@@ -1,0 +1,80 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/nginx:alpine
+#3 DONE 0.3s
+
+#4 [1/6] FROM docker.io/library/nginx:alpine@sha256:a74534e76ee1121d418fa7394ca930eb67440deda413848bc67c68138535b989
+#4 DONE 0.0s
+
+#5 importing cache manifest from ca.icr.io/clickhouse/s3-proxy:0-amd64
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/s3-proxy:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 118B done
+#7 DONE 0.0s
+
+#8 [2/6] COPY run.sh /run.sh
+#8 CACHED
+
+#9 [3/6] COPY server.crt /etc/ssl/certs/server.crt
+#9 CACHED
+
+#10 [4/6] COPY server.key /etc/ssl/certs/server.key
+#10 CACHED
+
+#11 [5/6] COPY nginx.conf /etc/nginx/nginx.conf
+#11 CACHED
+
+#12 [6/6] RUN chmod +x /run.sh
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 writing image sha256:4a0013a35050789aeef4e0d4793a2833760813f65784b2a8e2deb304b41a5b76 done
+#13 naming to ca.icr.io/clickhouse/s3-proxy:0-amd64 done
+#13 DONE 0.1s
+
+#14 exporting cache
+#14 preparing build cache for export done
+#14 DONE 0.0s
+
+#15 pushing ca.icr.io/clickhouse/s3-proxy:0-amd64 with docker
+#15 pushing layer 36f128f60065
+#15 pushing layer 6f4ed9ae6e3c
+#15 pushing layer 00194b1be71c
+#15 pushing layer 42a415352ee2
+#15 pushing layer 579b3a230717
+#15 pushing layer c0e7c94aefd8 0.4s
+#15 pushing layer d6dd885da0bb 0.4s
+#15 pushing layer a43749efe4ec 0.4s
+#15 pushing layer 45b275e8a06d 0.4s
+#15 pushing layer 4721bfafc708 0.4s
+#15 pushing layer 4fc242d58285 0.4s
+#15 pushing layer 36f128f60065 1.2s done
+#15 pushing layer 6f4ed9ae6e3c 1.2s done
+#15 pushing layer 00194b1be71c 1.2s done
+#15 pushing layer 42a415352ee2 1.2s done
+#15 pushing layer 579b3a230717 1.2s done
+#15 pushing layer c0e7c94aefd8 1.6s done
+#15 pushing layer d6dd885da0bb 1.6s done
+#15 pushing layer a43749efe4ec 1.6s done
+#15 pushing layer 45b275e8a06d 1.6s done
+#15 pushing layer 4721bfafc708 1.6s done
+#15 pushing layer 4fc242d58285 1.6s done
+#15 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/s3-proxy:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/s3-proxy:0-amd64 with docker:
+------
+error: denied: insufficient scope

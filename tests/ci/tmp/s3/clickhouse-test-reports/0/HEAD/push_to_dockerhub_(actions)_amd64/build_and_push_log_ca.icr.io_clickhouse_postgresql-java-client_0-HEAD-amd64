@@ -1,0 +1,76 @@
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 32B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/ubuntu:18.04
+#3 DONE 0.3s
+
+#4 importing cache manifest from ca.icr.io/clickhouse/postgresql-java-client:0-HEAD-amd64
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/library/ubuntu:18.04@sha256:478caf1bec1afd54a58435ec681c8755883b7eb843a8630091890130b15a79af
+#5 DONE 0.0s
+
+#6 importing cache manifest from ca.icr.io/clickhouse/postgresql-java-client:latest
+#6 ERROR: unexpected status code [manifests latest]: 403 Forbidden
+
+#7 [internal] load build context
+#7 transferring context: 31B done
+#7 DONE 0.0s
+
+#8 [4/7] RUN curl -L -o /postgresql-java-42.2.12.jar https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.12/postgresql-42.2.12.jar
+#8 CACHED
+
+#9 [5/7] WORKDIR /jdbc
+#9 CACHED
+
+#10 [2/7] RUN apt-get update &&     apt-get install -y software-properties-common build-essential openjdk-8-jdk curl
+#10 CACHED
+
+#11 [3/7] RUN rm -rf         /var/lib/apt/lists/*         /var/cache/debconf         /tmp/* RUN apt-get clean
+#11 CACHED
+
+#12 [6/7] COPY Test.java Test.java
+#12 CACHED
+
+#13 [7/7] RUN javac Test.java
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 writing image sha256:62780ca504722c8e2a1860d820a5d25a97e1e8a841bfc21fc8eabfbb994b8d52
+#14 writing image sha256:62780ca504722c8e2a1860d820a5d25a97e1e8a841bfc21fc8eabfbb994b8d52 done
+#14 naming to ca.icr.io/clickhouse/postgresql-java-client:0-HEAD-amd64 done
+#14 DONE 0.0s
+
+#15 exporting cache
+#15 preparing build cache for export done
+#15 DONE 0.0s
+
+#16 pushing ca.icr.io/clickhouse/postgresql-java-client:0-HEAD-amd64 with docker
+#16 pushing layer 8001f939da39
+#16 pushing layer 3239bd751e1e
+#16 pushing layer 3e74bc77859f
+#16 pushing layer ec577fa51e83
+#16 pushing layer 6ab29cdfcd2b
+#16 pushing layer 5bc70bfda3b2 0.4s
+#16 pushing layer 95129a5fe07e 0.4s
+#16 pushing layer 8001f939da39 1.3s done
+#16 pushing layer 3239bd751e1e 1.3s done
+#16 pushing layer 3e74bc77859f 1.3s done
+#16 pushing layer ec577fa51e83 1.3s done
+#16 pushing layer 6ab29cdfcd2b 1.3s done
+#16 pushing layer 5bc70bfda3b2 1.7s done
+#16 pushing layer 95129a5fe07e 1.7s done
+#16 ERROR: denied: insufficient scope
+------
+ > importing cache manifest from ca.icr.io/clickhouse/postgresql-java-client:latest:
+------
+------
+ > pushing ca.icr.io/clickhouse/postgresql-java-client:0-HEAD-amd64 with docker:
+------
+error: denied: insufficient scope

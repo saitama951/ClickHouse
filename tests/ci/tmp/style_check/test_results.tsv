@@ -1,0 +1,8 @@
+Check header duplicates	OK
+Check shellcheck	OK
+Check style	FAIL
+Check black	FAIL
+Check typos	OK
+Check whitespaces	OK
+Check workflows	OK
+Check doc typos	FAIL
