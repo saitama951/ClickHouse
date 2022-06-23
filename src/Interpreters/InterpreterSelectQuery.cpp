@@ -786,6 +786,7 @@ Block InterpreterSelectQuery::getSampleBlockImpl()
     bool second_stage = from_stage <= QueryProcessingStage::WithMergeableState
         && options.to_stage > QueryProcessingStage::WithMergeableState;
 
+    LOG_DEBUG(log,"First satge of the query = {} and second stage = {}",toString(first_stage),toString(second_stage));
     analysis_result = ExpressionAnalysisResult(
         *query_analyzer, metadata_snapshot, first_stage, second_stage, options.only_analyze, filter_info, additional_filter_info, source_header);
 
@@ -804,6 +805,7 @@ Block InterpreterSelectQuery::getSampleBlockImpl()
 
     if (options.to_stage == QueryProcessingStage::Enum::WithMergeableState)
     {
+        LOG_DEBUG(log,"Inside the condition of WithMergeableState");
         if (!analysis_result.need_aggregate)
         {
             // What's the difference with selected_columns?
@@ -828,8 +830,12 @@ Block InterpreterSelectQuery::getSampleBlockImpl()
             if (analysis_result.before_window)
                 return analysis_result.before_window->getResultColumns();
 
+            LOG_TRACE(log,"Return before order_by->WithMergeableState");
+            
             return analysis_result.before_order_by->getResultColumns();
         }
+        
+        LOG_TRACE(log," Return before before_aggregation->WithMergeableState");
 
         Block header = analysis_result.before_aggregation->getResultColumns();
 
@@ -866,6 +872,7 @@ Block InterpreterSelectQuery::getSampleBlockImpl()
 
     if (options.to_stage >= QueryProcessingStage::Enum::WithMergeableStateAfterAggregation)
     {
+        LOG_TRACE(log,"Return before order_by->WithMergeableStateAfterAggregation");
         // It's different from selected_columns, see the comment above for
         // WithMergeableState stage.
         if (analysis_result.before_window)

@@ -213,7 +213,7 @@ QueryProcessingStage::Enum StorageMerge::getQueryProcessingStage(
             iterator->next();
         }
     }
-
+LOG_DEBUG(log,"Stage in source table inside StorageMerge= {}",stage_in_source_tables);
     return selected_table_size == 1 ? stage_in_source_tables : std::min(stage_in_source_tables, QueryProcessingStage::WithMergeableState);
 }
 
