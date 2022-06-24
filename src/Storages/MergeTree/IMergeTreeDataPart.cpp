@@ -1578,6 +1578,8 @@ void IMergeTreeDataPart::remove() const
 
     metadata_manager->deleteAll(false);
     metadata_manager->assertAllDeleted(false);
+    
+    GinIndexStoreFactory::instance().remove(getFullRelativePath());
 
     /** Atomic directory removal:
       * - rename directory to temporary name;
