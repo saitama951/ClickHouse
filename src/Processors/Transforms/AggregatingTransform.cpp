@@ -624,6 +624,8 @@ void AggregatingTransform::initGenerate()
             files.files.size(),
             ReadableSize(files.sum_size_compressed),
             ReadableSize(files.sum_size_uncompressed));
+        Int64 curent_memory_usage = total_memory_tracker.get();
+        LOG_DEBUG(log,"current memory usage in after file merge ={} ",curent_memory_usage);
 
         addMergingAggregatedMemoryEfficientTransform(pipe, params, temporary_data_merge_threads);
 

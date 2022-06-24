@@ -461,8 +461,8 @@ QueryProcessingStage::Enum StorageDistributed::getQueryProcessingStage(
     }
     
     LOG_DEBUG(log, "No of nodes in cluster =: {}",nodes);
-    LOG_DEBUG(log, "processing stage of cluster node =: {}",QueryProcessingStage::toString(stage));
-    LOG_DEBUG(log, "What is sharding key here  =: {}",has_sharding_key ? "" : " (no sharding key)"));
+    LOG_DEBUG(log, "processing stage of cluster node =: {}",QueryProcessingStage::toString(to_stage));
+    LOG_DEBUG(log, "What is sharding key here  =: {}",has_sharding_key ? "" : " (no sharding key)");
 
 
     if (settings.distributed_group_by_no_merge)
@@ -522,7 +522,7 @@ QueryProcessingStage::Enum StorageDistributed::getQueryProcessingStage(
 
 std::optional<QueryProcessingStage::Enum> StorageDistributed::getOptimizedQueryProcessingStage(const SelectQueryInfo & query_info, const Settings & settings) const
 {
-    LOG_DEBUG(log,"Processing stage of query = " , QueryProcessingStage::toString(stage));
+   // LOG_DEBUG(log,"Processing stage of query = {}" , QueryProcessingStage::toString(stage));
     bool optimize_sharding_key_aggregation =
         settings.optimize_skip_unused_shards &&
         settings.optimize_distributed_group_by_sharding_key &&
