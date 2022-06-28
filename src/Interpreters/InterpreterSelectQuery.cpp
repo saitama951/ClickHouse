@@ -750,8 +750,12 @@ BlockIO InterpreterSelectQuery::execute()
 
 Block InterpreterSelectQuery::getSampleBlockImpl()
 {
+<<<<<<< HEAD
     auto & select_query = getSelectQuery();
 
+=======
+    LOG_DEBUG(log,"Entering getSampleBlockImpl options.to_stage= {}",options.to_stage);
+>>>>>>> Few more statement
     query_info.query = query_ptr;
 
     /// NOTE: this is required for getQueryProcessingStage(), so should be initialized before ExpressionAnalysisResult.
@@ -786,6 +790,7 @@ Block InterpreterSelectQuery::getSampleBlockImpl()
     bool second_stage = from_stage <= QueryProcessingStage::WithMergeableState
         && options.to_stage > QueryProcessingStage::WithMergeableState;
 
+    LOG_DEBUG(log," from stage  of the query = {} and to stage = {}",toString(from_stage),toString(options.to_stage));
     LOG_DEBUG(log,"First satge of the query = {} and second stage = {}",toString(first_stage),toString(second_stage));
     analysis_result = ExpressionAnalysisResult(
         *query_analyzer, metadata_snapshot, first_stage, second_stage, options.only_analyze, filter_info, additional_filter_info, source_header);
