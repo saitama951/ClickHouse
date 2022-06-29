@@ -46,7 +46,7 @@
 #include <Parsers/queryToString.h>
 
 #include <Interpreters/StorageID.h>
-
+#include <Parsers/Kusto/ParserKQLStatement.h>
 
 namespace DB
 {
@@ -109,30 +109,38 @@ bool ParserSubquery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
 {
     ParserSelectWithUnionQuery select;
     ParserExplainQuery explain;
-
-    if (pos->type != TokenType::OpeningRoundBracket)
-        return false;
-    ++pos;
-
     ASTPtr result_node = nullptr;
+    ParserKeyword s_kql("KQL");
 
-    if (ASTPtr select_node; select.parse(pos, select_node, expected))
+    if (s_kql.ignore(pos, expected))
     {
-        result_node = std::move(select_node);
+        if (!ParserKQLTaleFunction().parse(pos, result_node, expected))
+            return false;
     }
-    else if (ASTPtr explain_node; explain.parse(pos, explain_node, expected))
+    else 
     {
-        /// Replace SELECT * FROM (EXPLAIN SELECT ...) with SELECT * FROM viewExplain(EXPLAIN SELECT ...)
-        result_node = buildSelectFromTableFunction(makeASTFunction("viewExplain", explain_node));
-    }
-    else
-    {
-        return false;
-    }
+        if (pos->type != TokenType::OpeningRoundBracket)
+            return false;
+        ++pos;
 
-    if (pos->type != TokenType::ClosingRoundBracket)
-        return false;
-    ++pos;
+        if (ASTPtr select_node; select.parse(pos, select_node, expected))
+        {
+            result_node = std::move(select_node);
+        }
+        else if (ASTPtr explain_node; explain.parse(pos, explain_node, expected))
+        {
+            /// Replace SELECT * FROM (EXPLAIN SELECT ...) with SELECT * FROM viewExplain(EXPLAIN SELECT ...)
+            result_node = buildSelectFromTableFunction(makeASTFunction("viewExplain", explain_node));
+        }
+        else
+        {
+            return false;
+        }
+
+        if (pos->type != TokenType::ClosingRoundBracket)
+            return false;
+        ++pos;
+    }
 
     node = std::make_shared<ASTSubquery>();
     node->children.push_back(result_node);
