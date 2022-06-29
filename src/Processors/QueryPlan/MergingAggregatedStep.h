@@ -2,6 +2,7 @@
 #include <Interpreters/Aggregator.h>
 #include <Processors/QueryPlan/ITransformingStep.h>
 #include <QueryPipeline/SizeLimits.h>
+#include <Common/logger_useful.h>
 
 namespace DB
 {
@@ -29,6 +30,7 @@ public:
     void describeActions(JSONBuilder::JSONMap & map) const override;
     void describeActions(FormatSettings & settings) const override;
 
+
 private:
     void updateOutputStream() override;
 
@@ -41,6 +43,8 @@ private:
     /// It determines if we should resize pipeline to 1 at the end.
     /// Needed in case of distributed memory efficient aggregation over distributed table.
     const bool should_produce_results_in_order_of_bucket_number;
+    Poco::Logger * log = &Poco::Logger::get("MergingAggregated");
+
 };
 
 }

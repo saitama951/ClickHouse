@@ -70,7 +70,7 @@ Chunk MergingAggregatedTransform::generate()
 
         /// Exception safety. Make iterator valid in case any method below throws.
         next_block = blocks.begin();
-
+       LOG_TRACE(log, "Indide the MergingAggregatedTransform and calling mergeBlocks ");
         /// TODO: this operation can be made async. Add async for IAccumulatingTransform.
         params->aggregator.mergeBlocks(std::move(bucket_to_blocks), data_variants, max_threads);
         blocks = params->aggregator.convertToBlocks(data_variants, params->final, max_threads);

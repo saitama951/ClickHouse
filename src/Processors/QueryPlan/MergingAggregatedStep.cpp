@@ -3,6 +3,7 @@
 #include <Processors/Transforms/AggregatingTransform.h>
 #include <Processors/Transforms/MergingAggregatedTransform.h>
 #include <Processors/Transforms/MergingAggregatedMemoryEfficientTransform.h>
+#include <Common/logger_useful.h>
 
 namespace DB
 {
@@ -48,8 +49,10 @@ MergingAggregatedStep::MergingAggregatedStep(
 void MergingAggregatedStep::transformPipeline(QueryPipelineBuilder & pipeline, const BuildQueryPipelineSettings &)
 {
     auto transform_params = std::make_shared<AggregatingTransformParams>(pipeline.getHeader(), std::move(params), final);
+    LOG_TRACE(log,"Inside the fucntion transformPipeline");
     if (!memory_efficient_aggregation)
     {
+      LOG_TRACE(log,"memory_efficient_aggregation not defined in our case");   
         /// We union several sources into one, paralleling the work.
         pipeline.resize(1);
 
