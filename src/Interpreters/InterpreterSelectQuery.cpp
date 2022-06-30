@@ -1747,6 +1747,7 @@ static void executeMergeAggregatedImpl(
         params,
         final,
         /* only_merge_= */ false);
+         Poco::Logger * log = &Poco::Logger::get("executeMergeAggregatedImpl");
     LOG_TRACE(log,"Heena - Initializing MergingAggregatedStep object");
     LOG_DEBUG(log, "Heena - value of aggregation_memory_efficient_merge_threads = {}",settings.aggregation_memory_efficient_merge_threads);
     auto merging_aggregated = std::make_unique<MergingAggregatedStep>(
