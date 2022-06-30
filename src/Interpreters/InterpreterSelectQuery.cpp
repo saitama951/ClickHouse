@@ -1541,7 +1541,7 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
             else if (expressions.need_aggregate)
             {
                 LOG_TRACE(log,"Inside the MergeAggregrated call block");
-                LOG_DEBUG(log,"Query stage at this place from  {} to  {}" , toString(from_stage),toString(options.to_stage) )
+                LOG_DEBUG(log,"Query stage at this place from  {} to  {}" , toString(from_stage),toString(options.to_stage) );
                 /// If you need to combine aggregated results from multiple servers
                 if (!expressions.first_stage){
                     LOG_TRACE(log,"Calling executeMergeAggregated based on first stage ")
