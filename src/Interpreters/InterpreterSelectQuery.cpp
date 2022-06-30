@@ -1337,12 +1337,15 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
 
         if (intermediate_stage)
         {
+            LOG_TRACE(log, "Entering in the intermediate-stage of query processing \n");
             if (expressions.first_stage || expressions.second_stage)
                 throw Exception("Query with intermediate stage cannot have any other stages", ErrorCodes::LOGICAL_ERROR);
-
+           
             preliminary_sort();
-            if (expressions.need_aggregate)
+            if (expressions.need_aggregate){
+                LOG_TRACE(log , "Calling executeMergeAggregated ");
                 executeMergeAggregated(query_plan, aggregate_overflow_row, aggregate_final, use_grouping_set_key);
+            }
         }
 
         if (from_aggregation_stage)
@@ -1530,16 +1533,21 @@ void InterpreterSelectQuery::executeImpl(QueryPlan & query_plan, std::optional<P
 
         if (expressions.second_stage || from_aggregation_stage)
         {
+            LOG_TRACE(log,"Entering in Condition to for executing merge aggregrate");
             if (from_aggregation_stage)
             {
                 /// No need to aggregate anything, since this was done on remote shards.
             }
             else if (expressions.need_aggregate)
             {
+                LOG_TRACE(log,"Inside the MergeAggregrated call block");
+                LOG_DEBUG(log,"Query stage at this place from  {} to  {}" , toString(from_stage),toString(options.to_stage) )
                 /// If you need to combine aggregated results from multiple servers
-                if (!expressions.first_stage)
+                if (!expressions.first_stage){
+                    LOG_TRACE(log,"Calling executeMergeAggregated based on first stage ")
                     executeMergeAggregated(query_plan, aggregate_overflow_row, aggregate_final, use_grouping_set_key);
 
+                }
                 if (!aggregate_final)
                 {
                     if (query.group_by_with_totals)
@@ -1734,6 +1742,13 @@ static void executeMergeAggregatedImpl(
 
     Aggregator::Params params(keys, aggregates, overflow_row, settings.max_threads);
 
+
+    auto transform_params = std::make_shared<AggregatingTransformParams>(
+        params,
+        final,
+        /* only_merge_= */ false);
+    LOG_TRACE(log,"Heena - Initializing MergingAggregatedStep object");
+    LOG_DEBUG(log, "Heena - value of aggregation_memory_efficient_merge_threads = {}",settings.aggregation_memory_efficient_merge_threads);
     auto merging_aggregated = std::make_unique<MergingAggregatedStep>(
         query_plan.getCurrentDataStream(),
         params,
