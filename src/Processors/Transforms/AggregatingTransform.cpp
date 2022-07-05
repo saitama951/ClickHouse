@@ -542,6 +542,7 @@ void AggregatingTransform::consume(Chunk chunk)
 
 void AggregatingTransform::initGenerate()
 {
+    LOG_TRACE(log,"Inside InitGenrate()");
     if (is_generate_initialized)
         return;
 
@@ -556,7 +557,7 @@ void AggregatingTransform::initGenerate()
         else
             params->aggregator.executeOnBlock(getInputs().front().getHeader(), variants, key_columns, aggregate_columns, no_more_keys);
     }
-
+    
     double elapsed_seconds = watch.elapsedSeconds();
     size_t rows = variants.sizeWithoutOverflowRow();
 
@@ -569,10 +570,13 @@ void AggregatingTransform::initGenerate()
     {
         if (variants.isConvertibleToTwoLevel())
             variants.convertToTwoLevel();
-
         /// Flush data in the RAM to disk also. It's easier than merging on-disk and RAM data.
         if (!variants.empty())
             params->aggregator.writeToTemporaryFile(variants);
+
+    LOG_DEBUG(log, "Size of the variant = {}",variants.size());
+
+    LOG_DEBUG(log, "No of files here 1 ={}" , params->aggregator.getTemporaryFiles().files.size());
     }
 
     if (many_data->num_finished.fetch_add(1) + 1 < many_data->variants.size())
@@ -580,6 +584,7 @@ void AggregatingTransform::initGenerate()
 
     if (!params->aggregator.hasTemporaryFiles())
     {
+        LOG_TRACE(log, "calling prepareVariantsToMerge method");
         auto prepared_data = params->aggregator.prepareVariantsToMerge(many_data->variants);
         auto prepared_data_ptr = std::make_shared<ManyAggregatedDataVariants>(std::move(prepared_data));
         processors.emplace_back(std::make_shared<ConvertingAggregatedToChunksTransform>(params, std::move(prepared_data_ptr), max_threads));
@@ -590,7 +595,7 @@ void AggregatingTransform::initGenerate()
         /// then read and merge them, spending the minimum amount of memory.
 
         ProfileEvents::increment(ProfileEvents::ExternalAggregationMerge);
-
+        LOG_DEBUG(log,"The size of many_data = {}" ,many_data->variants.size());
         if (many_data->variants.size() > 1)
         {
             /// It may happen that some data has not yet been flushed,

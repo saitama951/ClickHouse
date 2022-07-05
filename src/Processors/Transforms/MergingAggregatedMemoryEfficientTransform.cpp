@@ -363,6 +363,7 @@ void MergingAggregatedBucketTransform::transform(Chunk & chunk)
     auto block = params->aggregator.mergeBlocks(blocks_list, params->final);
     size_t num_rows = block.rows();
     chunk.setColumns(block.getColumns(), num_rows);
+    block.clear();
 }
 
 
@@ -534,8 +535,8 @@ void addMergingAggregatedMemoryEfficientTransform(
 
     Int64 query_memory_limit = thread_group->memory_tracker.getHardLimit();
     Int64 query_memory_usage = thread_group->memory_tracker.get();
-    LOG_DEBUG(log,"Heena - hardlimit  in initGenrate() = {} ",formatReadableSizeWithBinarySuffix(query_memory_limit));
-    LOG_DEBUG(log,"\n Heena - memory usage in initGenrate() =  {}",formatReadableSizeWithBinarySuffix(query_memory_usage));
+    LOG_DEBUG(log,"Heena - hardlimit  addMergingAggregatedMemoryEfficientTransform  = {} ",formatReadableSizeWithBinarySuffix(query_memory_limit));
+    LOG_DEBUG(log,"\n Heena - memory usage addMergingAggregatedMemoryEfficientTransform  =  {}",formatReadableSizeWithBinarySuffix(query_memory_usage));
     
     pipe.addTransform(std::make_shared<GroupingAggregatedTransform>(pipe.getHeader(), pipe.numOutputPorts(), params));
 
