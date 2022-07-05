@@ -2663,6 +2663,7 @@ void NO_INLINE Aggregator::mergeStreamsImplCase(
     if (!arena_for_keys)
         arena_for_keys = aggregates_pool;
 
+    LOG_DEBUG(log, "The size of the row = {} , row_begin={},row-end={}",total_size_of_aggregate_states,row_begin,row_end);
     for (size_t i = row_begin; i < row_end; ++i)
     {
         AggregateDataPtr aggregate_data = nullptr;
