@@ -3029,6 +3029,7 @@ Block Aggregator::mergeBlocks(BlocksList & blocks, bool final)
     /// To avoid this we use a separate arena to allocate memory for aggregation keys. Its memory will be freed at this function return.
     auto arena_for_keys = std::make_shared<Arena>();
 
+    LOG_DEBUG(log,"No of blocks in blocklist passed as argument= {}",blocks.size());
     for (Block & block : blocks)
     {
         source_rows += block.rows();
