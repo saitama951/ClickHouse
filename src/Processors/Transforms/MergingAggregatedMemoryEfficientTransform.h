@@ -112,6 +112,7 @@ protected:
     void transform(Chunk & chunk) override;
 
 private:
+     Poco::Logger * log = &Poco::Logger::get(getName());
     AggregatingTransformParamsPtr params;
 };
 

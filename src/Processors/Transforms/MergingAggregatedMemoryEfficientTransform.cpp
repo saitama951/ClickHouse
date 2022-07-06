@@ -325,7 +325,7 @@ void MergingAggregatedBucketTransform::transform(Chunk & chunk)
     auto header = params->aggregator.getHeader(false);
 
     BlocksList blocks_list;
-    LOG_DEBUG(log,"Size of chunks to merge = {}",*chunks_to_merge->chunks.size());
+    LOG_DEBUG(log,"Size of chunks to merge = {}",chunks_to_merge->chunks->size());
     for (auto & cur_chunk : *chunks_to_merge->chunks)
     {
         const auto & cur_info = cur_chunk.getChunkInfo();
