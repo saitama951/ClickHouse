@@ -16,7 +16,10 @@ from env_helper import (
     REPO_COPY,
     S3_BUILDS_BUCKET,
     TEMP_PATH,
+    DOCKER_USER,
+    DOCKER_REPO,
 )
+from get_robot_token import get_parameter_from_ssm
 from s3_helper import S3Helper
 from pr_info import PRInfo
 from version_helper import (
@@ -30,7 +33,7 @@ from ci_config import CI_CONFIG, BuildConfig
 from docker_pull_helper import get_image_with_version
 from tee_popen import TeePopen
 
-IMAGE_NAME = "clickhouse/binary-builder"
+IMAGE_NAME = f"{DOCKER_REPO}/clickhouse/binary-builder"
 BUILD_LOG_NAME = "build_log.log"
 
 
@@ -81,6 +84,9 @@ def get_packager_cmd(
 
     cmd += f" --docker-image-version={image_version}"
     cmd += f" --version={build_version}"
+    cmd += f" --docker-repo={DOCKER_REPO}"
+    cmd += f" --docker-user={DOCKER_USER}"
+    cmd += " --docker-password={}".format(get_parameter_from_ssm("dockerhub_robot_password"))
 
     if _can_export_binaries(build_config):
         cmd += " --with-binaries=tests"
@@ -250,7 +256,7 @@ def main():
 
     logging.info("Repo copy path %s", REPO_COPY)
 
-    s3_helper = S3Helper("https://s3.amazonaws.com")
+    s3_helper = S3Helper()
 
     version = get_version_from_repo(git=Git(True))
     release_or_pr, performance_pr = get_release_or_pr(pr_info, version)
@@ -264,6 +270,13 @@ def main():
     # If this is rerun, then we try to find already created artifacts and just
     # put them as github actions artifact (result)
     check_for_success_run(s3_helper, s3_path_prefix, build_name, build_config)
+
+    subprocess.check_output(  # pylint: disable=unexpected-keyword-arg
+        "docker login {} --username '{}' --password-stdin".format(DOCKER_REPO, DOCKER_USER),
+        input=get_parameter_from_ssm("dockerhub_robot_password"),
+        encoding="utf-8",
+        shell=True,
+    )
 
     docker_image = get_image_with_version(IMAGES_PATH, IMAGE_NAME)
     image_version = docker_image.version

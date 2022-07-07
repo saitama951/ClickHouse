@@ -41,7 +41,7 @@ if __name__ == "__main__":
         os.makedirs(temp_path)
 
     docker_image = get_image_with_version(IMAGES_PATH, "clickhouse/codebrowser")
-    s3_helper = S3Helper("https://s3.amazonaws.com")
+    s3_helper = S3Helper()
 
     result_path = os.path.join(temp_path, "result_path")
     if not os.path.exists(result_path):

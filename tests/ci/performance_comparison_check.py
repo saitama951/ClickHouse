@@ -197,7 +197,7 @@ if __name__ == "__main__":
     }
 
     s3_prefix = f"{pr_info.number}/{pr_info.sha}/{check_name_prefix}/"
-    s3_helper = S3Helper("https://s3.amazonaws.com")
+    s3_helper = S3Helper()
     uploaded = {}  # type: Dict[str, str]
     for name, path in paths.items():
         try:
