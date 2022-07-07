@@ -124,7 +124,6 @@ def parse_env_variables(
     additional_pkgs,
     with_coverage,
     with_binaries,
-    docker_repo,
 ):
     DARWIN_SUFFIX = "-darwin"
     DARWIN_ARM_SUFFIX = "-darwin-aarch64"
