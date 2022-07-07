@@ -188,6 +188,10 @@ void AggregatingStep::transformPipeline(QueryPipelineBuilder & pipeline, const B
 
                 if (streams > 1)
                 {
+                    LOG_TRACE(&Poco::Logger::get("MergingAggregatedStep"),"Calling AggregatingTransform at 1");
+                    LOG_DEBUG(&Poco::Logger::get("MergingAggregatedStep"),"Stage 1 : no of streams = {}",streams);
+
+
                     auto many_data = std::make_shared<ManyAggregatedData>(streams);
                     for (size_t j = 0; j < streams; ++j)
                     {
@@ -366,6 +370,8 @@ void AggregatingStep::transformPipeline(QueryPipelineBuilder & pipeline, const B
         /// Add resize transform to uniformly distribute data between aggregating streams.
         if (!storage_has_evenly_distributed_read)
             pipeline.resize(pipeline.getNumStreams(), true, true);
+        LOG_TRACE(&Poco::Logger::get("MergingAggregatedStep"),"Calling AggregatingTransform at 2");
+        LOG_DEBUG(&Poco::Logger::get("MergingAggregatedStep"),"Stage 2 : no of streams = {}",pipeline.getNumStreams());
 
         auto many_data = std::make_shared<ManyAggregatedData>(pipeline.getNumStreams());
 
