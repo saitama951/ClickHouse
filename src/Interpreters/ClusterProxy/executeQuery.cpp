@@ -12,6 +12,8 @@
 #include <Processors/QueryPlan/UnionStep.h>
 #include <Storages/SelectQueryInfo.h>
 #include <DataTypes/DataTypesNumber.h>
+#include <Common/logger_useful.h>
+
 
 
 namespace DB
@@ -174,7 +176,9 @@ void executeQuery(
         scalars.emplace(
             "_shard_count", Block{{DataTypeUInt32().createColumnConst(1, shards), std::make_shared<DataTypeUInt32>(), "_shard_count"}});
         auto external_tables = context->getExternalTables();
-
+        LOG_DEBUG(&Poco::Logger::get("ClusterProxyexecuteQuery"), "processed_stage for the queries befire reaading from {} with query_stage={}",shards,processed_stage);
+        //LOG_DEBUG(&Poco::Logger::get("ClusterProxyexecuteQuery"),"Is shard local = " , query_info.getCluster()->getShardsInfo().isLocal());
+        //LOG_DEBUG(&Poco::Logger::get("ClusterProxyexecuteQuery"), "shard address = " , query_info.getCluster()->getShardsAddresses());
         auto plan = std::make_unique<QueryPlan>();
         auto read_from_remote = std::make_unique<ReadFromRemote>(
             std::move(remote_shards),

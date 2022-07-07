@@ -533,11 +533,12 @@ void addMergingAggregatedMemoryEfficientTransform(
     auto thread_group = CurrentThread::getGroup();
     auto stats = thread_group->getProfileEventsCountersAndMemoryForThreads();
 
-
+    
+    //LOG_DEBUG(log,"the address for pipe is = {}", &pipe);
     Int64 query_memory_limit = thread_group->memory_tracker.getHardLimit();
     Int64 query_memory_usage = thread_group->memory_tracker.get();
     LOG_DEBUG(log,"Heena - hardlimit  addMergingAggregatedMemoryEfficientTransform  = {} ",formatReadableSizeWithBinarySuffix(query_memory_limit));
-    LOG_DEBUG(log,"\n Heena - memory usage addMergingAggregatedMemoryEfficientTransform  =  {}",formatReadableSizeWithBinarySuffix(query_memory_usage));
+    LOG_DEBUG(log,"Heena - memory usage addMergingAggregatedMemoryEfficientTransform  =  {}",formatReadableSizeWithBinarySuffix(query_memory_usage));
     
     pipe.addTransform(std::make_shared<GroupingAggregatedTransform>(pipe.getHeader(), pipe.numOutputPorts(), params));
 

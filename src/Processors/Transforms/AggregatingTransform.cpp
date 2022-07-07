@@ -565,7 +565,9 @@ void AggregatingTransform::initGenerate()
         src_rows, rows, ReadableSize(src_bytes),
         elapsed_seconds, src_rows / elapsed_seconds,
         ReadableSize(src_bytes / elapsed_seconds));
+    LOG_DEBUG(log, "Size of the variant = {}",variants.size());
 
+    LOG_DEBUG(log, "No of files before this loop ={}" , params->aggregator.getTemporaryFiles().files.size());
     if (params->aggregator.hasTemporaryFiles())
     {
         if (variants.isConvertibleToTwoLevel())

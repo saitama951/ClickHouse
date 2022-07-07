@@ -209,20 +209,21 @@ void ReadFromRemote::addPipe(Pipes & pipes, const ClusterProxy::SelectStreamFact
 void ReadFromRemote::initializePipeline(QueryPipelineBuilder & pipeline, const BuildQueryPipelineSettings &)
 {
     Pipes pipes;
-
+    LOG_DEBUG(log, "Merging shards results from {} shards", shard_count);
     for (const auto & shard : shards)
     {
+        LOG_DEBUG(log,"Adding remote pipe times");
         if (shard.lazy)
             addLazyPipe(pipes, shard);
         else
             addPipe(pipes, shard);
     }
-
+    
     auto pipe = Pipe::unitePipes(std::move(pipes));
 
     for (const auto & processor : pipe.getProcessors())
         processor->setStorageLimits(storage_limits);
-
+    
     pipeline.init(std::move(pipe));
 }
 
