@@ -4,7 +4,7 @@ import os
 import unittest
 from unittest.mock import patch, MagicMock
 
-from env_helper import GITHUB_RUN_URL
+from env_helper import GITHUB_RUN_URL, DOCKER_REPO
 from pr_info import PRInfo
 import docker_images_check as di
 
@@ -30,7 +30,7 @@ class TestDockerImageCheck(unittest.TestCase):
         images = sorted(
             list(
                 di.get_changed_docker_images(
-                    pr_info, di.get_images_dict("/", self.docker_images_path)
+                    pr_info, di.get_images_dict("/", self.docker_images_path), DOCKER_REPO
                 )
             )
         )
