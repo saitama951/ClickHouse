@@ -634,7 +634,7 @@ void AggregatingTransform::initGenerate()
         Int64 curent_memory_usage = total_memory_tracker.get();
         LOG_DEBUG(log,"current memory usage in after file merge ={} ",curent_memory_usage);
 
-        addMergingAggregatedMemoryEfficientTransform(pipe, params, temporary_data_merge_threads);
+        addMergingAggregatedMemoryEfficientTransform(pipe, params, 1);
 
         processors = Pipe::detachProcessors(std::move(pipe));
     }

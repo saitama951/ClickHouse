@@ -29,7 +29,8 @@ void GroupingAggregatedTransform::readFromAllInputs()
 {
     auto in = inputs.begin();
     read_from_all_inputs = true;
-
+    LOG_TRACE(&Poco::Logger::get("GroupingAggregatedTransform"), "Reading from All Inputs" );
+    LOG_DEBUG(&Poco::Logger::get("GroupingAggregatedTransform"),"num of input s=  {}" , num_inputs);
     for (size_t i = 0; i < num_inputs; ++i, ++in)
     {
         if (in->isFinished())
