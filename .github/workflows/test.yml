@@ -31,7 +31,7 @@ jobs:
       - name: Images check
         run: |
           cd "$GITHUB_WORKSPACE/tests/ci"
-          python3 docker_images_check.py --suffix aarch64 --all
+          python3 docker_images_check.py --suffix aarch64
       - name: Upload images files to artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -48,7 +48,7 @@ jobs:
       - name: Images check
         run: |
           cd "$GITHUB_WORKSPACE/tests/ci"
-          python3 docker_images_check.py --suffix amd64 --all
+          python3 docker_images_check.py --suffix amd64
       - name: Upload images files to artifacts
         uses: actions/upload-artifact@v2
         with:
