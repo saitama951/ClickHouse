@@ -23,6 +23,16 @@ GroupingAggregatedTransform::GroupingAggregatedTransform(
     , last_bucket_number(num_inputs, -1)
     , read_from_input(num_inputs, false)
 {
+
+    auto info = std::make_shared<ChunksToMerge>();
+    info->bucket_num = bucket;
+    info->is_overflows = is_overflows;
+    info->chunks = std::make_unique<Chunks>(std::move(chunks));
+
+    Chunk chunk;
+    chunk.setChunkInfo(std::move(info));
+    output.push(std::move(chunk));
+}
 }
 
 void GroupingAggregatedTransform::readFromAllInputs()
@@ -56,16 +66,6 @@ void GroupingAggregatedTransform::readFromAllInputs()
 void GroupingAggregatedTransform::pushData(Chunks chunks, Int32 bucket, bool is_overflows)
 {
     auto & output = outputs.front();
-
-    auto info = std::make_shared<ChunksToMerge>();
-    info->bucket_num = bucket;
-    info->is_overflows = is_overflows;
-    info->chunks = std::make_unique<Chunks>(std::move(chunks));
-
-    Chunk chunk;
-    chunk.setChunkInfo(std::move(info));
-    output.push(std::move(chunk));
-}
 
 bool GroupingAggregatedTransform::tryPushTwoLevelData()
 {
@@ -459,6 +459,7 @@ IProcessor::Status SortingAggregatedTransform::prepare()
     bool all_finished = true;
 
     /// Try read anything.
+    LOG_DEBUG(&Poco::Logger::get("SortingAggregatedTransform"),"num_inputs= {}",num_inputs);
     auto in = inputs.begin();
     for (size_t input_num = 0; input_num < num_inputs; ++input_num, ++in)
     {

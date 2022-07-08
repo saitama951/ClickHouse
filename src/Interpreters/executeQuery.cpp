@@ -163,6 +163,7 @@ static void logQuery(const String & query, ContextPtr context, bool internal, Qu
             transaction_info,
             comment,
             toOneLineQuery(query),
+        
             QueryProcessingStage::toString(stage));
 
         if (client_info.client_trace_context.trace_id != UUID())
@@ -409,6 +410,7 @@ static std::tuple<ASTPtr, BlockIO> executeQueryImpl(
                 throw Exception(
                     ErrorCodes::INVALID_TRANSACTION,
                     "Cannot execute query because current transaction failed. Expecting ROLLBACK statement");
+
         }
 
         /// Interpret SETTINGS clauses as early as possible (before invoking the corresponding interpreter),

@@ -2432,6 +2432,7 @@ void InterpreterSelectQuery::executeAggregation(QueryPlan & query_plan, const Ac
         std::move(group_by_info),
         std::move(group_by_sort_description),
         should_produce_results_in_order_of_bucket_number);
+
     query_plan.addStep(std::move(aggregating_step));
 }
 
