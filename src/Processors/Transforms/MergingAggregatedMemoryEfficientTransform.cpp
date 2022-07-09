@@ -23,16 +23,6 @@ GroupingAggregatedTransform::GroupingAggregatedTransform(
     , last_bucket_number(num_inputs, -1)
     , read_from_input(num_inputs, false)
 {
-
-    auto info = std::make_shared<ChunksToMerge>();
-    info->bucket_num = bucket;
-    info->is_overflows = is_overflows;
-    info->chunks = std::make_unique<Chunks>(std::move(chunks));
-
-    Chunk chunk;
-    chunk.setChunkInfo(std::move(info));
-    output.push(std::move(chunk));
-}
 }
 
 void GroupingAggregatedTransform::readFromAllInputs()
@@ -66,6 +56,16 @@ void GroupingAggregatedTransform::readFromAllInputs()
 void GroupingAggregatedTransform::pushData(Chunks chunks, Int32 bucket, bool is_overflows)
 {
     auto & output = outputs.front();
+     auto info = std::make_shared<ChunksToMerge>();
+    info->bucket_num = bucket;
+    info->is_overflows = is_overflows;
+    info->chunks = std::make_unique<Chunks>(std::move(chunks));
+
+    Chunk chunk;
+    chunk.setChunkInfo(std::move(info));
+    output.push(std::move(chunk));
+}
+
 
 bool GroupingAggregatedTransform::tryPushTwoLevelData()
 {
@@ -543,7 +543,7 @@ void addMergingAggregatedMemoryEfficientTransform(
     LOG_DEBUG(log,"Heena - memory usage addMergingAggregatedMemoryEfficientTransform  =  {}",formatReadableSizeWithBinarySuffix(query_memory_usage));
     
     pipe.addTransform(std::make_shared<GroupingAggregatedTransform>(pipe.getHeader(), pipe.numOutputPorts(), params));
-
+    LOG_DEBUG(log,"Heena - I am here and called times = {}  and number of output port = ",num_merging_processors,pipe.numOutputPorts());
     if (num_merging_processors <= 1)
     {
         /// --> GroupingAggregated --> MergingAggregatedBucket -->
@@ -556,7 +556,9 @@ void addMergingAggregatedMemoryEfficientTransform(
     /// -->                                        --> MergingAggregatedBucket -->
 
     pipe.resize(num_merging_processors);
+    LOG_TRACE(log,"Heena - I am after resize the pipe and called times ");
 
+    
     pipe.addSimpleTransform([params](const Block &)
     {
         return std::make_shared<MergingAggregatedBucketTransform>(params);

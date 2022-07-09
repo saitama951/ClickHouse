@@ -177,8 +177,8 @@ private:
     AggregatedDataVariants & variants;
     size_t max_threads = 1;
     size_t temporary_data_merge_threads = 1;
-    bool is_distributed_query;
-    UInt64 max_bytes_before_external_group_by;
+    bool is_distributed_query = 0;
+    UInt64 max_bytes_before_external_group_by = 0;
     /// TODO: calculate time only for aggregation.
     Stopwatch watch;
 

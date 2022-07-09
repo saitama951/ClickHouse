@@ -207,6 +207,8 @@ void AggregatingStep::transformPipeline(QueryPipelineBuilder & pipeline, const B
                 }
                 else
                 {
+                    LOG_TRACE(&Poco::Logger::get("MergingAggregatedStep"),"Calling AggregatingTransform at 3");
+
                     auto aggregation_for_set = std::make_shared<AggregatingTransform>(input_header, transform_params_for_set);
                     connect(*ports[i], aggregation_for_set->getInputs().front());
                     ports[i] = &aggregation_for_set->getOutputs().front();
@@ -390,6 +392,8 @@ void AggregatingStep::transformPipeline(QueryPipelineBuilder & pipeline, const B
     }
     else
     {
+        LOG_TRACE(&Poco::Logger::get("MergingAggregatedStep"),"Calling AggregatingTransform at 4");
+
         pipeline.addSimpleTransform([&](const Block & header)
         {
             return std::make_shared<AggregatingTransform>(header, transform_params);

@@ -388,7 +388,7 @@ private:
 
 AggregatingTransform::AggregatingTransform(Block header, AggregatingTransformParamsPtr params_)
     : AggregatingTransform(std::move(header), std::move(params_)
-    , std::make_unique<ManyAggregatedData>(1), 0, 1, 1)
+    , std::make_unique<ManyAggregatedData>(1), 0, 1, 1,0,0)
 {
 }
 
@@ -583,6 +583,7 @@ void AggregatingTransform::initGenerate()
     LOG_DEBUG(log, "Size of the variant = {}",variants.size());
 
     LOG_DEBUG(log, "No of files here 1 ={}" , params->aggregator.getTemporaryFiles().files.size());
+    variants.~AggregatedDataVariants();
     }
 
     if (many_data->num_finished.fetch_add(1) + 1 < many_data->variants.size())
@@ -639,7 +640,7 @@ void AggregatingTransform::initGenerate()
         auto thread_group = CurrentThread::getGroup();
     Int64 query_memory_limit = thread_group->memory_tracker.getHardLimit();
 
-        if (is_distributed_query && max_bytes_before_external_group_by_ && (files.sum_size_compressed > query_memory_limit - max_bytes_before_external_group_by  ) )
+        if (is_distributed_query && max_bytes_before_external_group_by && (files.sum_size_compressed > query_memory_limit - max_bytes_before_external_group_by  ) )
             temporary_data_merge_threads =1;
 
         addMergingAggregatedMemoryEfficientTransform(pipe, params, temporary_data_merge_threads);
