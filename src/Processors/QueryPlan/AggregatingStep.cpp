@@ -101,10 +101,12 @@ AggregatingStep::AggregatingStep(
     , storage_has_evenly_distributed_read(storage_has_evenly_distributed_read_)
     , group_by_use_nulls(group_by_use_nulls_)
     , group_by_info(std::move(group_by_info_))
+   // , is_distributed_query(is_distributed_query_)
+   // , max_bytes_before_external_group_by(max_bytes_before_external_group_by_)
     , group_by_sort_description(std::move(group_by_sort_description_))
     , should_produce_results_in_order_of_bucket_number(should_produce_results_in_order_of_bucket_number_)
-  //  , is_distributed_query(is_distributed_query_)
-   // , max_bytes_before_external_group_by(max_bytes_before_external_group_by_)
+
+
 {
 }
 
@@ -197,7 +199,7 @@ void AggregatingStep::transformPipeline(QueryPipelineBuilder & pipeline, const B
                     auto many_data = std::make_shared<ManyAggregatedData>(streams);
                     for (size_t j = 0; j < streams; ++j)
                     {
-                        auto aggregation_for_set = std::make_shared<AggregatingTransform>(input_header, transform_params_for_set, many_data, j, merge_threads, temporary_data_merge_threads, is_distributed_query, max_bytes_before_external_group_by);
+                        auto aggregation_for_set = std::make_shared<AggregatingTransform>(input_header, transform_params_for_set, many_data, j, merge_threads, temporary_data_merge_threads);//, is_distributed_query, max_bytes_before_external_group_by);
                         // For each input stream we have `grouping_sets_size` copies, so port index
                         // for transform #j should skip ports of first (j-1) streams.
                         connect(*ports[i + grouping_sets_size * j], aggregation_for_set->getInputs().front());
@@ -382,7 +384,7 @@ void AggregatingStep::transformPipeline(QueryPipelineBuilder & pipeline, const B
         size_t counter = 0;
         pipeline.addSimpleTransform([&](const Block & header)
         {
-            return std::make_shared<AggregatingTransform>(header, transform_params, many_data, counter++, merge_threads, temporary_data_merge_threads, is_distributed_query, max_bytes_before_external_group_by);
+            return std::make_shared<AggregatingTransform>(header, transform_params, many_data, counter++, merge_threads, temporary_data_merge_threads);// is_distributed_query);, max_bytes_before_external_group_by);
         });
 
         /// We add the explicit resize here, but not in case of aggregating in order, since AIO don't use two-level hash tables and thus returns only buckets with bucket_number = -1.

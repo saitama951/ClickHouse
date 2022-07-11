@@ -2430,9 +2430,15 @@ void InterpreterSelectQuery::executeAggregation(QueryPlan & query_plan, const Ac
         storage_has_evenly_distributed_read,
         settings.group_by_use_nulls,
         std::move(group_by_info),
+<<<<<<< HEAD
         std::move(group_by_sort_description),
         should_produce_results_in_order_of_bucket_number);
 
+=======
+        std::move(group_by_sort_description));
+       // context->isDistributed(),
+        //settings.max_bytes_before_external_group_by);
+>>>>>>> Checking two transform
     query_plan.addStep(std::move(aggregating_step));
 }
 

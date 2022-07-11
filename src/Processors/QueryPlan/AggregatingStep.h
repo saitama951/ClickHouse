@@ -43,6 +43,7 @@ public:
 //        bool is_distributed_query_,
   //      UInt64 max_bytes_before_external_group_by_);
 
+
     String getName() const override { return "Aggregating"; }
 
     void transformPipeline(QueryPipelineBuilder & pipeline, const BuildQueryPipelineSettings &) override;
@@ -64,8 +65,8 @@ private:
     size_t aggregation_in_order_max_block_bytes;
     size_t merge_threads;
     size_t temporary_data_merge_threads;
-    bool is_distributed_query;
-    UInt64 max_bytes_before_external_group_by;
+    //bool is_distributed_query;
+    //UInt64 max_bytes_before_external_group_by;
 
     bool storage_has_evenly_distributed_read;
     bool group_by_use_nulls;

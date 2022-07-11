@@ -388,7 +388,7 @@ private:
 
 AggregatingTransform::AggregatingTransform(Block header, AggregatingTransformParamsPtr params_)
     : AggregatingTransform(std::move(header), std::move(params_)
-    , std::make_unique<ManyAggregatedData>(1), 0, 1, 1,0,0)
+    , std::make_unique<ManyAggregatedData>(1), 0, 1, 1)
 {
 }
 
@@ -398,9 +398,9 @@ AggregatingTransform::AggregatingTransform(
     ManyAggregatedDataPtr many_data_,
     size_t current_variant,
     size_t max_threads_,
-    size_t temporary_data_merge_threads_,
-    bool is_distributed_query_,
-    UInt64 max_bytes_before_external_group_by_)
+    size_t temporary_data_merge_threads_)
+   //bool is_distributed_query_,
+    //UInt64 max_bytes_before_external_group_by_)
     : IProcessor({std::move(header)}, {params_->getHeader()})
     , params(std::move(params_))
     , key_columns(params->params.keys_size)
@@ -409,8 +409,8 @@ AggregatingTransform::AggregatingTransform(
     , variants(*many_data->variants[current_variant])
     , max_threads(std::min(many_data->variants.size(), max_threads_))
     , temporary_data_merge_threads(temporary_data_merge_threads_)
-    , is_distributed_query(is_distributed_query_)
-    , max_bytes_before_external_group_by(max_bytes_before_external_group_by_)
+   // , is_distributed_query(is_distributed_query_)
+    //, max_bytes_before_external_group_by(max_bytes_before_external_group_by_)
 {
 }
 
@@ -639,9 +639,11 @@ void AggregatingTransform::initGenerate()
         
         auto thread_group = CurrentThread::getGroup();
     Int64 query_memory_limit = thread_group->memory_tracker.getHardLimit();
+LOG_DEBUG(log,"query_memory_limit in initGenratw()= {}" , query_memory_limit);
 
-        if (is_distributed_query && max_bytes_before_external_group_by && (files.sum_size_compressed > query_memory_limit - max_bytes_before_external_group_by  ) )
-            temporary_data_merge_threads =1;
+
+       // if (is_distributed_query && max_bytes_before_external_group_by && (files.sum_size_compressed > query_memory_limit - max_bytes_before_external_group_by  ) )
+        //    temporary_data_merge_threads =1;
 
         addMergingAggregatedMemoryEfficientTransform(pipe, params, temporary_data_merge_threads);
 

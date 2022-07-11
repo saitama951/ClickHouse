@@ -358,13 +358,13 @@ QueryPlanPtr MergeTreeDataSelectExecutor::read(
                 auto temporary_data_merge_threads = settings.aggregation_memory_efficient_merge_threads
                     ? static_cast<size_t>(settings.aggregation_memory_efficient_merge_threads)
                     : static_cast<size_t>(settings.max_threads);
-                bool is_distributed_query = 0;
+                //bool is_distributed_query = 0;
                 
 
                 pipe.addSimpleTransform([&](const Block & header)
                 {
                     return std::make_shared<AggregatingTransform>(
-                        header, transform_params, many_data, counter++, merge_threads, temporary_data_merge_threads,is_distributed_query,settings.max_bytes_before_external_group_by);
+                        header, transform_params, many_data, counter++, merge_threads, temporary_data_merge_threads);//,is_distributed_query,settings.max_bytes_before_external_group_by);
                 });
             };
 
@@ -383,7 +383,7 @@ QueryPlanPtr MergeTreeDataSelectExecutor::read(
                 auto temporary_data_merge_threads = settings.aggregation_memory_efficient_merge_threads
                     ? static_cast<size_t>(settings.aggregation_memory_efficient_merge_threads)
                     : static_cast<size_t>(settings.max_threads);
-                 bool is_distributed_query = 0;
+                 //bool is_distributed_query = 0;
 
                 InputOrderInfoPtr group_by_info = query_info.projection->input_order_info;
                 SortDescription group_by_sort_description;
