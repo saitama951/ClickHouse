@@ -9,7 +9,7 @@ import sys
 
 from github import Github
 
-from env_helper import TEMP_PATH, REPO_COPY, REPORTS_PATH
+from env_helper import TEMP_PATH, REPO_COPY, REPORTS_PATH, DOCKER_REPO
 from s3_helper import S3Helper
 from get_robot_token import get_best_robot_token
 from pr_info import FORCE_TESTS_LABEL, PRInfo
@@ -56,9 +56,9 @@ def get_additional_envs(check_name, run_by_hash_num, run_by_hash_total):
 
 def get_image_name(check_name):
     if "stateless" in check_name.lower():
-        return "clickhouse/stateless-test"
+        return f"{DOCKER_REPO}/clickhouse/stateless-test"
     if "stateful" in check_name.lower():
-        return "clickhouse/stateful-test"
+        return f"{DOCKER_REPO}/clickhouse/stateful-test"
     else:
         raise Exception(f"Cannot deduce image name based on check name {check_name}")
 
