@@ -583,7 +583,7 @@ void AggregatingTransform::initGenerate()
     LOG_DEBUG(log, "Size of the variant = {}",variants.size());
 
     LOG_DEBUG(log, "No of files here 1 ={}" , params->aggregator.getTemporaryFiles().files.size());
-    variants.~AggregatedDataVariants();
+   // variants.~AggregatedDataVariants();
     }
 
     if (many_data->num_finished.fetch_add(1) + 1 < many_data->variants.size())
@@ -609,6 +609,7 @@ void AggregatingTransform::initGenerate()
             ///  because at the time thread has finished, no data has been flushed to disk, and then some were.
             for (auto & cur_variants : many_data->variants)
             {
+        
                 if (cur_variants->isConvertibleToTwoLevel())
                     cur_variants->convertToTwoLevel();
 
