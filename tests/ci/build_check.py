@@ -152,7 +152,7 @@ def check_for_success_run(
             log_url = f"{S3_ENDPOINT}/{S3_BUILDS_BUCKET}/{url_escaped}"
         else:
             build_urls.append(
-                f"{S3_ENDPOINT}{S3_BUILDS_BUCKET}/{url_escaped}"
+                f"{S3_ENDPOINT}/{S3_BUILDS_BUCKET}/{url_escaped}"
             )
     if not log_url:
         # log is uploaded the last, so if there's no log we need to rerun the build
