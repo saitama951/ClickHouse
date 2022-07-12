@@ -149,7 +149,7 @@ def check_for_success_run(
     for url in build_results:
         url_escaped = url.replace("+", "%2B").replace(" ", "%20")
         if BUILD_LOG_NAME in url:
-            log_url = f"{S3_ENDPOINT}{S3_BUILDS_BUCKET}/{url_escaped}"
+            log_url = f"{S3_ENDPOINT}/{S3_BUILDS_BUCKET}/{url_escaped}"
         else:
             build_urls.append(
                 f"{S3_ENDPOINT}{S3_BUILDS_BUCKET}/{url_escaped}"
