@@ -160,5 +160,7 @@ IMPLEMENT_SETTING_ENUM(MsgPackUUIDRepresentation , ErrorCodes::BAD_ARGUMENTS,
 
 IMPLEMENT_SETTING_ENUM(Dialect, ErrorCodes::BAD_ARGUMENTS,
     {{"clickhouse", Dialect::clickhouse},
-     {"kusto", Dialect::kusto}})
+     {"kusto", Dialect::kusto},
+     {"kusto_auto", Dialect::kusto_auto}})
+
 }
