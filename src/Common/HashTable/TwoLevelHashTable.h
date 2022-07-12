@@ -93,6 +93,8 @@ public:
 
     explicit TwoLevelHashTable(size_t size_hint)
     {
+        LOG_DEBUG(&Poco::Logger::get("HASHTABLE"),"Size of the hash table={}",size_hint);
+        LOG_DEBUG(&Poco::Logger::get("HASHTABLE"),"size of one impl ={} ", size_hint / NUM_BUCKETS);
         for (auto & impl : impls)
             impl.reserve(size_hint / NUM_BUCKETS);
     }

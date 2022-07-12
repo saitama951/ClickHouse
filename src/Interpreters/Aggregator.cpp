@@ -1645,6 +1645,7 @@ void Aggregator::writeToTemporaryFileImpl(
     {
         Block block = convertOneBucketToBlock(data_variants, method, data_variants.aggregates_pool, false, bucket);
         out.write(block);
+        LOG_DEBUG(log,"Block size in writeToTemporaryFileImpl= {}", ReadableSize(block.bytes()));
         update_max_sizes(block);
     }
 

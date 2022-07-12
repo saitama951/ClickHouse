@@ -529,9 +529,11 @@ void AggregatingTransform::consume(Chunk chunk)
 
     src_rows += num_rows;
     src_bytes += chunk.bytes();
+    LOG_DEBUG(log,"total bytes consumed by Aggregrating transform = {}",src_bytes);
 
     if (params->params.only_merge)
     {
+        LOG_TRACE(log,"Inside consume and callimg mergeonBlock()");
         auto block = getInputs().front().getHeader().cloneWithColumns(chunk.detachColumns());
         block = materializeBlock(block);
         if (!params->aggregator.mergeOnBlock(block, variants, no_more_keys))
@@ -539,6 +541,8 @@ void AggregatingTransform::consume(Chunk chunk)
     }
     else
     {
+        LOG_TRACE(log,"Inside consume and calling executeonBlock()");
+
         if (!params->aggregator.executeOnBlock(chunk.detachColumns(), 0, num_rows, variants, key_columns, aggregate_columns, no_more_keys))
             is_consume_finished = true;
     }
@@ -571,7 +575,7 @@ void AggregatingTransform::initGenerate()
         ReadableSize(src_bytes / elapsed_seconds));
     LOG_DEBUG(log, "Size of the variant = {}",variants.size());
 
-    LOG_DEBUG(log, "No of files before this loop ={}" , params->aggregator.getTemporaryFiles().files.size());
+    LOG_DEBUG(log, "No of files before this loop ={} and size = {}" , params->aggregator.getTemporaryFiles().files.size(), ReadableSize(params->aggregator.getTemporaryFiles().sum_size_uncompressed));
     if (params->aggregator.hasTemporaryFiles())
     {
         if (variants.isConvertibleToTwoLevel())
@@ -582,7 +586,7 @@ void AggregatingTransform::initGenerate()
 
     LOG_DEBUG(log, "Size of the variant = {}",variants.size());
 
-    LOG_DEBUG(log, "No of files here 1 ={}" , params->aggregator.getTemporaryFiles().files.size());
+    LOG_DEBUG(log, "No of files here 1 ={} and size = {}" , params->aggregator.getTemporaryFiles().files.size(), ReadableSize(params->aggregator.getTemporaryFiles().sum_size_uncompressed));
    // variants.~AggregatedDataVariants();
     }
 
@@ -616,6 +620,9 @@ void AggregatingTransform::initGenerate()
                 if (!cur_variants->empty())
                     params->aggregator.writeToTemporaryFile(*cur_variants);
             }
+        LOG_DEBUG(log, "Size of the variant at 2 = {}",variants.size());
+
+        LOG_DEBUG(log, "No of files here 2 ={} and size = {}" , params->aggregator.getTemporaryFiles().files.size(), ReadableSize(params->aggregator.getTemporaryFiles().sum_size_uncompressed));
         }
 
         const auto & files = params->aggregator.getTemporaryFiles();
