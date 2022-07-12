@@ -15,6 +15,7 @@ from env_helper import (
     IMAGES_PATH,
     REPO_COPY,
     S3_BUILDS_BUCKET,
+    S3_ENDPOINT,
     TEMP_PATH,
     DOCKER_USER,
     DOCKER_REPO,
@@ -148,10 +149,10 @@ def check_for_success_run(
     for url in build_results:
         url_escaped = url.replace("+", "%2B").replace(" ", "%20")
         if BUILD_LOG_NAME in url:
-            log_url = f"https://s3.amazonaws.com/{S3_BUILDS_BUCKET}/{url_escaped}"
+            log_url = f"{S3_ENDPOINT}{S3_BUILDS_BUCKET}/{url_escaped}"
         else:
             build_urls.append(
-                f"https://s3.amazonaws.com/{S3_BUILDS_BUCKET}/{url_escaped}"
+                f"{S3_ENDPOINT}{S3_BUILDS_BUCKET}/{url_escaped}"
             )
     if not log_url:
         # log is uploaded the last, so if there's no log we need to rerun the build

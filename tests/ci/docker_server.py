@@ -16,7 +16,7 @@ from build_check import get_release_or_pr
 from clickhouse_helper import ClickHouseHelper, prepare_tests_results_for_clickhouse
 from commit_status_helper import post_commit_status
 from docker_images_check import DockerImage
-from env_helper import CI, GITHUB_RUN_URL, RUNNER_TEMP, S3_BUILDS_BUCKET, DOCKER_USER, DOCKER_REPO
+from env_helper import CI, DOCKER_USER, DOCKER_REPO, GITHUB_RUN_URL, RUNNER_TEMP, S3_BUILDS_BUCKET, S3_ENDPOINT
 from get_robot_token import get_best_robot_token, get_parameter_from_ssm
 from git_helper import Git
 from pr_info import PRInfo
@@ -309,7 +309,7 @@ def main():
         pr_info = PRInfo()
         release_or_pr, _ = get_release_or_pr(pr_info, args.version)
         args.bucket_prefix = (
-            f"https://s3.amazonaws.com/{S3_BUILDS_BUCKET}/"
+            f"{S3_ENDPOINT}/{S3_BUILDS_BUCKET}/"
             f"{release_or_pr}/{pr_info.sha}"
         )
 
