@@ -580,11 +580,12 @@ void AggregatingTransform::initGenerate()
     {
         if (variants.isConvertibleToTwoLevel())
             variants.convertToTwoLevel();
+        LOG_DEBUG(log, "Size of the variant = {}",variants.size());
+
         /// Flush data in the RAM to disk also. It's easier than merging on-disk and RAM data.
         if (!variants.empty())
             params->aggregator.writeToTemporaryFile(variants);
 
-    LOG_DEBUG(log, "Size of the variant = {}",variants.size());
 
     LOG_DEBUG(log, "No of files here 1 ={} and size = {}" , params->aggregator.getTemporaryFiles().files.size(), ReadableSize(params->aggregator.getTemporaryFiles().sum_size_uncompressed));
    // variants.~AggregatedDataVariants();
@@ -616,11 +617,11 @@ void AggregatingTransform::initGenerate()
         
                 if (cur_variants->isConvertibleToTwoLevel())
                     cur_variants->convertToTwoLevel();
-
+                LOG_DEBUG(log, "Size of the variant at 2 = {}",cur_variants.size());
+                
                 if (!cur_variants->empty())
                     params->aggregator.writeToTemporaryFile(*cur_variants);
             }
-        LOG_DEBUG(log, "Size of the variant at 2 = {}",variants.size());
 
         LOG_DEBUG(log, "No of files here 2 ={} and size = {}" , params->aggregator.getTemporaryFiles().files.size(), ReadableSize(params->aggregator.getTemporaryFiles().sum_size_uncompressed));
         }
