@@ -9,9 +9,9 @@ import sys
 
 from github import Github
 
-from env_helper import TEMP_PATH, REPO_COPY, REPORTS_PATH, DOCKER_REPO
+from env_helper import TEMP_PATH, REPO_COPY, REPORTS_PATH, DOCKER_REPO, DOCKER_USER
 from s3_helper import S3Helper
-from get_robot_token import get_best_robot_token
+from get_robot_token import get_best_robot_token, get_parameter_from_ssm
 from pr_info import FORCE_TESTS_LABEL, PRInfo
 from build_download_helper import download_all_deb_packages
 from download_release_packets import download_last_release
@@ -258,6 +258,13 @@ if __name__ == "__main__":
                     fpath, description=NO_CHANGES_MSG, state=state, report_url="null"
                 )
             sys.exit(0)
+
+    subprocess.check_output(  # pylint: disable=unexpected-keyword-arg
+        "docker login {} --username '{}' --password-stdin".format(DOCKER_REPO, DOCKER_USER),
+        input=get_parameter_from_ssm("dockerhub_robot_password"),
+        encoding="utf-8",
+        shell=True,
+    )
 
     image_name = get_image_name(check_name)
     docker_image = get_image_with_version(reports_path, image_name)
