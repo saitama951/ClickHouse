@@ -49,7 +49,10 @@ void GroupingAggregatedTransform::readFromAllInputs()
 
         auto chunk = in->pull();
         read_from_input[i] = true;
+        LOG_DEBUG(&Poco::Logger::get("GroupingAggregatedTransform"),"CHunk size from temp file = {} is = {}",formatReadableSizeWithBinarySuffix(chunk.size()),i );
         addChunk(std::move(chunk), i);
+        LOG_DEBUG(&Poco::Logger::get("GroupingAggregatedTransform"),"chunks_map size= {} ",formatReadableSizeWithBinarySuffix(chunks_map.size()),i );
+
     }
 }
 
@@ -116,6 +119,7 @@ bool GroupingAggregatedTransform::tryPushOverflowData()
 {
     if (overflow_chunks.empty())
         return false;
+        
 
     pushData(std::move(overflow_chunks), -1, true);
     return true;
@@ -268,6 +272,7 @@ void GroupingAggregatedTransform::addChunk(Chunk chunk, size_t input)
             single_level_chunks.emplace_back(std::move(chunk));
         else
         {
+            LOG_DEBUG(&Poco::Logger::get("GroupingAggregatedTransform"),"bucket number in addChunk = {} ", bucket);
             chunks_map[bucket].emplace_back(std::move(chunk));
             has_two_level = true;
             last_bucket_number[input] = bucket;
@@ -543,7 +548,7 @@ void addMergingAggregatedMemoryEfficientTransform(
     LOG_DEBUG(log,"Heena - memory usage addMergingAggregatedMemoryEfficientTransform  =  {}",formatReadableSizeWithBinarySuffix(query_memory_usage));
     
     pipe.addTransform(std::make_shared<GroupingAggregatedTransform>(pipe.getHeader(), pipe.numOutputPorts(), params));
-    LOG_DEBUG(log,"Heena - I am here and called times = {}  and number of output port = ",num_merging_processors,pipe.numOutputPorts());
+    LOG_DEBUG(log,"Heena - I am here and called times = {}  and number of output port = ",num_merging_processors, pipe.numOutputPorts());
     if (num_merging_processors <= 1)
     {
         /// --> GroupingAggregated --> MergingAggregatedBucket -->
