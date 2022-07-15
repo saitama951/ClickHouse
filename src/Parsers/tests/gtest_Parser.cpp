@@ -473,5 +473,110 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         {
             "Customers | where FirstName !startswith 'pet'",
             "SELECT *\nFROM Customers\nWHERE NOT (FirstName ILIKE 'pet%')"
+        },
+        {
+            "Customers | where Age in ((Customers|project Age|where Age < 30))",
+            "SELECT *\nFROM Customers\nWHERE Age IN (\n    SELECT Age\n    FROM Customers\n    WHERE Age < 30\n)"
+        },
+        {
+            "Customers | project ipv4_is_in_range('127.0.0.1', '127.0.0.1')",
+            "SELECT '127.0.0.1' = '127.0.0.1'\nFROM Customers"
+        },
+        {
+            "Customers | project ipv4_is_in_range('192.168.1.6', '192.168.1.1/24')",
+            "SELECT isIPAddressInRange('192.168.1.6', '192.168.1.1/24')\nFROM Customers"
+        },
+        {
+            "Customers | project ipv4_is_private('192.168.1.6')",
+            "SELECT isIPAddressInRange('192.168.1.6', '10.0.0.0/8') OR isIPAddressInRange('192.168.1.6', '172.16.0.0/12') OR isIPAddressInRange('192.168.1.6', '192.168.0.0/16')\nFROM Customers"
+        },
+        {
+            "Customers | project ipv4_is_private('192.168.1.6/24')",
+            "SELECT (isIPAddressInRange(IPv4NumToString((IPv4CIDRToRange(toIPv4('192.168.1.6'), 24) AS range).1) AS begin, '10.0.0.0/8') AND isIPAddressInRange(IPv4NumToString(range.2) AS end, '10.0.0.0/8')) OR (isIPAddressInRange(begin, '172.16.0.0/12') AND isIPAddressInRange(end, '172.16.0.0/12')) OR (isIPAddressInRange(begin, '192.168.0.0/16') AND isIPAddressInRange(end, '192.168.0.0/16'))\nFROM Customers"
+        },
+        {
+            "Customers | project ipv4_netmask_suffix('192.168.1.1/24')",
+            "SELECT if(isIPv4String('192.168.1.1') AND ((24 >= 1) AND (24 <= 32)), 24, NULL)\nFROM Customers"
+        },
+        {
+            "Customers | project ipv4_netmask_suffix('192.168.1.1')",
+            "SELECT if(isIPv4String('192.168.1.1') AND ((32 >= 1) AND (32 <= 32)), 32, NULL)\nFROM Customers"
+        },
+        {
+            "Customers | project parse_ipv4('127.0.0.1')",
+            "SELECT toIPv4OrNull('127.0.0.1')\nFROM Customers"
+        },
+        {
+            "Customers | project parse_ipv6('127.0.0.1')",
+            "SELECT toIPv6OrNull('127.0.0.1')\nFROM Customers"
+        },
+        {
+            "Customers|where Occupation has_any ('Skilled','abcd')",
+            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, 'Skilled') OR hasTokenCaseInsensitive(Occupation, 'abcd')"
+        },
+        {
+            "Customers|where Occupation has_all ('Skilled','abcd')",
+            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, 'Skilled') AND hasTokenCaseInsensitive(Occupation, 'abcd')"
+        },
+        {
+            "Customers|where Occupation has_all (strcat('Skill','ed'),'Manual')",
+            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, concat('Skill', 'ed')) AND hasTokenCaseInsensitive(Occupation, 'Manual')"
+        },
+        {
+            "Customers | where Occupation == strcat('Pro','fessional') | take 1",
+            "SELECT *\nFROM Customers\nWHERE Occupation = concat('Pro', 'fessional')\nLIMIT 1"
+        },
+        {
+            "Customers | project countof('The cat sat on the mat', 'at')",
+            "SELECT countSubstrings('The cat sat on the mat', 'at')\nFROM Customers"
+        },
+        {
+            "Customers | project countof('The cat sat on the mat', 'at', 'normal')",
+            "SELECT countSubstrings('The cat sat on the mat', 'at')\nFROM Customers"
+        },
+        {
+            "Customers | project countof('The cat sat on the mat', 'at', 'regex')",
+            "SELECT countMatches('The cat sat on the mat', 'at')\nFROM Customers"
+        },
+        {
+            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 0, 'The price of PINEAPPLE ice cream is 10')",
+            "SELECT extract('The price of PINEAPPLE ice cream is 10', '\\b[A-Z]+\\b.+\\b\\\\d+')\nFROM Customers"
+        },
+        {
+            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 1, 'The price of PINEAPPLE ice cream is 20')",
+            "SELECT extract('The price of PINEAPPLE ice cream is 20', '\\b[A-Z]+\\b')\nFROM Customers"
+        },
+        {
+            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 2, 'The price of PINEAPPLE ice cream is 30')",
+            "SELECT extract('The price of PINEAPPLE ice cream is 30', '\\b\\\\d+')\nFROM Customers"
+        },
+        {
+            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 2, 'The price of PINEAPPLE ice cream is 40', typeof(int))",
+            "SELECT CAST(extract('The price of PINEAPPLE ice cream is 40', '\\b\\\\d+'), 'Int32')\nFROM Customers"
+        },
+        {
+            "Customers | project extract_all('(\\w)(\\w+)(\\w)','The price of PINEAPPLE ice cream is 50')",
+            "SELECT extractAllGroups('The price of PINEAPPLE ice cream is 50', '(\\\\w)(\\\\w+)(\\\\w)')\nFROM Customers"
+        },
+        {
+            " Customers | project split('aa_bb', '_')",
+            "SELECT splitByString('_', 'aa_bb')\nFROM Customers"
+        },
+        {
+            "Customers | project split('aaa_bbb_ccc', '_', 1)",
+            "SELECT arrayPushBack([], splitByString('_', 'aaa_bbb_ccc')[2])\nFROM Customers"
+        },
+        {
+            "Customers | project strcat_delim('-', '1', '2', 'A')",
+            "SELECT concat('1', '-', '2', '-', 'A')\nFROM Customers"
+        },
+        {
+            "Customers | project indexof('abcdefg','cde')",
+            "SELECT position('abcdefg', 'cde', 1) - 1\nFROM Customers"
+        },
+        {
+            "Customers | project indexof('abcdefg','cde', 2) ",
+            "SELECT position('abcdefg', 'cde', 3) - 1\nFROM Customers"
+
         }
 })));

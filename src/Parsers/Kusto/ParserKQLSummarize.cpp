@@ -112,51 +112,26 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
     auto begin = pos;
     ASTPtr sub_qurery_table;
 
-// rewrite this part, make it resusable (may contains bin etc, and please inmplement summarize age= avg(Age) for sub query too):
     if (op_pos.size() == 2)
     {
-        bool groupby = false;
+        String sub_query = "kql("+ table_name +"|summarize ";
         auto sub_pos = op_pos.front();
-        String sub_aggregation;
-        String sub_groupby;
-        String sub_columns;
+
         while (!sub_pos->isEnd() && sub_pos->type != TokenType::PipeMark && sub_pos->type != TokenType::Semicolon)
         {
-            if (String(sub_pos->begin,sub_pos->end) == "by")
-                groupby = true;
-            else 
-            {
-                if (groupby) 
-                    sub_groupby = sub_groupby + String(sub_pos->begin,sub_pos->end) +" ";
-                else
-                    sub_aggregation = sub_aggregation + String(sub_pos->begin,sub_pos->end) +" ";
-            }
+            sub_query = sub_query + " " +String(sub_pos->begin,sub_pos->end);
             ++sub_pos;
         }
-
-        String sub_query;
-        if (sub_groupby.empty())
-        {
-            sub_columns =sub_aggregation;
-            sub_query = "(SELECT " + sub_columns+ " FROM "+ table_name+")";
-        }
-        else
-        {
-            if (sub_aggregation.empty())
-                sub_columns = sub_groupby;
-            else
-                sub_columns = sub_groupby + "," + sub_aggregation;
-            sub_query = "(SELECT " + sub_columns+ " FROM "+ table_name + " GROUP BY "+sub_groupby+")";
-        }
+        sub_query+=")";
 
         Tokens token_subquery(sub_query.c_str(), sub_query.c_str()+sub_query.size());
         IParser::Pos pos_subquery(token_subquery, pos.max_depth);
-        
-        if (!ParserTablesInSelectQuery().parse(pos_subquery, sub_qurery_table, expected))
+
+         if (!ParserTablesInSelectQuery().parse(pos_subquery, sub_qurery_table, expected))
             return false;
+
         tables = sub_qurery_table;
     }
-
 
     pos = op_pos.back();
     String expr_aggregation;
@@ -196,14 +171,6 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
 
             else
             {
-                if (String(pos->begin, pos->end) == "=")
-                {
-                    std::pair<String, String> temp = removeLastWord(expr_aggregation);
-                    expr_aggregation = temp.first;
-                    column_name = temp.second;
-                }
-                else
-                {
                     if (!column_name.empty())
                     {
                         expr_aggregation = expr_aggregation + String(pos->begin, pos->end);
@@ -218,7 +185,6 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
                     {
                         expr_aggregation = expr_aggregation + String(pos->begin, pos->end) + " ";
                     }
-                }
             }
         }
         ++pos;
@@ -233,18 +199,33 @@ bool ParserKQLSummarize ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
         else
             expr_columns = expr_groupby + "," + expr_aggregation;
     }
+
+   // For function
     Tokens token_columns(expr_columns.c_str(), expr_columns.c_str() + expr_columns.size());
     IParser::Pos pos_columns(token_columns, pos.max_depth);
-    if (!ParserNotEmptyExpressionList(true).parse(pos_columns, node, expected))
+
+    String converted_columns =  getExprFromToken(pos_columns);
+
+    Tokens token_converted_columns(converted_columns.c_str(), converted_columns.c_str() + converted_columns.size());
+    IParser::Pos pos_converted_columns(token_converted_columns, pos.max_depth);
+
+    if (!ParserNotEmptyExpressionList(true).parse(pos_converted_columns, node, expected))
         return false;
 
     if (groupby)
     {
         Tokens token_groupby(expr_groupby.c_str(), expr_groupby.c_str() + expr_groupby.size());
         IParser::Pos postoken_groupby(token_groupby, pos.max_depth);
-        if (!ParserNotEmptyExpressionList(false).parse(postoken_groupby, group_expression_list, expected))
+        String converted_groupby =  getExprFromToken(postoken_groupby);
+
+        Tokens token_converted_groupby(converted_groupby.c_str(), converted_groupby.c_str() + converted_groupby.size());
+        IParser::Pos postoken_converted_groupby(token_converted_groupby, pos.max_depth);
+
+        if (!ParserNotEmptyExpressionList(false).parse(postoken_converted_groupby, group_expression_list, expected))
             return false;
     }
+
+
 
     pos = begin;
     return true;

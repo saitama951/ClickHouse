@@ -14,6 +14,11 @@
 namespace DB
 {
 
+namespace ErrorCodes
+{
+    extern const int UNKNOWN_FUNCTION;
+}
+
 bool ParserKQLBase :: parsePrepare(Pos & pos)
 {
     op_pos.push_back(pos);
@@ -48,6 +53,12 @@ String ParserKQLBase :: getExprFromToken(Pos &pos)
                 kql_function = KQLFunctionFactory::get(token);
                 if (kql_function && kql_function->convert(new_token,pos))
                     token = new_token;
+             /*   else if (!kql_function)
+                { 
+                    if ((++pos)->type == TokenType::OpeningRoundBracket)
+                        throw Exception("Unknown function  " + token, ErrorCodes::UNKNOWN_FUNCTION);
+                    --pos;
+                }*/
             }
             tokens.push_back(token);
         }
@@ -110,9 +121,9 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     operation_pos.push_back(std::make_pair("table",pos));
     String table_name(pos->begin,pos->end);
 
-    while (!pos->isEnd())
+    ++pos;
+    while (!pos->isEnd() && pos->type != TokenType::Semicolon)
     {
-        ++pos;
         if (pos->type == TokenType::PipeMark)
         {
             ++pos;
@@ -121,7 +132,10 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
                 return false;
             ++pos;
             operation_pos.push_back(std::make_pair(kql_operator,pos));
+            kql_parser[kql_operator]->getExprFromToken(pos);
         }
+        else
+            ++pos;
     }
 
     for (auto &op_pos : operation_pos)
