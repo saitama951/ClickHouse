@@ -49,7 +49,7 @@ void GroupingAggregatedTransform::readFromAllInputs()
 
         auto chunk = in->pull();
         read_from_input[i] = true;
-        LOG_DEBUG(&Poco::Logger::get("GroupingAggregatedTransform"),"CHunk size from temp file = {} is = {}",formatReadableSizeWithBinarySuffix(chunk.size()),i );
+        LOG_DEBUG(&Poco::Logger::get("GroupingAggregatedTransform"),"CHunk size from temp file = {} is = {}",formatReadableSizeWithBinarySuffix(chunk.bytes()),i );
         addChunk(std::move(chunk), i);
         LOG_DEBUG(&Poco::Logger::get("GroupingAggregatedTransform"),"chunks_map size= {} ",formatReadableSizeWithBinarySuffix(chunks_map.size()),i );
 
@@ -568,7 +568,7 @@ void addMergingAggregatedMemoryEfficientTransform(
     {
         return std::make_shared<MergingAggregatedBucketTransform>(params);
     });
-
+ 
     pipe.addTransform(std::make_shared<SortingAggregatedTransform>(num_merging_processors, params));
 }
 

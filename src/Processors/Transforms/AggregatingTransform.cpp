@@ -617,7 +617,7 @@ void AggregatingTransform::initGenerate()
         
                 if (cur_variants->isConvertibleToTwoLevel())
                     cur_variants->convertToTwoLevel();
-                LOG_DEBUG(log, "Size of the variant at 2 = {}",cur_variants.size());
+                LOG_DEBUG(log, "Size of the variant at 2 = {}",cur_variants->size());
                 
                 if (!cur_variants->empty())
                     params->aggregator.writeToTemporaryFile(*cur_variants);
