@@ -10,73 +10,124 @@ CREATE TABLE Customers
 
 INSERT INTO Customers VALUES ('Theodore','Diaz','Skilled Manual','Bachelors',28), ('Stephanie','Cox','Management','Bachelors',33), ('Peter','Nara','Skilled Manual','Graduate Degree',26), ('Latoya','Shen','Professional','Graduate Degree',25), ('Joshua','Lee','Professional','Partial College',26), ('Edward','Hernandez','Skilled Manual','High School',36), ('Dalton','Wood','Professional','Partial College',42), ('Christine','Nara','Skilled Manual','Partial College',33), ('Cameron','Rodriguez','Professional','Partial College',28), ('Angel','Stewart','Professional','Partial College',46);
 
+set dialect='clickhouse';
+Select '-- test Query only has table name: --';
 set dialect='kusto';
-print '-- test Query only has table name: --';
 Customers;
 
-print '-- Query has Column Selection --';
+set dialect='clickhouse';
+Select '-- Query has Column Selection --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation;
 
-print '-- Query has limit --';
+set dialect='clickhouse';
+Select '-- Query has limit --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation | take 5;
 Customers | project FirstName,LastName,Occupation | limit 5;
 
-print '-- Query has second limit with bigger value --';
+set dialect='clickhouse';
+Select '-- Query has second limit with bigger value --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation | take 5 | take 7;
 
-print '-- Query has second limit with smaller value --';
+set dialect='clickhouse';
+Select '-- Query has second limit with smaller value --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation | take 5 | take 3;
 
-print '-- Query has second Column selection --';
+set dialect='clickhouse';
+Select '-- Query has second Column selection --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation | take 3 | project FirstName,LastName;
 
-print '-- Query has second Column selection with extra column --';
+set dialect='clickhouse';
+Select '-- Query has second Column selection with extra column --';
+set dialect='kusto';
 Customers| project FirstName,LastName,Occupation | take 3 | project FirstName,LastName,Education;
 
-print '-- Query with desc sort --';
-Customers | project FirstName | take 5 | sort by FirstName desc;
-Customers | project Occupation | take 5 | order by Occupation desc;
+-- set dialect='clickhouse';
+-- Select '-- Query with desc sort --';
+-- set dialect='kusto';
+-- Customers | project FirstName,LastName,Occupation | take 5 | sort by FirstName desc;
+-- Customers | project FirstName,LastName,Occupation | take 5 | order by Occupation desc;
 
-print '-- Query with asc sort --';
-Customers | project Occupation | take 5 | sort by Occupation asc;
+-- set dialect='clickhouse';
+-- Select '-- Query with asc sort --';
+-- set dialect='kusto';
+-- Customers | project FirstName,LastName,Occupation | take 5 | sort by Occupation asc;
 
-print '-- Query with sort (without keyword asc desc) --';
-Customers | project FirstName | take 5 | sort by FirstName;
-Customers | project Occupation | take 5 | order by Occupation;
+-- set dialect='clickhouse';
+-- Select '-- Query with sort (without keyword asc desc) --';
+-- set dialect='kusto';
+-- Customers | project FirstName,LastName,Occupation | take 5 | sort by FirstName;
+-- Customers | project FirstName,LastName,Occupation | take 5 | order by Occupation;
 
-print '-- Query with sort 2 Columns with different direction --';
-Customers | project FirstName,LastName,Occupation | take 5 | sort by Occupation asc, LastName desc;
+-- set dialect='clickhouse';
+-- Select '-- Query with sort 2 Columns with different direction --';
+-- set dialect='kusto';
+-- Customers | project FirstName,LastName,Occupation | take 5 |sort by Occupation asc, LastName desc;
 
-print '-- Query with second sort --';
-Customers | project FirstName,LastName,Occupation | take 5 | sort by Occupation desc |sort by Occupation asc, LastName desc;
+-- set dialect='clickhouse';
+-- Select '-- Query with second sort --';
+-- set dialect='kusto';
+-- Customers | project FirstName,LastName,Occupation | take 5 |sort by Occupation desc |sort by Occupation asc;
 
-print '-- Test String Equals (==) --';
+
+set dialect='clickhouse';
+Select '-- Test String Equals (==) --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation | where Occupation == 'Skilled Manual';
 
-print '-- Test String Not equals (!=) --';
+set dialect='clickhouse';
+Select '-- Test String Not equals (!=) --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation | where Occupation != 'Skilled Manual';
 
-print '-- Test Filter using a list (in) --';
+set dialect='clickhouse';
+Select '-- Test Filter using a list (in) --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation,Education | where Education in  ('Bachelors','High School');
 
-print '-- Test Filter using a list (!in) --';
+set dialect='clickhouse';
+Select '-- Test Filter using a list (!in) --';
 set dialect='kusto';
 Customers | project FirstName,LastName,Occupation,Education | where Education !in  ('Bachelors','High School');
 
-print '-- Test Filter using common string operations (contains_cs) --';
+set dialect='clickhouse';
+Select '-- Test Filter using common string operations (contains_cs) --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation,Education | where Education contains_cs 'Coll';
 
-print '-- Test Filter using common string operations (startswith_cs) --';
+set dialect='clickhouse';
+Select '-- Test Filter using common string operations (startswith_cs) --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation,Education | where Occupation startswith_cs 'Prof';
 
-print '-- Test Filter using common string operations (endswith_cs) --';
+set dialect='clickhouse';
+Select '-- Test Filter using common string operations (endswith_cs) --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation,Education | where FirstName endswith_cs 'a';
 
-print '-- Test Filter using numerical equal (==) --';
+set dialect='clickhouse';
+Select '-- Test Filter using numerical equal (==) --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation,Education,Age | where Age == 26;
 
-print '-- Test Filter using numerical great and less (> , <) --';
+set dialect='clickhouse';
+Select '-- Test Filter using numerical great and less (> , <) --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation,Education,Age | where Age > 30 and Age < 40;
 
-print '-- Test Filter using multi where --';
+
+set dialect='clickhouse';
+Select '-- Test Filter using multi where --';
+set dialect='kusto';
 Customers | project FirstName,LastName,Occupation,Education,Age | where Age > 30 | where Occupation == 'Professional';
+
+-- TODO: verify the issue that order by can not be followed by other statements
+set dialect='clickhouse';
+Select '-- test sort, order --';
+set dialect='kusto';
+Customers | order by Age desc, FirstName asc;
+
