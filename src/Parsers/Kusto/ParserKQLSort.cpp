@@ -32,7 +32,7 @@ bool ParserKQLSort :: parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
         return false;
 
     pos = op_pos.back();
-    while (!pos->isEnd() && pos->type != TokenType::PipeMark)
+    while (!pos->isEnd() && pos->type != TokenType::PipeMark && pos->type != TokenType::Semicolon)
     {
         String tmp(pos->begin,pos->end);
         if (tmp == "desc" or tmp == "asc")
