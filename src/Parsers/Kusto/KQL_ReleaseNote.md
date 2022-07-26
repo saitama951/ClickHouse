@@ -13,6 +13,11 @@
 - **print operator** (https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/printoperator)  
    `print x=1, s=strcat('Hello', ', ', 'World!')`
 
+- **The following functions now support arbitrary expressions as their argument:**
+   - [ipv4_is_private](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/ipv4-is-privatefunction)
+   - [ipv4_is_in_range](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/ipv4-is-in-range-function)
+   - [ipv4_netmask_suffix](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/ipv4-netmask-suffix-function)
+
 # July 17, 2022
 
 ## Renamed dialect from sql_dialect to dialect
