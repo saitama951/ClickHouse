@@ -131,7 +131,13 @@ bool MakeList::convertImpl(String &out,IParser::Pos &pos)
         return false;
     ++pos;
     const auto expr = getConvertedArgument(fn_name,pos);
-    out = "groupArrayIf(" + expr + " , " + expr + " IS NOT NULL)";
+    if (pos->type == TokenType::Comma)
+    {
+        ++pos;
+        const auto max_size = getConvertedArgument(fn_name,pos);
+        out = "groupArrayIf(" + max_size + ")(" + expr + " , " + expr + " IS NOT NULL)";
+    } else
+        out = "groupArrayIf(" + expr + " , " + expr + " IS NOT NULL)";
     return true;
 }
 
@@ -149,7 +155,7 @@ bool MakeListIf::convertImpl(String &out,IParser::Pos &pos)
     {
         ++pos;
         const auto max_size = getConvertedArgument(fn_name,pos);
-        out = "groupArrayIf(" + max_size + " , " + expr + " , " + predicate+ " )";
+        out = "groupArrayIf(" + max_size + ")(" + expr + " , " + predicate+ " )";
     } else
         out = "groupArrayIf(" + expr + " , " + predicate+ " )";
     return true;
@@ -163,8 +169,20 @@ bool MakeListWithNulls::convertImpl(String &out,IParser::Pos &pos)
 
 bool MakeSet::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
-    return directMapping(out,pos,"groupUniqArray");
+    String fn_name = getKQLFunctionName(pos);
+
+    if (fn_name.empty())
+        return false;
+    ++pos;
+    const auto expr = getConvertedArgument(fn_name,pos);
+    if (pos->type == TokenType::Comma)
+    {
+        ++pos;
+        const auto max_size = getConvertedArgument(fn_name,pos);
+        out = "groupUniqArray(" + max_size + ")(" + expr + ")";
+    } else
+        out = "groupUniqArray(" + expr + ")";    
+    return true;
 }
 
 bool MakeSetIf::convertImpl(String &out,IParser::Pos &pos)
@@ -181,7 +199,7 @@ bool MakeSetIf::convertImpl(String &out,IParser::Pos &pos)
     {
         ++pos;
         const auto max_size = getConvertedArgument(fn_name,pos);
-        out = "groupUniqArrayIf(" + max_size + " , " + expr + " , " + predicate+ " )";
+        out = "groupUniqArrayIf(" + max_size + ")(" + expr + " , " + predicate+ " )";
     } else
         out = "groupUniqArrayIf(" + expr + " , " + predicate+ " )";
     return true;
