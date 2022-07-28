@@ -1,7 +1,5 @@
 #include "KQLTimeSeriesFunctions.h"
 
-#include "KQLCommon.h"
-
 namespace DB
 {
 

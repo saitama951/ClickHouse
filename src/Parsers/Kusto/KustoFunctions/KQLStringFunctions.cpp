@@ -1,8 +1,5 @@
 #include "KQLStringFunctions.h"
 
-#include "KQLCommon.h"
-#include "IParserKQLFunction.h"
-
 #include <Parsers/CommonParsers.h>
 
 #include <cstdlib>

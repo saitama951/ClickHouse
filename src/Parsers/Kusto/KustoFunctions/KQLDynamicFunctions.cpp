@@ -1,7 +1,5 @@
 #include "KQLDynamicFunctions.h"
 
-#include "KQLCommon.h"
-
 namespace DB
 {
 

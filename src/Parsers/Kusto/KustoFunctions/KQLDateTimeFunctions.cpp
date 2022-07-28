@@ -1,7 +1,5 @@
 #include "KQLDateTimeFunctions.h"
 
-#include "KQLCommon.h"
-
 namespace DB
 {
 

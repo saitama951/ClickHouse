@@ -1,7 +1,5 @@
 #include "KQLIPFunctions.h"
 
-#include "KQLCommon.h"
-
 #include <format>
 
 namespace DB

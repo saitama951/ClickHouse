@@ -1,5 +1,3 @@
-#include "KustoFunctions/KQLCommon.h"
-
 #include <Parsers/ASTLiteral.h>
 #include <Parsers/Kusto/ParserKQLQuery.h>
 #include <Parsers/Kusto/ParserKQLOperators.h>
@@ -32,7 +30,7 @@ String KQLOperators::genHasAnyAllOpExpr(std::vector<String> &tokens,IParser::Pos
 
     while (!token_pos->isEnd() && token_pos->type != TokenType::PipeMark && token_pos->type != TokenType::Semicolon)
     {
-        auto tmp_arg = getExpression(token_pos);
+        auto tmp_arg = IParserKQLFunction::getExpression(token_pos);
         if (token_pos->type == TokenType::Comma )
             new_expr = new_expr + logic_op;
         else
@@ -134,7 +132,7 @@ String KQLOperators::genHaystackOpExpr(std::vector<String> &tokens,IParser::Pos 
         new_expr = ch_op +"(" + tokens.back() +", '"+left_wildcards + left_space + String(token_pos->begin + 1,token_pos->end - 1) + right_space + right_wildcards + "')";
     else if (!tokens.empty() && ((token_pos)->type == TokenType::BareWord))
     {
-        auto tmp_arg = getExpression(token_pos);
+        auto tmp_arg = IParserKQLFunction::getExpression(token_pos);
         new_expr = ch_op +"(" + tokens.back() +", concat('" + left_wildcards + left_space + "', " + tmp_arg +", '"+ right_space + right_wildcards + "'))";
     }
     else

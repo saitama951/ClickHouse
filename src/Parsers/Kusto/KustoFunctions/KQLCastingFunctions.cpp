@@ -1,7 +1,5 @@
 #include "KQLCastingFunctions.h"
 
-#include "KQLCommon.h"
-
 namespace DB
 {
 bool ToBool::convertImpl(String &out,IParser::Pos &pos)

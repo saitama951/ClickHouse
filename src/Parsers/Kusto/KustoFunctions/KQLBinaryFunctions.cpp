@@ -1,7 +1,5 @@
 #include "KQLBinaryFunctions.h"
 
-#include "KQLCommon.h"
-
 namespace DB
 {
 

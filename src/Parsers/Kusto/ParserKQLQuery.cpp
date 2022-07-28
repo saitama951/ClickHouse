@@ -1,5 +1,3 @@
-#include "KustoFunctions/KQLCommon.h"
-
 #include <Parsers/ASTLiteral.h>
 #include <Parsers/ASTSelectQuery.h>
 #include <Parsers/IParserBase.h>
@@ -52,7 +50,7 @@ String ParserKQLBase :: getExprFromToken(Pos &pos)
         }
         else if (!KQLOperators().convert(tokens,pos))
         {
-            token = getExpression(pos);
+            token = IParserKQLFunction::getExpression(pos);
             tokens.push_back(token);
         }
 
