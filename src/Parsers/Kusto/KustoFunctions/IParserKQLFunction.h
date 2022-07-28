@@ -1,7 +1,6 @@
 #pragma once
 
-#include <Parsers/IParserBase.h>
-#include <Parsers/Kusto/KustoFunctions/IParserKQLFunction.h>
+#include <Parsers/IParser.h>
 
 namespace DB
 {
@@ -17,7 +16,11 @@ public:
             pos = begin;
         return res;
     }
-    struct IncreaseDepthTag {};
+    
+    struct IncreaseDepthTag
+    {
+    };
+
     template <typename F>
     ALWAYS_INLINE static bool wrapConvertImpl(IParser::Pos & pos, IncreaseDepthTag, const F & func)
     {
@@ -29,16 +32,12 @@ public:
             pos = begin;
         return res;
     }
-    bool convert(String & out,IParser::Pos & pos);
+
+    bool convert(String & out, IParser::Pos & pos);
     virtual const char * getName() const = 0;
     virtual ~IParserKQLFunction() = default;
-    static String getExpression(IParser::Pos & pos);
-protected:
-    virtual bool convertImpl(String & out,IParser::Pos & pos) = 0;
-    static bool directMapping(String  &out,IParser::Pos & pos,const String & ch_fn);
-    static void validateEndOfFunction(const String & fn_name, IParser::Pos & pos);
-    static String getKQLFunctionName(IParser::Pos & pos);
-};
 
-String getConvertedArgument(const String & fn_name, IParser::Pos & pos);
+protected:
+    virtual bool convertImpl(String & out, IParser::Pos & pos) = 0;
+};
 }

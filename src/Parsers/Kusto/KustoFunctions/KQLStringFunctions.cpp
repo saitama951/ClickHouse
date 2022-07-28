@@ -1,10 +1,13 @@
-#include <Parsers/IParserBase.h>
-#include <Parsers/Kusto/KustoFunctions/IParserKQLFunction.h>
-#include <Parsers/Kusto/KustoFunctions/KQLStringFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLFunctionFactory.h>
-#include <format>
-#include <cstdlib>
+#include "KQLStringFunctions.h"
+
+#include "KQLCommon.h"
+#include "IParserKQLFunction.h"
+
 #include <Parsers/CommonParsers.h>
+
+#include <cstdlib>
+#include <format>
+#include <unordered_map>
 
 namespace DB::ErrorCodes
 {

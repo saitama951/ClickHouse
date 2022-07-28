@@ -1,59 +1,8 @@
-#include <Parsers/ASTExpressionList.h>
-#include <Parsers/ASTSelectWithUnionQuery.h>
-#include <Parsers/IParserBase.h>
-#include <Parsers/Kusto/KustoFunctions/IParserKQLFunction.h>
-#include <Parsers/Kusto/KustoFunctions/KQLAggregationFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLBinaryFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLCastingFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLDateTimeFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLDynamicFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLGeneralFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLIPFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLStringFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLTimeSeriesFunctions.h>
-#include <Parsers/Kusto/ParserKQLQuery.h>
-#include <Parsers/Kusto/ParserKQLStatement.h>
-#include <Parsers/ParserSetQuery.h>
+#include "KQLIPFunctions.h"
+
+#include "KQLCommon.h"
 
 #include <format>
-
-namespace DB::ErrorCodes
-{
-extern const int SYNTAX_ERROR;
-}
-
-namespace
-{
-std::optional<String> getOptionalArgument(const String & function_name, DB::IParser::Pos & pos)
-{
-    std::optional<String> argument;
-    if (const auto & type = pos->type; type != DB::TokenType::Comma && type != DB::TokenType::OpeningRoundBracket)
-        return {};
-
-    ++pos;
-    return getConvertedArgument(function_name, pos);
-}
-
-String getArgument(const String & function_name, DB::IParser::Pos & pos)
-{
-    return getOptionalArgument(function_name, pos).value();
-}
-
-String kqlCallToExpression(
-    const String & function_name, std::initializer_list<std::reference_wrapper<const String>> params, const uint32_t max_depth)
-{
-    const auto params_str = std::accumulate(
-        std::cbegin(params),
-        std::cend(params),
-        String(),
-        [](auto acc, const auto & param) { return (acc.empty() ? "" : ", ") + std::move(acc) + param.get(); });
-
-    const auto kql_call = std::format("{}({})", function_name, params_str);
-    DB::Tokens call_tokens(kql_call.c_str(), kql_call.c_str() + kql_call.length());
-    DB::IParser::Pos tokens_pos(call_tokens, max_depth);
-    return DB::IParserKQLFunction::getExpression(tokens_pos);
-}
-}
 
 namespace DB
 {

@@ -1,3 +1,5 @@
+#include "KustoFunctions/KQLCommon.h"
+
 #include <Parsers/ASTLiteral.h>
 #include <Parsers/ASTSelectQuery.h>
 #include <Parsers/IParserBase.h>
@@ -12,6 +14,7 @@
 #include <Parsers/Kusto/KustoFunctions/KQLFunctionFactory.h>
 #include <Parsers/Kusto/ParserKQLOperators.h>
 #include <Parsers/Kusto/ParserKQLPrint.h>
+
 namespace DB
 {
 
@@ -49,7 +52,7 @@ String ParserKQLBase :: getExprFromToken(Pos &pos)
         }
         else if (!KQLOperators().convert(tokens,pos))
         {
-            token = IParserKQLFunction::getExpression(pos);
+            token = getExpression(pos);
             tokens.push_back(token);
         }
 

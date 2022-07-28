@@ -1,7 +1,6 @@
-#include <Parsers/IParserBase.h>
-#include <Parsers/Kusto/KustoFunctions/IParserKQLFunction.h>
-#include <Parsers/Kusto/KustoFunctions/KQLFunctionFactory.h>
-#include <Parsers/Kusto/KustoFunctions/KQLCastingFunctions.h>
+#include "KQLCastingFunctions.h"
+
+#include "KQLCommon.h"
 
 namespace DB
 {
