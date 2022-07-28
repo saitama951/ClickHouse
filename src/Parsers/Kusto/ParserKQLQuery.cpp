@@ -12,6 +12,7 @@
 #include <Parsers/Kusto/KustoFunctions/KQLFunctionFactory.h>
 #include <Parsers/Kusto/ParserKQLOperators.h>
 #include <Parsers/Kusto/ParserKQLPrint.h>
+#include <Parsers/Kusto/ParserKQLTopHitters.h>
 namespace DB
 {
 
@@ -86,6 +87,7 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     ParserKQLSort kql_sort_p;
     ParserKQLSummarize kql_summarize_p;
     ParserKQLTable kql_table_p;
+    ParserKQLTopHitters kql_tophitters_p;
 
     ASTPtr select_expression_list;
     ASTPtr tables;
@@ -93,6 +95,7 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
     ASTPtr group_expression_list;
     ASTPtr order_expression_list;
     ASTPtr limit_length;
+    ASTPtr tophitters;
 
     std::unordered_map<std::string, ParserKQLBase * > kql_parser = {
         { "filter",&kql_filter_p},
@@ -103,7 +106,8 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
         { "sort",&kql_sort_p},
         { "order",&kql_sort_p},
         { "summarize",&kql_summarize_p},
-        { "table",&kql_table_p}
+        { "table",&kql_table_p},
+        { "top-hitters",&kql_tophitters_p}
     };
 
     std::vector<std::pair<String, Pos>> operation_pos;
@@ -129,6 +133,14 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
         {
             ++pos;
             String kql_operator(pos->begin,pos->end);
+            if(kql_operator == "top")
+            {
+                ++pos;
+                kql_operator += String (pos->begin,pos->end);
+                ++pos;
+                kql_operator += String (pos->begin,pos->end);
+            }
+
             if (pos->type != TokenType::BareWord || kql_parser.find(kql_operator) == kql_parser.end())
                 return false;
             ++pos;
@@ -179,12 +191,16 @@ bool ParserKQLQuery::parseImpl(Pos & pos, ASTPtr & node, Expected & expected)
             where_expression = kql_summarize_p.where_expression;
     }
 
+    if (!kql_tophitters_p.parse(pos, tophitters, expected))
+         return false;
+
     select_query->setExpression(ASTSelectQuery::Expression::SELECT, std::move(select_expression_list));
     select_query->setExpression(ASTSelectQuery::Expression::TABLES, std::move(tables));
     select_query->setExpression(ASTSelectQuery::Expression::WHERE, std::move(where_expression));
     select_query->setExpression(ASTSelectQuery::Expression::GROUP_BY, std::move(group_expression_list));
     select_query->setExpression(ASTSelectQuery::Expression::ORDER_BY, std::move(order_expression_list));
     select_query->setExpression(ASTSelectQuery::Expression::LIMIT_LENGTH, std::move(limit_length));
+    select_query->setExpression(ASTSelectQuery::Expression::SELECT, std::move(tophitters));
 
     return true;
 }

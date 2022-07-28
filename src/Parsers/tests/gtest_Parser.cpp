@@ -641,5 +641,9 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         {
             "print t = array_length([1, 5, 7, 8])",
             "SELECT length([1, 5, 7, 8]) AS t"
+        },
+        {
+            "Customers | top-hitters 5 of LastName",
+            "SELECT topK(5)(LastName)\nFROM Customers"
         }
 })));
