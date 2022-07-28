@@ -629,5 +629,17 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         {
             "Customers | summarize t = make_set_if(FirstName, Age > 10, 10) by FirstName",
             "SELECT\n    FirstName,\n    groupUniqArrayIf(10)(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+            "print t = array_index_of([1, 5, 7], 5)",
+            "SELECT indexOf([1, 5, 7], 5) - 1 AS t"
+        },
+        {
+            "print t = array_sum([1, 5, 7, 8])",
+            "SELECT arraySum([1, 5, 7, 8]) AS t"
+        },
+        {
+            "print t = array_length([1, 5, 7, 8])",
+            "SELECT length([1, 5, 7, 8]) AS t"
         }
 })));
