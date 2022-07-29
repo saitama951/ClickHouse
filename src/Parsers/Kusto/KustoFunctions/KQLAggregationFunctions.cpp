@@ -20,25 +20,21 @@ namespace DB
 
 bool ArgMax::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"argMax");
 }
 
 bool ArgMin::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"argMin");
 }
 
 bool Avg::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"avg");
 }
 
 bool AvgIf::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"avgIf");
 }
 
@@ -72,13 +68,11 @@ bool BuildSchema::convertImpl(String &out,IParser::Pos &pos)
 
 bool Count::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"count");
 }
 
 bool CountIf::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"countIf");
 }
 
@@ -163,7 +157,6 @@ bool MakeListIf::convertImpl(String &out,IParser::Pos &pos)
 
 bool MakeListWithNulls::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"groupArray"); //groupArray takes everything including NULLs
 }
 
@@ -207,25 +200,21 @@ bool MakeSetIf::convertImpl(String &out,IParser::Pos &pos)
 
 bool Max::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"max");
 }
 
 bool MaxIf::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"maxIf");
 }
 
 bool Min::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"min");
 }
 
 bool MinIf::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"minIf");
 }
 
@@ -273,13 +262,11 @@ bool StdevIf::convertImpl(String &out,IParser::Pos &pos)
 
 bool Sum::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"sum");
 }
 
 bool SumIf::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"sumIf");
 }
 

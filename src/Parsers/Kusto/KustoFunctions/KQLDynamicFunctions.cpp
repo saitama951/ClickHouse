@@ -60,7 +60,6 @@ bool ArrayIndexOf::convertImpl(String &out,IParser::Pos &pos)
 
 bool ArrayLength::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"length");
 }
 
@@ -129,7 +128,6 @@ bool ArraySplit::convertImpl(String &out,IParser::Pos &pos)
 
 bool ArraySum::convertImpl(String &out,IParser::Pos &pos)
 {
-    String res = String(pos->begin,pos->end);
     return directMapping(out,pos,"arraySum");
 }
 
