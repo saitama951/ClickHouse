@@ -750,12 +750,9 @@ BlockIO InterpreterSelectQuery::execute()
 
 Block InterpreterSelectQuery::getSampleBlockImpl()
 {
-<<<<<<< HEAD
     auto & select_query = getSelectQuery();
 
-=======
     LOG_DEBUG(log,"Entering getSampleBlockImpl options.to_stage= {}",options.to_stage);
->>>>>>> Few more statement
     query_info.query = query_ptr;
 
     /// NOTE: this is required for getQueryProcessingStage(), so should be initialized before ExpressionAnalysisResult.
