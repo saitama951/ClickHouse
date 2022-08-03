@@ -581,40 +581,41 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         {
             "print parse_url('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment')",
             "SELECT concat('{', concat('\"Scheme\":\"', protocol('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Host\":\"', domain('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Port\":\"', toString(port('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment')), '\"'), ',', concat('\"Path\":\"', path('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Username\":\"', splitByChar(':', splitByChar('@', netloc('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'))[1])[1], '\"'), ',', concat('\"Password\":\"', splitByChar(':', splitByChar('@', netloc('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'))[1])[2], '\"'), ',', concat('\"Query Parameters\":', concat('{\"', replace(replace(queryString('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '=', '\":\"'), '&', '\",\"'), '\"}')), ',', concat('\"Fragment\":\"', fragment('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), '}')"
-        },{
+        },
+        {
              "Customers | summarize t = make_list(FirstName) by FirstName",
              "SELECT\n    FirstName,\n    groupArrayIf(FirstName, FirstName IS NOT NULL) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
+        },
+        {
              "Customers | summarize t = make_list(FirstName, 10) by FirstName",
              "SELECT\n    FirstName,\n    groupArrayIf(10)(FirstName, FirstName IS NOT NULL) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
+        },
+        {
              "Customers | summarize t = make_list_if(FirstName, Age > 10) by FirstName",
              "SELECT\n    FirstName,\n    groupArrayIf(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
+        },
+        {
              "Customers | summarize t = make_list_if(FirstName, Age > 10, 10) by FirstName",
              "SELECT\n    FirstName,\n    groupArrayIf(10)(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
+        },
+        {
              "Customers | summarize t = make_list_with_nulls(FirstName) by FirstName",
              "SELECT\n    FirstName,\n    groupArray(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
+        },
+        {
              "Customers | summarize t = make_set(FirstName) by FirstName",
              "SELECT\n    FirstName,\n    groupUniqArray(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
+        },
+        {
              "Customers | summarize t = make_set(FirstName, 10) by FirstName",
              "SELECT\n    FirstName,\n    groupUniqArray(10)(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
+        },
+        {
              "Customers | summarize t = make_set_if(FirstName, Age > 10) by FirstName",
              "SELECT\n    FirstName,\n    groupUniqArrayIf(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
-         },
-         {
+        },
+        {
              "Customers | summarize t = make_set_if(FirstName, Age > 10, 10) by FirstName",
              "SELECT\n    FirstName,\n    groupUniqArrayIf(10)(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
-         }
+        }
 })));
