@@ -33,7 +33,32 @@
  - [make_set_if()](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/makesetif-aggfunction)  
    `Customers | summarize t = make_set_if(FirstName, Age > 10) by FirstName`
    `Customers | summarize t = make_set_if(FirstName, Age > 10, 10) by FirstName`
+   
+- **Config setting to allow modify dialect setting:**
+ - Set dialect setting in  server configuration XML at user level(` users.xml `). This sets the ` dialect ` at server startup and CH will do query parsing for all users with ` default ` profile acording to dialect value.
 
+   For example:
+   ` <profiles>
+        <!-- Default settings. -->
+        <default>
+            <load_balancing>random</load_balancing>
+            <dialect>kusto_auto</dialect>
+        </default> `
+   
+ - Query can be executed with HTTP client as below once dialect is set in users.xml
+      ` echo "KQL query" | curl -sS "http://localhost:8123/?" --data-binary @- `
+   
+ - To execute the query using clickhouse-client , Update clickhouse-client.xml as below and connect clickhouse-client with --config-file option (` clickhouse-client --config-file=<config-file path> `) 
+
+     ` <config>
+         <dialect>kusto_auto</dialect>
+      </config>  `
+
+   OR 
+      pass dialect setting with '--'. For example : 
+      ` clickhouse-client --dialect='kusto_auto' -q "KQL query" `
+
+      
 # July 17, 2022
 
 ## Renamed dialect from sql_dialect to dialect
