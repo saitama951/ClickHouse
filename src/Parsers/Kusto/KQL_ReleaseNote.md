@@ -18,6 +18,22 @@
    - [ipv4_is_in_range](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/ipv4-is-in-range-function)
    - [ipv4_netmask_suffix](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/ipv4-netmask-suffix-function)
 
+- **Aggregate Functions:**
+ - [make_list()](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/makelist-aggfunction)  
+   `Customers | summarize t = make_list(FirstName) by FirstName`
+   `Customers | summarize t = make_list(FirstName, 10) by FirstName`
+ - [make_list_if()](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/makelistif-aggfunction)  
+   `Customers | summarize t = make_list_if(FirstName, Age > 10) by FirstName`
+   `Customers | summarize t = make_list_if(FirstName, Age > 10, 10) by FirstName`
+ - [make_list_with_nulls()](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/make-list-with-nulls-aggfunction)  
+   `Customers | summarize t = make_list_with_nulls(FirstName) by FirstName`
+ - [make_set()](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/makeset-aggfunction)  
+   `Customers | summarize t = make_set(FirstName) by FirstName`
+   `Customers | summarize t = make_set(FirstName, 10) by FirstName`
+ - [make_set_if()](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/makesetif-aggfunction)  
+   `Customers | summarize t = make_set_if(FirstName, Age > 10) by FirstName`
+   `Customers | summarize t = make_set_if(FirstName, Age > 10, 10) by FirstName`
+
 # July 17, 2022
 
 ## Renamed dialect from sql_dialect to dialect
@@ -246,3 +262,4 @@ Please note that the functions listed below only take constant parameters for no
  - dcount()
  - dcountif()
  - bin
+ 
