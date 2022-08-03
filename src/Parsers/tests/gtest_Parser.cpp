@@ -479,35 +479,143 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
             "SELECT *\nFROM Customers\nWHERE Age IN (\n    SELECT Age\n    FROM Customers\n    WHERE Age < 30\n)"
         },
         {
-            "Customers | project ipv4_is_in_range('127.0.0.1', '127.0.0.1')",
-            "SELECT '127.0.0.1' = '127.0.0.1'\nFROM Customers"
+            "Customers | project ipv4_is_in_range(FirstName, LastName)",
+            "SELECT isIPAddressInRange(FirstName, concat(LastName, if(position(LastName, '/') > 0, '', '/32')))\nFROM Customers"
         },
         {
-            "Customers | project ipv4_is_in_range('192.168.1.6', '192.168.1.1/24')",
-            "SELECT isIPAddressInRange('192.168.1.6', '192.168.1.1/24')\nFROM Customers"
+            "Customers | project ipv4_is_private(Occupation)",
+            "SELECT (((length(splitByChar('/', Occupation) AS tokens) = 1) AND isIPAddressInRange(tokens[1] AS ip, '10.0.0.0/8')) OR ((length(tokens) = 2) AND isIPAddressInRange(IPv4NumToString((IPv4CIDRToRange(toIPv4(ip), if((toUInt8OrNull(tokens[-1]) AS suffix) IS NULL, throwIf(true, 'Unable to parse suffix'), assumeNotNull(suffix))) AS range).1) AS begin, '10.0.0.0/8') AND isIPAddressInRange(IPv4NumToString(range.2) AS end, '10.0.0.0/8'))) OR (((length(tokens) = 1) AND isIPAddressInRange(ip, '172.16.0.0/12')) OR ((length(tokens) = 2) AND isIPAddressInRange(begin, '172.16.0.0/12') AND isIPAddressInRange(end, '172.16.0.0/12'))) OR (((length(tokens) = 1) AND isIPAddressInRange(ip, '192.168.0.0/16')) OR ((length(tokens) = 2) AND isIPAddressInRange(begin, '192.168.0.0/16') AND isIPAddressInRange(end, '192.168.0.0/16')))\nFROM Customers"
         },
         {
-            "Customers | project ipv4_is_private('192.168.1.6')",
-            "SELECT isIPAddressInRange('192.168.1.6', '10.0.0.0/8') OR isIPAddressInRange('192.168.1.6', '172.16.0.0/12') OR isIPAddressInRange('192.168.1.6', '192.168.0.0/16')\nFROM Customers"
+            "Customers | project ipv4_netmask_suffix(Occupation)",
+            "SELECT if((length(splitByChar('/', Occupation) AS tokens) <= 2) AND isIPv4String(tokens[1]), if(length(tokens) != 2, 32, if(((toInt8OrNull(tokens[-1]) AS suffix) >= 1) AND (suffix <= 32), suffix, throwIf(true, 'Suffix must be between 1 and 32'))), throwIf(true, 'Unable to recognize and IP address with or without a suffix'))\nFROM Customers"
         },
         {
-            "Customers | project ipv4_is_private('192.168.1.6/24')",
-            "SELECT (isIPAddressInRange(IPv4NumToString((IPv4CIDRToRange(toIPv4('192.168.1.6'), 24) AS range).1) AS begin, '10.0.0.0/8') AND isIPAddressInRange(IPv4NumToString(range.2) AS end, '10.0.0.0/8')) OR (isIPAddressInRange(begin, '172.16.0.0/12') AND isIPAddressInRange(end, '172.16.0.0/12')) OR (isIPAddressInRange(begin, '192.168.0.0/16') AND isIPAddressInRange(end, '192.168.0.0/16'))\nFROM Customers"
+            "Customers | project parse_ipv4(FirstName)",
+            "SELECT toIPv4OrNull(FirstName)\nFROM Customers"
         },
         {
-            "Customers | project ipv4_netmask_suffix('192.168.1.1/24')",
-            "SELECT if(isIPv4String('192.168.1.1') AND ((24 >= 1) AND (24 <= 32)), 24, NULL)\nFROM Customers"
+            "Customers | project parse_ipv6(LastName)",
+            "SELECT toIPv6OrNull(LastName)\nFROM Customers"
         },
         {
-            "Customers | project ipv4_netmask_suffix('192.168.1.1')",
-            "SELECT if(isIPv4String('192.168.1.1') AND ((32 >= 1) AND (32 <= 32)), 32, NULL)\nFROM Customers"
+            "Customers|where Occupation has_any ('Skilled','abcd')",
+            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, 'Skilled') OR hasTokenCaseInsensitive(Occupation, 'abcd')"
         },
         {
-            "Customers | project parse_ipv4('127.0.0.1')",
-            "SELECT toIPv4OrNull('127.0.0.1')\nFROM Customers"
+            "Customers|where Occupation has_all ('Skilled','abcd')",
+            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, 'Skilled') AND hasTokenCaseInsensitive(Occupation, 'abcd')"
         },
         {
-            "Customers | project parse_ipv6('127.0.0.1')",
-            "SELECT toIPv6OrNull('127.0.0.1')\nFROM Customers"
+            "Customers|where Occupation has_all (strcat('Skill','ed'),'Manual')",
+            "SELECT *\nFROM Customers\nWHERE hasTokenCaseInsensitive(Occupation, concat('Skill', 'ed')) AND hasTokenCaseInsensitive(Occupation, 'Manual')"
+        },
+        {
+            "Customers | where Occupation == strcat('Pro','fessional') | take 1",
+            "SELECT *\nFROM Customers\nWHERE Occupation = concat('Pro', 'fessional')\nLIMIT 1"
+        },
+        {
+            "Customers | project countof('The cat sat on the mat', 'at')",
+            "SELECT countSubstrings('The cat sat on the mat', 'at')\nFROM Customers"
+        },
+        {
+            "Customers | project countof('The cat sat on the mat', 'at', 'normal')",
+            "SELECT countSubstrings('The cat sat on the mat', 'at')\nFROM Customers"
+        },
+        {
+            "Customers | project countof('The cat sat on the mat', 'at', 'regex')",
+            "SELECT countMatches('The cat sat on the mat', 'at')\nFROM Customers"
+        },
+        {
+            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 0, 'The price of PINEAPPLE ice cream is 10')",
+            "SELECT extract('The price of PINEAPPLE ice cream is 10', '\\b[A-Z]+\\b.+\\b\\\\d+')\nFROM Customers"
+        },
+        {
+            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 1, 'The price of PINEAPPLE ice cream is 20')",
+            "SELECT extract('The price of PINEAPPLE ice cream is 20', '\\b[A-Z]+\\b')\nFROM Customers"
+        },
+        {
+            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 2, 'The price of PINEAPPLE ice cream is 30')",
+            "SELECT extract('The price of PINEAPPLE ice cream is 30', '\\b\\\\d+')\nFROM Customers"
+        },
+        {
+            "Customers | project extract('(\\b[A-Z]+\\b).+(\\b\\d+)', 2, 'The price of PINEAPPLE ice cream is 40', typeof(int))",
+            "SELECT CAST(extract('The price of PINEAPPLE ice cream is 40', '\\b\\\\d+'), 'Int32')\nFROM Customers"
+        },
+        {
+            "Customers | project extract_all('(\\w)(\\w+)(\\w)','The price of PINEAPPLE ice cream is 50')",
+            "SELECT extractAllGroups('The price of PINEAPPLE ice cream is 50', '(\\\\w)(\\\\w+)(\\\\w)')\nFROM Customers"
+        },
+        {
+            " Customers | project split('aa_bb', '_')",
+            "SELECT splitByString('_', 'aa_bb')\nFROM Customers"
+        },
+        {
+            "Customers | project split('aaa_bbb_ccc', '_', 1)",
+            "SELECT arrayPushBack([], splitByString('_', 'aaa_bbb_ccc')[2])\nFROM Customers"
+        },
+        {
+            "Customers | project strcat_delim('-', '1', '2', 'A')",
+            "SELECT concat('1', '-', '2', '-', 'A')\nFROM Customers"
+        },
+        {
+            "Customers | project indexof('abcdefg','cde')",
+            "SELECT position('abcdefg', 'cde', 1) - 1\nFROM Customers"
+        },
+        {
+            "Customers | project indexof('abcdefg','cde', 2) ",
+            "SELECT position('abcdefg', 'cde', 3) - 1\nFROM Customers"
+        },
+        {
+            "print x=1, s=strcat('Hello', ', ', 'World!')",
+            "SELECT\n    1 AS x,\n    concat('Hello', ', ', 'World!') AS s"
+        },
+        {
+            "print parse_urlquery('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment')",
+            "SELECT concat('{', concat('\"Query Parameters\":', concat('{\"', replace(replace(if(position('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment', '?') > 0, queryString('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), 'https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '=', '\":\"'), '&', '\",\"'), '\"}')), '}')"
+        },
+        {
+            "print strcmp('a','b')",
+            "SELECT multiIf('a' = 'b', 0, 'a' < 'b', -1, 1)"
+        },
+        {
+            "print parse_url('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment')",
+            "SELECT concat('{', concat('\"Scheme\":\"', protocol('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Host\":\"', domain('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Port\":\"', toString(port('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment')), '\"'), ',', concat('\"Path\":\"', path('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), ',', concat('\"Username\":\"', splitByChar(':', splitByChar('@', netloc('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'))[1])[1], '\"'), ',', concat('\"Password\":\"', splitByChar(':', splitByChar('@', netloc('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'))[1])[2], '\"'), ',', concat('\"Query Parameters\":', concat('{\"', replace(replace(queryString('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '=', '\":\"'), '&', '\",\"'), '\"}')), ',', concat('\"Fragment\":\"', fragment('https://john:123@google.com:1234/this/is/a/path?k1=v1&k2=v2#fragment'), '\"'), '}')"
+        },
+        {
+             "Customers | summarize t = make_list(FirstName) by FirstName",
+             "SELECT\n    FirstName,\n    groupArrayIf(FirstName, FirstName IS NOT NULL) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+             "Customers | summarize t = make_list(FirstName, 10) by FirstName",
+             "SELECT\n    FirstName,\n    groupArrayIf(10)(FirstName, FirstName IS NOT NULL) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+             "Customers | summarize t = make_list_if(FirstName, Age > 10) by FirstName",
+             "SELECT\n    FirstName,\n    groupArrayIf(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+             "Customers | summarize t = make_list_if(FirstName, Age > 10, 10) by FirstName",
+             "SELECT\n    FirstName,\n    groupArrayIf(10)(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+             "Customers | summarize t = make_list_with_nulls(FirstName) by FirstName",
+             "SELECT\n    FirstName,\n    groupArray(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+             "Customers | summarize t = make_set(FirstName) by FirstName",
+             "SELECT\n    FirstName,\n    groupUniqArray(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+             "Customers | summarize t = make_set(FirstName, 10) by FirstName",
+             "SELECT\n    FirstName,\n    groupUniqArray(10)(FirstName) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+             "Customers | summarize t = make_set_if(FirstName, Age > 10) by FirstName",
+             "SELECT\n    FirstName,\n    groupUniqArrayIf(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
+        },
+        {
+             "Customers | summarize t = make_set_if(FirstName, Age > 10, 10) by FirstName",
+             "SELECT\n    FirstName,\n    groupUniqArrayIf(10)(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
         }
 })));

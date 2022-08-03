@@ -17,16 +17,17 @@
 #include <Parsers/Kusto/KustoFunctions/KQLFunctionFactory.h>
 #include <Parsers/Kusto/ParserKQLOperators.h>
 
+#include <format>
+
 namespace DB
 {
-
 namespace ErrorCodes
 {
     extern const int SYNTAX_ERROR;
+    extern const int NUMBER_OF_ARGUMENTS_DOESNT_MATCH;
 }
 
-
-bool IParserKQLFunction::convert(String &out,IParser::Pos &pos)
+bool IParserKQLFunction::convert(String & out,IParser::Pos & pos)
 {
     return wrapConvertImpl(pos, IncreaseDepthTag{}, [&]
     {
@@ -37,7 +38,7 @@ bool IParserKQLFunction::convert(String &out,IParser::Pos &pos)
     });
 }
 
-bool IParserKQLFunction::directMapping(String &out,IParser::Pos &pos,const String &ch_fn)
+bool IParserKQLFunction::directMapping(String & out,IParser::Pos & pos,const String & ch_fn)
 {
     std::vector<String> arguments;
 
@@ -75,7 +76,12 @@ bool IParserKQLFunction::directMapping(String &out,IParser::Pos &pos,const Strin
     return false;
 }
 
-String IParserKQLFunction::getConvertedArgument(const String &fn_name, IParser::Pos &pos)
+String IParserKQLFunction::getArgument(const String & function_name, DB::IParser::Pos & pos)
+{
+    return getOptionalArgument(function_name, pos).value();
+}
+
+String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser::Pos & pos)
 {
     String converted_arg;
     std::vector<String> tokens;
@@ -85,7 +91,7 @@ String IParserKQLFunction::getConvertedArgument(const String &fn_name, IParser::
         return converted_arg;
 
     if (pos->isEnd() || pos->type == TokenType::PipeMark || pos->type == TokenType::Semicolon)
-        throw Exception("Syntax error near " + fn_name, ErrorCodes::SYNTAX_ERROR);
+        throw Exception("Need more argument(s) in function: " + fn_name, ErrorCodes::NUMBER_OF_ARGUMENTS_DOESNT_MATCH);
 
     while (!pos->isEnd() && pos->type != TokenType::PipeMark && pos->type != TokenType::Semicolon)
     {
@@ -95,12 +101,7 @@ String IParserKQLFunction::getConvertedArgument(const String &fn_name, IParser::
         {
             if (pos->type == TokenType::BareWord )
             {
-                String converted;
-                fun = KQLFunctionFactory::get(token);
-                if ( fun && fun->convert(converted,pos))
-                    tokens.push_back(converted);
-                else
-                    tokens.push_back(token);
+                tokens.push_back(IParserKQLFunction::getExpression(pos));
             }
             else if (pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket)
             {
@@ -119,7 +120,17 @@ String IParserKQLFunction::getConvertedArgument(const String &fn_name, IParser::
     return converted_arg;
 }
 
-String IParserKQLFunction::getKQLFunctionName(IParser::Pos &pos)
+std::optional<String> IParserKQLFunction::getOptionalArgument(const String & function_name, DB::IParser::Pos & pos)
+{
+    std::optional<String> argument;
+    if (const auto & type = pos->type; type != DB::TokenType::Comma && type != DB::TokenType::OpeningRoundBracket)
+        return {};
+
+    ++pos;
+    return getConvertedArgument(function_name, pos);
+}
+
+String IParserKQLFunction::getKQLFunctionName(IParser::Pos & pos)
 {
     String fn_name = String(pos->begin, pos->end);
     ++pos;
@@ -131,4 +142,40 @@ String IParserKQLFunction::getKQLFunctionName(IParser::Pos &pos)
     return  fn_name;
 }
 
+String IParserKQLFunction::kqlCallToExpression(
+    const String & function_name, std::initializer_list<std::reference_wrapper<const String>> params, const uint32_t max_depth)
+{
+    const auto params_str = std::accumulate(
+        std::cbegin(params),
+        std::cend(params),
+        String(),
+        [](auto acc, const auto & param) { return (acc.empty() ? "" : ", ") + std::move(acc) + param.get(); });
+
+    const auto kql_call = std::format("{}({})", function_name, params_str);
+    DB::Tokens call_tokens(kql_call.c_str(), kql_call.c_str() + kql_call.length());
+    DB::IParser::Pos tokens_pos(call_tokens, max_depth);
+    return DB::IParserKQLFunction::getExpression(tokens_pos);
+}
+
+void IParserKQLFunction::validateEndOfFunction(const String & fn_name, IParser::Pos & pos)
+{
+    if (pos->type != TokenType:: ClosingRoundBracket)
+        throw Exception("Too many arguments in function: " + fn_name, ErrorCodes::NUMBER_OF_ARGUMENTS_DOESNT_MATCH);
+}
+
+String IParserKQLFunction::getExpression(IParser::Pos & pos)
+{
+    String arg = String(pos->begin, pos->end);
+    if (pos->type == TokenType::BareWord )
+    {
+        String new_arg;
+        auto fun = KQLFunctionFactory::get(arg);
+        if (fun && fun->convert(new_arg, pos))
+        {
+            validateEndOfFunction(arg, pos);
+            arg = new_arg;
+        }
+    }
+    return arg;
+}
 }
