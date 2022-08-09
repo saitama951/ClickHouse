@@ -186,7 +186,8 @@ namespace DB
         binary_xor,
         bitset_count_ones,
 
-        bin
+        bin,
+        dynamic
     };
 class KQLFunctionFactory
 {
