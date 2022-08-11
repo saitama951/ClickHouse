@@ -1,8 +1,71 @@
 #include <Parsers/tests/gtest_common.h>
-
+#include <IO/WriteBufferFromOStream.h>
+#include <Interpreters/applyTableOverride.h>
+#include <Parsers/ASTCreateQuery.h>
+#include <Parsers/ASTFunction.h>
+#include <Parsers/ASTIdentifier.h>
+#include <Parsers/Access/ASTCreateUserQuery.h>
+#include <Parsers/Access/ParserCreateUserQuery.h>
+#include <Parsers/ParserAlterQuery.h>
+#include <Parsers/ParserCreateQuery.h>
+#include <Parsers/ParserOptimizeQuery.h>
+#include <Parsers/ParserQueryWithOutput.h>
+#include <Parsers/ParserAttachAccessEntity.h>
+#include <Parsers/formatAST.h>
+#include <Parsers/parseQuery.h>
 #include <Parsers/Kusto/ParserKQLQuery.h>
+#include <string_view>
+#include <regex>
+#include <gtest/gtest.h>
 
-INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
+namespace
+{
+using namespace DB;
+using namespace std::literals;
+}
+class ParserStringFuncTest : public ::testing::TestWithParam<std::tuple<std::shared_ptr<DB::IParser>, ParserTestCase>>
+{};
+
+TEST_P(ParserStringFuncTest, ParseQuery)
+{  const auto & parser = std::get<0>(GetParam());
+    const auto & [input_text, expected_ast] = std::get<1>(GetParam());
+    ASSERT_NE(nullptr, parser);
+    if (expected_ast)
+    {
+        if (std::string(expected_ast).starts_with("throws"))
+        {
+            EXPECT_THROW(parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0), DB::Exception);
+        }
+        else
+        {
+            ASTPtr ast;
+            ASSERT_NO_THROW(ast = parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0));
+            if (std::string("CREATE USER or ALTER USER query") != parser->getName()
+                    && std::string("ATTACH access entity query") != parser->getName())
+            {
+                EXPECT_EQ(expected_ast, serializeAST(*ast->clone(), false));
+            }
+            else
+            {
+                if (input_text.starts_with("ATTACH"))
+                {
+                    auto salt = (dynamic_cast<const ASTCreateUserQuery *>(ast.get())->auth_data)->getSalt();
+                    EXPECT_TRUE(std::regex_match(salt, std::regex(expected_ast)));
+                }
+                else
+                {
+                    EXPECT_TRUE(std::regex_match(serializeAST(*ast->clone(), false), std::regex(expected_ast)));
+                }
+            }
+        }
+    }
+    else
+    {
+        ASSERT_THROW(parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0), DB::Exception);
+    }
+}
+
+INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserStringFuncTest,
     ::testing::Combine(
         ::testing::Values(std::make_shared<DB::ParserKQLQuery>()),
         ::testing::ValuesIn(std::initializer_list<ParserTestCase>{
@@ -36,15 +99,15 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "print trim_start('[^\\w]+', strcat('-  ','Te st1','// $'))",
-            "SELECT if((replaceRegexpOne(concat('start_random_str_', concat('-  ', 'Te st1', '// $')) AS src, concat('start_random_str_', '[^\\\\w]+'), '') AS dst) = src, concat('-  ', 'Te st1', '// $'), dst)"
+            "SELECT if((replaceRegexpOne(concat('random_str', concat('-  ', 'Te st1', '// $')) AS src, concat('random_str', '[^\\\\w]+'), '') AS dst) = src, concat('-  ', 'Te st1', '// $'), dst)"
         },
         {
             "print trim_end('.com', 'bing.com')",
-            "SELECT if((replaceRegexpOne(concat('bing.com', '_end_random_str') AS src, concat('.com', '_end_random_str'), '') AS dst) = src, 'bing.com', dst)"
+            "SELECT if((replaceRegexpOne(concat('random_str', reverse('bing.com')) AS src, concat('random_str', reverse('.com')), '') AS dst) = src, 'bing.com', reverse(dst))"
         },
         {
             "print trim('--', '--https://bing.com--')",
-            "SELECT if((replaceRegexpOne(concat(if((replaceRegexpOne(concat('start_random_str_', '--https://bing.com--') AS srcl, concat('start_random_str_', '--'), '') AS dstl) = srcl, '--https://bing.com--', dstl), '_end_random_str') AS srcr, concat('--', '_end_random_str'), '') AS dstr) = srcr, if(dstl = srcl, '--https://bing.com--', dstl), dstr)"
+            "SELECT if((replaceRegexpOne(concat('random_str', reverse(if((replaceRegexpOne(concat('random_str', '--https://bing.com--') AS srcl, concat('random_str', '--'), '') AS dstl) = srcl, '--https://bing.com--', dstl))) AS srcr, concat('random_str', reverse('--')), '') AS dstr) = srcr, if(dstl = srcl, '--https://bing.com--', dstl), reverse(dstr))"
         },
         {
             "print bool(1)",
@@ -52,15 +115,15 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "print datetime(2015-12-31 23:59:59.9)",
-            "SELECT parseDateTime64BestEffortOrNull('2015-12-31 23:59:59.9', 9, 'UTC')"
+            "SELECT toDateTime64('2015-12-31 23:59:59.9', 9, 'UTC')"
         },
         {
             "print datetime(\"2015-12-31 23:59:59.9\")",
-            "SELECT parseDateTime64BestEffortOrNull('2015-12-31 23:59:59.9', 9, 'UTC')"
+            "SELECT toDateTime64('2015-12-31 23:59:59.9', 9, 'UTC')"
         },
         {
             "print datetime('2015-12-31 23:59:59.9')",
-            "SELECT parseDateTime64BestEffortOrNull('2015-12-31 23:59:59.9', 9, 'UTC')"
+            "SELECT toDateTime64('2015-12-31 23:59:59.9', 9, 'UTC')"
         },
         {
             "print guid(74be27de-1e4e-49d9-b579-fe0b331d3642)",
@@ -88,7 +151,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "print time('1.22:34:8.128')",
-            "SELECT 167648.128"
+            "SELECT 167648."
         },
         {
             "print time('1d')",
@@ -101,30 +164,6 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         {
             "print timespan('1.5d')",
             "SELECT 129600."
-        },
-        {
-            "print res = bin_at(6.5, 2.5, 7)",
-            "SELECT toFloat64(7) + (toInt64(((toFloat64(6.5) - toFloat64(7)) / 2.5) + -1) * 2.5) AS res"
-        },
-        {
-            "print res = bin_at(1h, 1d, 12h)",
-            "SELECT concat(toString(toInt32(((toFloat64(43200.) + (toInt64(((toFloat64(3600.) - toFloat64(43200.)) / 86400) + -1) * 86400)) AS x) / 3600)), ':', toString(toInt32((x % 3600) / 60)), ':', toString(toInt32((x % 3600) % 60))) AS res"
-        },
-        {
-            "print res = bin_at(datetime(2017-05-15 10:20:00.0), 1d, datetime(1970-01-01 12:00:00.0))",
-            "SELECT toDateTime64(toFloat64(parseDateTime64BestEffortOrNull('1970-01-01 12:00:00.0', 9, 'UTC')) + (toInt64(((toFloat64(parseDateTime64BestEffortOrNull('2017-05-15 10:20:00.0', 9, 'UTC')) - toFloat64(parseDateTime64BestEffortOrNull('1970-01-01 12:00:00.0', 9, 'UTC'))) / 86400) + 0) * 86400), 9, 'UTC') AS res"
-        },
-        {
-            "print bin(4.5, 1)",
-            "SELECT toInt64(toFloat64(4.5) / 1) * 1"
-        },
-        {
-            "print bin(time(16d), 7d)",
-            "SELECT concat(toString(toInt32(((toInt64(toFloat64(1382400.) / 604800) * 604800) AS x) / 3600)), ':', toString(toInt32((x % 3600) / 60)), ':', toString(toInt32((x % 3600) % 60)))"
-        },
-        {
-            "print bin(datetime(1970-05-11 13:45:07), 1d)",
-            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07', 9, 'UTC')) / 86400) * 86400, 9, 'UTC')"
         }
 
 })));   
