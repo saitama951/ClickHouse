@@ -1,8 +1,23 @@
 ## KQL implemented features
 
 # August 15, 2022
-
-## DateTpye
+## Aggregate functions
+ - [array_index_of](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arrayindexoffunction)  
+    *Supports only basic lookup. Do not support start_index, length and occurrence*  
+    `print output = array_index_of(dynamic(['John', 'Denver', 'Bob', 'Marley']), 'Marley')`  
+    `print output = array_index_of(dynamic([1, 2, 3]), 2)`  
+ - [array_sum](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/array-sum-function)  
+    `print output = array_sum(dynamic([2, 5, 3]))`  
+    `print output = array_sum(dynamic([2.5, 5.5, 3]))`  
+ - [array_length](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arraylengthfunction)  
+    `print output = array_length(dynamic(['John', 'Denver', 'Bob', 'Marley']))`  
+    `print output = array_length(dynamic([1, 2, 3]))`
+## DateType
+ - [dynamic](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/dynamic)  
+    *Supports only 1D array*  
+    `print output = dynamic(['a', 'b', 'c'])`  
+    `print output = dynamic([1, 2, 3])`  
+ 
 - [bool,boolean](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/bool)  
    `print bool(1)`  
    `print boolean(0)`  
