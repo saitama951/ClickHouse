@@ -1,7 +1,72 @@
 #include <Parsers/tests/gtest_common.h>
+#include <IO/WriteBufferFromOStream.h>
+#include <Interpreters/applyTableOverride.h>
+#include <Parsers/ASTCreateQuery.h>
+#include <Parsers/ASTFunction.h>
+#include <Parsers/ASTIdentifier.h>
+#include <Parsers/Access/ASTCreateUserQuery.h>
+#include <Parsers/Access/ParserCreateUserQuery.h>
+#include <Parsers/ParserAlterQuery.h>
+#include <Parsers/ParserCreateQuery.h>
+#include <Parsers/ParserOptimizeQuery.h>
+#include <Parsers/ParserQueryWithOutput.h>
+#include <Parsers/ParserAttachAccessEntity.h>
+#include <Parsers/formatAST.h>
+#include <Parsers/parseQuery.h>
 #include <Parsers/Kusto/ParserKQLQuery.h>
+#include <string_view>
+#include <regex>
+#include <gtest/gtest.h>
 
-INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
+namespace
+{
+using namespace DB;
+using namespace std::literals;
+}
+
+class ParserDynamicFuncTest : public ::testing::TestWithParam<std::tuple<std::shared_ptr<DB::IParser>, ParserTestCase>>
+ {};
+
+ TEST_P(ParserDynamicFuncTest, ParseQuery)
+ {  const auto & parser = std::get<0>(GetParam());
+     const auto & [input_text, expected_ast] = std::get<1>(GetParam());
+     ASSERT_NE(nullptr, parser);
+     if (expected_ast)
+     {
+         if (std::string(expected_ast).starts_with("throws"))
+         {
+             EXPECT_THROW(parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0), DB::Exception);
+         }
+         else
+         {
+             ASTPtr ast;
+             ASSERT_NO_THROW(ast = parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0));
+             if (std::string("CREATE USER or ALTER USER query") != parser->getName()
+                     && std::string("ATTACH access entity query") != parser->getName())
+             {
+                 EXPECT_EQ(expected_ast, serializeAST(*ast->clone(), false));
+             }
+             else
+             {
+                 if (input_text.starts_with("ATTACH"))
+                 {
+                     auto salt = (dynamic_cast<const ASTCreateUserQuery *>(ast.get())->auth_data)->getSalt();
+                     EXPECT_TRUE(std::regex_match(salt, std::regex(expected_ast)));
+                 }
+                 else
+                 {
+                     EXPECT_TRUE(std::regex_match(serializeAST(*ast->clone(), false), std::regex(expected_ast)));
+                 }
+             }
+         }
+     }
+     else
+     {
+         ASSERT_THROW(parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0), DB::Exception);
+     }
+ }
+
+ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserDynamicFuncTest,
      ::testing::Combine(
          ::testing::Values(std::make_shared<DB::ParserKQLQuery>()),
          ::testing::ValuesIn(std::initializer_list<ParserTestCase>{
@@ -14,60 +79,24 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
              "SELECT arraySort([4, 1, 3, 2]) AS t"
          },
          {
-             "print array_sort_asc(dynamic(['b', 'a', 'c']), dynamic([20, 10, 30]))",
-             "SELECT\n    arraySort(['b', 'a', 'c']) AS array0_sorted,\n    arraySort((x, y) -> y, [20, 10, 30], ['b', 'a', 'c']) AS array1_sorted"
+             "print t = array_sort_asc(dynamic(['b', 'a', 'c']), dynamic([20, 10, 30]))",
+             "SELECT arraySort((x, y) -> y, [20, 10, 30], ['b', 'a', 'c']) AS t"
          },
          {
-             "print array_sort_asc(dynamic([2, 1, 3]), dynamic(['clickhouse','hello', 'world']))",
-             "SELECT\n    arraySort([2, 1, 3]) AS array0_sorted,\n    arraySort((x, y) -> y, ['clickhouse', 'hello', 'world'], [2, 1, 3]) AS array1_sorted"
+             "print t = array_sort_asc(dynamic([2, 1, 3]), dynamic(['clickhouse','hello', 'world']))",
+             "SELECT arraySort((x, y) -> y, ['clickhouse', 'hello', 'world'], [2, 1, 3]) AS t"
          },
          {
              "print t = array_sort_asc( dynamic(['d', null, 'a', 'c', 'c']) , false)",
-             "SELECT if(false, arraySort(['d', NULL, 'a', 'c', 'c']), concat(arraySlice(arraySort(['d', NULL, 'a', 'c', 'c']) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
+             "SELECT arrayConcat([NULL], arraySort(['d', 'a', 'c', 'c'])) AS t"
          },
          {
              "print t = array_sort_asc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]) , false)",
-             "SELECT if(false, arraySort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]), concat(arraySlice(arraySort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
+             "SELECT arrayConcat([NULL, NULL, NULL, NULL, NULL, NULL], arraySort(['d', 'a', 'c', 'c'])) AS t"
          },
          {
-             "print t = array_sort_asc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]) , true)",
-             "SELECT if(true, arraySort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]), concat(arraySlice(arraySort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
-         },
-         {
-             "print t = array_sort_asc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]))",
-             "SELECT arraySort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]) AS t"
-         },
-         {
-             "print t = array_sort_asc( dynamic(['d', null, 'a', 'c', 'c']) , 1 < 2)",
-             "SELECT if(1 < 2, arraySort(['d', NULL, 'a', 'c', 'c']), concat(arraySlice(arraySort(['d', NULL, 'a', 'c', 'c']) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
-         },
-         {
-             "print t = array_sort_asc( dynamic(['d', null, 'a', 'c', 'c']) , 1 > 2)",
-             "SELECT if(1 > 2, arraySort(['d', NULL, 'a', 'c', 'c']), concat(arraySlice(arraySort(['d', NULL, 'a', 'c', 'c']) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
-         },
-         {
-             "print array_sort_asc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]), false)",
-             "SELECT\n    if(false, arraySort([2, 1, NULL, 3, NULL]), concat(arraySlice(arraySort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(false, arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-             "print array_sort_asc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]), 1 > 2)",
-             "SELECT\n    if(1 > 2, arraySort([2, 1, NULL, 3, NULL]), concat(arraySlice(arraySort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(1 > 2, arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-             "print array_sort_asc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]), true)",
-             "SELECT\n    if(true, arraySort([2, 1, NULL, 3, NULL]), concat(arraySlice(arraySort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(true, arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-             "print array_sort_asc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]), 1 < 2)",
-             "SELECT\n    if(1 < 2, arraySort([2, 1, NULL, 3, NULL]), concat(arraySlice(arraySort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(1 < 2, arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-             "print array_sort_asc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]))",
-             "SELECT\n    if(true, arraySort([2, 1, NULL, 3, NULL]), concat(arraySlice(arraySort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(true, arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arraySort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-            "print array_sort_asc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50, 3]), 1 > 2)",
-            "SELECT\n    if(1 > 2, arraySort([2, 1, NULL, 3, NULL]), concat(arraySlice(arraySort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    NULL AS array1_sorted"
+             "print t = array_sort_asc( dynamic([null, null, null]) , false)",
+             "SELECT arrayConcat([NULL, NULL, NULL], arraySort([])) AS t"
          },
          {
              "print t = array_sort_desc(dynamic([null, 'd', 'a', 'c', 'c']))",
@@ -78,59 +107,24 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
              "SELECT arrayReverseSort([4, 1, 3, 2]) AS t"
          },
          {
-             "print array_sort_desc(dynamic(['b', 'a', 'c']), dynamic([20, 10, 30]))",
-             "SELECT\n    arrayReverseSort(['b', 'a', 'c']) AS array0_sorted,\n    arrayReverseSort((x, y) -> y, [20, 10, 30], ['b', 'a', 'c']) AS array1_sorted"
+             "print t = array_sort_desc(dynamic(['b', 'a', 'c']), dynamic([20, 10, 30]))",
+             "SELECT arrayReverseSort((x, y) -> y, [20, 10, 30], ['b', 'a', 'c']) AS t"
          },
          {
-             "print array_sort_desc(dynamic([2, 1, 3]), dynamic(['clickhouse','hello', 'world']))",
-             "SELECT\n    arrayReverseSort([2, 1, 3]) AS array0_sorted,\n    arrayReverseSort((x, y) -> y, ['clickhouse', 'hello', 'world'], [2, 1, 3]) AS array1_sorted"
+             "print t = array_sort_desc(dynamic([2, 1, 3]), dynamic(['clickhouse','hello', 'world']))",
+             "SELECT arrayReverseSort((x, y) -> y, ['clickhouse', 'hello', 'world'], [2, 1, 3]) AS t"
          },
          {
              "print t = array_sort_desc( dynamic(['d', null, 'a', 'c', 'c']) , false)",
-             "SELECT if(false, arrayReverseSort(['d', NULL, 'a', 'c', 'c']), concat(arraySlice(arrayReverseSort(['d', NULL, 'a', 'c', 'c']) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
+             "SELECT arrayConcat([NULL], arrayReverseSort(['d', 'a', 'c', 'c'])) AS t"
          },
          {
              "print t = array_sort_desc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]) , false)",
-             "SELECT if(false, arrayReverseSort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]), concat(arraySlice(arrayReverseSort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
+             "SELECT arrayConcat([NULL, NULL, NULL, NULL, NULL, NULL], arrayReverseSort(['d', 'a', 'c', 'c'])) AS t"
          },
          {
-             "print t = array_sort_desc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]) , true)",
-             "SELECT if(true, arrayReverseSort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]), concat(arraySlice(arrayReverseSort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
-         },
-         {
-             "print t = array_sort_desc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]))",
-             "SELECT arrayReverseSort([NULL, 'd', NULL, NULL, 'a', 'c', 'c', NULL, NULL, NULL]) AS t"
-         },
-         {
-             "print t = array_sort_desc( dynamic(['d', null, 'a', 'c', 'c']) , 1 < 2)",
-             "SELECT if(1 < 2, arrayReverseSort(['d', NULL, 'a', 'c', 'c']), concat(arraySlice(arrayReverseSort(['d', NULL, 'a', 'c', 'c']) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
-         },
-         {
-             "print t = array_sort_desc( dynamic(['d', null, 'a', 'c', 'c']) , 1 > 2)",
-             "SELECT if(1 > 2, arrayReverseSort(['d', NULL, 'a', 'c', 'c']), concat(arraySlice(arrayReverseSort(['d', NULL, 'a', 'c', 'c']) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS t"
-         },
-         {
-             "print array_sort_desc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]), false)",
-             "SELECT\n    if(false, arrayReverseSort([2, 1, NULL, 3, NULL]), concat(arraySlice(arrayReverseSort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(false, arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-             "print array_sort_desc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]), 1 > 2)",
-             "SELECT\n    if(1 > 2, arrayReverseSort([2, 1, NULL, 3, NULL]), concat(arraySlice(arrayReverseSort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(1 > 2, arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-             "print array_sort_desc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]), true)",
-             "SELECT\n    if(true, arrayReverseSort([2, 1, NULL, 3, NULL]), concat(arraySlice(arrayReverseSort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(true, arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-             "print array_sort_desc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]), 1 < 2)",
-             "SELECT\n    if(1 < 2, arrayReverseSort([2, 1, NULL, 3, NULL]), concat(arraySlice(arrayReverseSort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(1 < 2, arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-             "print array_sort_desc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50]))",
-             "SELECT\n    if(true, arrayReverseSort([2, 1, NULL, 3, NULL]), concat(arraySlice(arrayReverseSort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    If(true, arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), arrayConcat(arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), (length([2, 1, NULL, 3, NULL]) - 2) + 1), arraySlice(arrayReverseSort((x, y) -> y, [20, 10, 40, 30, 50], [2, 1, NULL, 3, NULL]), 1, length([2, 1, NULL, 3, NULL]) - 2))) AS array1_sorted"
-         },
-         {
-            "print array_sort_desc(dynamic([2, 1, null,3, null]), dynamic([20, 10, 40, 30, 50, 3]), 1 > 2)",
-            "SELECT\n    if(1 > 2, arrayReverseSort([2, 1, NULL, 3, NULL]), concat(arraySlice(arrayReverseSort([2, 1, NULL, 3, NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))) AS array0_sorted,\n    NULL AS array1_sorted"
+             "print t = array_sort_desc( dynamic([null, null, null]) , false)",
+             "SELECT arrayConcat([NULL, NULL, NULL], arrayReverseSort([])) AS t"
          }
+
  })));
