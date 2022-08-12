@@ -1,23 +1,25 @@
 ## KQL implemented features
 
 # August 15, 2022
-## Aggregate functions
- - [array_index_of](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arrayindexoffunction)  
-    *Supports only basic lookup. Do not support start_index, length and occurrence*  
-    `print output = array_index_of(dynamic(['John', 'Denver', 'Bob', 'Marley']), 'Marley')`  
-    `print output = array_index_of(dynamic([1, 2, 3]), 2)`  
- - [array_sum](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/array-sum-function)  
-    `print output = array_sum(dynamic([2, 5, 3]))`  
-    `print output = array_sum(dynamic([2.5, 5.5, 3]))`  
- - [array_length](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arraylengthfunction)  
-    `print output = array_length(dynamic(['John', 'Denver', 'Bob', 'Marley']))`  
-    `print output = array_length(dynamic([1, 2, 3]))`
-## DateType
- - [dynamic](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/dynamic)  
-    *Supports only 1D array*  
-    `print output = dynamic(['a', 'b', 'c'])`  
-    `print output = dynamic([1, 2, 3])`  
- 
+## Dynamic Array Functions
+- [array_sort_asc](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arraysortascfunction)  
+   `print t = array_sort_asc(dynamic([null, 'd', 'a', 'c', 'c']))`  
+   `print t = array_sort_asc(dynamic([4, 1, 3, 2]))`  
+   `print t = array_sort_asc(dynamic(['b', 'a', 'c']), dynamic([20, 10, 30]))`  
+   `print t = array_sort_asc(dynamic([2, 1, 3]), dynamic(['clickhouse','hello', 'world']))`  
+   `print t = array_sort_asc( dynamic(['d', null, 'a', 'c', 'c']) , false)`  
+   `print t = array_sort_asc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]) , false)`  
+   `print t = array_sort_asc( dynamic([null, null, null]) , false)`  
+- [array_sort_desc](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arraysortdescfunction)  
+   `print t = array_sort_desc(dynamic([null, 'd', 'a', 'c', 'c']))`  
+   `print t = array_sort_desc(dynamic([4, 1, 3, 2]))`  
+   `print t = array_sort_desc(dynamic(['b', 'a', 'c']), dynamic([20, 10, 30]))`  
+   `print t = array_sort_desc(dynamic([2, 1, 3]), dynamic(['clickhouse','hello', 'world']))`  
+   `print t = array_sort_desc( dynamic(['d', null, 'a', 'c', 'c']) , false)`  
+   `print t = array_sort_desc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]) , false)`  
+   `print t = array_sort_desc( dynamic([null, null, null]) , false)`  
+
+## DateTpye
 - [bool,boolean](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/bool)  
    `print bool(1)`  
    `print boolean(0)`  
