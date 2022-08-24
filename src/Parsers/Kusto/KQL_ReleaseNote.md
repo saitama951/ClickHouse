@@ -2,6 +2,7 @@
 ## KQL implemented features
 
 # August 29, 2022
+
 ## Dynamic functions
 - [array_concat](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arrayconcatfunction)
    `print array_concat(dynamic([1, 2, 3]), dynamic([4, 5]), dynamic([6, 7, 8, 9])) == dynamic([1, 2, 3, 4, 5, 6, 7, 8, 9])`
@@ -25,6 +26,26 @@
 
 - [ago](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/agofunction)
    `print ago(2h)`
+
+- [endofday](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/endofdayfunction)
+   `print endofday(datetime(2017-01-01 10:10:17), -1)`
+   `print endofday(datetime(2017-01-01 10:10:17), 1)`
+   `print endofday(datetime(2017-01-01 10:10:17))`
+
+- [endofmonth](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/endofmonthfunction)
+   `print endofmonth(datetime(2017-01-01 10:10:17), -1)`
+   `print endofmonth(datetime(2017-01-01 10:10:17), 1)`
+   `print endofmonth(datetime(2017-01-01 10:10:17))`
+
+- [endofweek](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/endofweekfunction)
+   `print endofweek(datetime(2017-01-01 10:10:17), 1)`
+   `print endofweek(datetime(2017-01-01 10:10:17), -1)`
+   `print endofweek(datetime(2017-01-01 10:10:17))` 
+
+- [endofyear](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/endofyearfunction)
+   `print endofyear(datetime(2017-01-01 10:10:17), -1)`
+   `print endofyear(datetime(2017-01-01 10:10:17), 1)`
+   `print endofyear(datetime(2017-01-01 10:10:17))`
 
 - [endofday](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/endofdayfunction)
    `print endofday(datetime(2017-01-01 10:10:17), -1)`
