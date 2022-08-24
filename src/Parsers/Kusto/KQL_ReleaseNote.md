@@ -2,7 +2,6 @@
 ## KQL implemented features
 
 # August 29, 2022
-
 ## Dynamic functions
 - [array_concat](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arrayconcatfunction)
    `print array_concat(dynamic([1, 2, 3]), dynamic([4, 5]), dynamic([6, 7, 8, 9])) == dynamic([1, 2, 3, 4, 5, 6, 7, 8, 9])`
@@ -47,10 +46,29 @@
    `print endofyear(datetime(2017-01-01 10:10:17), 1)`
    `print endofyear(datetime(2017-01-01 10:10:17))`
 
-- [endofday](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/endofdayfunction)
-   `print endofday(datetime(2017-01-01 10:10:17), -1)`
-   `print endofday(datetime(2017-01-01 10:10:17), 1)`
-   `print endofday(datetime(2017-01-01 10:10:17))`
+- [make_datetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/make-datetimefunction)
+   `print make_datetime(2017,10,01)`
+   `print make_datetime(2017,10,01,12,10)`
+   `print make_datetime(2017,10,01,12,11,0.1234567)`
+
+-  [datetime_diff](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/datetime-difffunction)
+   `print datetime_diff('year',datetime(2017-01-01),datetime(2000-12-31))`
+   `print datetime_diff('quarter',datetime(2017-07-01),datetime(2017-03-30))`
+   `print datetime_diff('minute',datetime(2017-10-30 23:05:01),datetime(2017-10-30 23:00:59))` 
+
+- [unixtime_microseconds_todatetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/unixtime-microseconds-todatetimefunction)
+   `print unixtime_microseconds_todatetime(1546300800000000)`    
+
+- [unixtime_milliseconds_todatetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/unixtime-milliseconds-todatetimefunction)
+   `print unixtime_milliseconds_todatetime(1546300800000)`
+
+- [unixtime_nanoseconds_todatetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/unixtime-nanoseconds-todatetimefunction)
+   `print unixtime_nanoseconds_todatetime(1546300800000000000)`  
+
+## Aggregate Functions  
+
+- [stdev](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/stdev-aggfunction)  
+   `Customers | summarize t = stdev(Age) by FirstName`  
 
 - [endofmonth](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/endofmonthfunction)
    `print endofmonth(datetime(2017-01-01 10:10:17), -1)`
@@ -99,27 +117,59 @@
    `print  todatetime('2014-05-25 20:03.123')`
    
 # August 15, 2022
-## Dynamic Array Functions
-- [array_sort_asc](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arraysortascfunction)  
-   `print t = array_sort_asc(dynamic([null, 'd', 'a', 'c', 'c']))`  
-   `print t = array_sort_asc(dynamic([4, 1, 3, 2]))`  
-   `print array_sort_asc(dynamic(['b', 'a', 'c']), dynamic([20, 10, 30]))`  
-   `print array_sort_asc(dynamic([2, 1, 3]), dynamic(['clickhouse','hello', 'world']))`  
-   ***For below queries, do not support expression in place of boolean yet***  
-   `print t = array_sort_asc( dynamic(['d', null, 'a', 'c', 'c']) , false)`  
-   `print t = array_sort_asc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]) , false)`  
-   `print t = array_sort_asc( dynamic([null, null, null]) , false)`  
-- [array_sort_desc](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arraysortdescfunction)  
-   `print t = array_sort_desc(dynamic([null, 'd', 'a', 'c', 'c']))`  
-   `print t = array_sort_desc(dynamic([4, 1, 3, 2]))`  
-   `print array_sort_desc(dynamic(['b', 'a', 'c']), dynamic([20, 10, 30]))`  
-   `print array_sort_desc(dynamic([2, 1, 3]), dynamic(['clickhouse','hello', 'world']))`  
-   ***For below queries, do not support expression in place of boolean yet***  
-   `print t = array_sort_desc( dynamic(['d', null, 'a', 'c', 'c']) , false)`  
-   `print t = array_sort_desc( dynamic([null, 'd', null, null, 'a', 'c', 'c', null, null, null]) , false)`  
-   `print t = array_sort_desc( dynamic([null, null, null]) , false)`  
+   **double quote support**  
+   ``print res = strcat("double ","quote")``  
+## Aggregate functions
+ - [bin_at](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/binatfunction)  
+   `print res = bin_at(6.5, 2.5, 7)`  
+   `print res = bin_at(1h, 1d, 12h)`  
+   `print res = bin_at(datetime(2017-05-15 10:20:00.0), 1d, datetime(1970-01-01 12:00:00.0))`  
+   `print res = bin_at(datetime(2017-05-17 10:20:00.0), 7d, datetime(2017-06-04 00:00:00.0))`  
 
-## DateTpye
+ - [array_index_of](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arrayindexoffunction)  
+    *Supports only basic lookup. Do not support start_index, length and occurrence*  
+    `print output = array_index_of(dynamic(['John', 'Denver', 'Bob', 'Marley']), 'Marley')`  
+    `print output = array_index_of(dynamic([1, 2, 3]), 2)`  
+ - [array_sum](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/array-sum-function)  
+    `print output = array_sum(dynamic([2, 5, 3]))`  
+    `print output = array_sum(dynamic([2.5, 5.5, 3]))`  
+ - [array_length](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arraylengthfunction)  
+    `print output = array_length(dynamic(['John', 'Denver', 'Bob', 'Marley']))`  
+    `print output = array_length(dynamic([1, 2, 3]))`
+
+## Conversion
+- [tobool / toboolean](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/toboolfunction)
+   `print tobool(true) == true`
+   `print toboolean(false) == false`
+   `print tobool(0) == false`
+   `print toboolean(19819823) == true`
+   `print tobool(-2) == true`
+   `print isnull(toboolean('a'))`
+   `print tobool('true') == true`
+   `print toboolean('false') == false`
+
+- [todouble / toreal](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/todoublefunction)
+   `print todouble(4) == 4`
+   `print toreal(4.2) == 4.2`
+   `print isnull(todouble('a'))`
+   `print toreal('-0.3') == -0.3`
+
+- [toint](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/tointfunction)
+   `print isnull(toint('a'))`  
+   `print toint(4) == 4`  
+   `print toint('4') == 4`  
+   `print isnull(toint(4.2))`  
+
+- [tostring](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/tostringfunction)
+   `print tostring(123) == '123'`  
+   `print tostring('asd') == 'asd'`  
+
+## Data Types
+ - [dynamic](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/dynamic)  
+    *Supports only 1D array*  
+    `print output = dynamic(['a', 'b', 'c'])`  
+    `print output = dynamic([1, 2, 3])`  
+ 
 - [bool,boolean](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/bool)  
    `print bool(1)`  
    `print boolean(0)`  
