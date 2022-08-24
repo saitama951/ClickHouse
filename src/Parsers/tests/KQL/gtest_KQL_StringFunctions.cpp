@@ -52,15 +52,15 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "print datetime(2015-12-31 23:59:59.9)",
-            "SELECT toDateTime64('2015-12-31 23:59:59.9', 9, 'UTC')"
+            "SELECT parseDateTime64BestEffortOrNull('2015-12-31 23:59:59.9', 9, 'UTC')"
         },
         {
             "print datetime(\"2015-12-31 23:59:59.9\")",
-            "SELECT toDateTime64('2015-12-31 23:59:59.9', 9, 'UTC')"
+            "SELECT parseDateTime64BestEffortOrNull('2015-12-31 23:59:59.9', 9, 'UTC')"
         },
         {
             "print datetime('2015-12-31 23:59:59.9')",
-            "SELECT toDateTime64('2015-12-31 23:59:59.9', 9, 'UTC')"
+            "SELECT parseDateTime64BestEffortOrNull('2015-12-31 23:59:59.9', 9, 'UTC')"
         },
         {
             "print guid(74be27de-1e4e-49d9-b579-fe0b331d3642)",
@@ -88,7 +88,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "print time('1.22:34:8.128')",
-            "SELECT 167648."
+            "SELECT 167648.128"
         },
         {
             "print time('1d')",
@@ -112,7 +112,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "print res = bin_at(datetime(2017-05-15 10:20:00.0), 1d, datetime(1970-01-01 12:00:00.0))",
-            "SELECT toDateTime64(toFloat64(toDateTime64('1970-01-01 12:00:00.0', 9, 'UTC')) + (toInt64(((toFloat64(toDateTime64('2017-05-15 10:20:00.0', 9, 'UTC')) - toFloat64(toDateTime64('1970-01-01 12:00:00.0', 9, 'UTC'))) / 86400) + 0) * 86400), 9, 'UTC') AS res"
+            "SELECT toDateTime64(toFloat64(parseDateTime64BestEffortOrNull('1970-01-01 12:00:00.0', 9, 'UTC')) + (toInt64(((toFloat64(parseDateTime64BestEffortOrNull('2017-05-15 10:20:00.0', 9, 'UTC')) - toFloat64(parseDateTime64BestEffortOrNull('1970-01-01 12:00:00.0', 9, 'UTC'))) / 86400) + 0) * 86400), 9, 'UTC') AS res"
         },
         {
             "print bin(4.5, 1)",
@@ -124,7 +124,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "print bin(datetime(1970-05-11 13:45:07), 1d)",
-            "SELECT toDateTime64(toInt64(toFloat64(toDateTime64('1970-05-11 13:45:07', 9, 'UTC')) / 86400) * 86400, 9, 'UTC')"
+            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07', 9, 'UTC')) / 86400) * 86400, 9, 'UTC')"
         }
 
 })));   
