@@ -21,11 +21,6 @@ namespace DB::ErrorCodes
 {
 extern const int SYNTAX_ERROR;
 }
-
-namespace DB::ErrorCodes
-{
-extern const int SYNTAX_ERROR;
-}
 namespace DB
 {
 
@@ -62,29 +57,7 @@ bool Ago::convertImpl(String & out, IParser::Pos & pos)
 
 bool DatetimeAdd::convertImpl(String & out, IParser::Pos & pos)
 {
-    const String fn_name = getKQLFunctionName(pos);
-    if (fn_name.empty())
-        return false;
-
-    ++pos;
-    String period = getConvertedArgument(fn_name, pos);
-    //remove quotes from period.
-    trim(period);
-    if ( period.front() == '\"' || period.front() == '\'' )
-    {
-        //period.remove
-        period.erase( 0, 1 ); // erase the first quote
-        period.erase( period.size() - 1 ); // erase the last quote
-    }
-    ++pos;
-    const String offset = getConvertedArgument(fn_name, pos);
-    ++pos;
-    const String datetime = getConvertedArgument(fn_name, pos);
-    
-    out = std::format("date_add({}, {}, {} )",period,offset,datetime);
-
-    return true;
-   
+    return directMapping(out, pos, "date_add");
 };
 
 bool DatetimePart::convertImpl(String & out, IParser::Pos & pos)
@@ -653,7 +626,6 @@ bool UnixTimeMicrosecondsToDateTime::convertImpl(String & out, IParser::Pos & po
 
     ++pos;
     const String value = getConvertedArgument(fn_name, pos);
-
     out = std::format("fromUnixTimestamp64Micro({},'UTC')", value);
     return true;
 }
@@ -666,9 +638,9 @@ bool UnixTimeMillisecondsToDateTime::convertImpl(String & out, IParser::Pos & po
 
     ++pos;
     const String value = getConvertedArgument(fn_name, pos);
-    
     out = std::format("fromUnixTimestamp64Milli({},'UTC')", value);
     return true;
+
 }
 
 bool UnixTimeNanosecondsToDateTime::convertImpl(String & out, IParser::Pos & pos)
@@ -679,7 +651,6 @@ bool UnixTimeNanosecondsToDateTime::convertImpl(String & out, IParser::Pos & pos
 
     ++pos;
     const String value = getConvertedArgument(fn_name, pos);
-     
     out = std::format("fromUnixTimestamp64Nano({},'UTC')", value);
     return true;
 }
