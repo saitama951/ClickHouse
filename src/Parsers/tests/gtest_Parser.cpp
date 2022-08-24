@@ -4,7 +4,6 @@
 #include <Parsers/ASTCreateQuery.h>
 #include <Parsers/ASTFunction.h>
 #include <Parsers/ASTIdentifier.h>
-#include <Parsers/Access/ASTCreateUserQuery.h>
 #include <Parsers/Access/ParserCreateUserQuery.h>
 #include <Parsers/ParserAlterQuery.h>
 #include <Parsers/ParserCreateQuery.h>
@@ -14,8 +13,6 @@
 #include <Parsers/formatAST.h>
 #include <Parsers/parseQuery.h>
 #include <Parsers/Kusto/ParserKQLQuery.h>
-#include <string_view>
-#include <regex>
 
 namespace
 {
@@ -31,48 +28,6 @@ std::ostream & operator<<(std::ostream & ostr, const std::shared_ptr<IParser> pa
 std::ostream & operator<<(std::ostream & ostr, const ParserTestCase & test_case)
 {
     return ostr << "ParserTestCase input: " << test_case.input_text;
-}
-
-TEST_P(ParserTest, parseQuery)
-{
-    const auto & parser = std::get<0>(GetParam());
-    const auto & [input_text, expected_ast] = std::get<1>(GetParam());
-
-    ASSERT_NE(nullptr, parser);
-
-    if (expected_ast)
-    {
-        if (std::string(expected_ast).starts_with("throws"))
-        {
-            EXPECT_THROW(parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0), DB::Exception);
-        }
-        else
-        {
-            ASTPtr ast;
-            ASSERT_NO_THROW(ast = parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0));
-            if (std::string("CREATE USER or ALTER USER query") != parser->getName()
-                    && std::string("ATTACH access entity query") != parser->getName())
-            {
-                EXPECT_EQ(expected_ast, serializeAST(*ast->clone(), false));
-            }
-            else
-            {
-                if (input_text.starts_with("ATTACH"))
-                {
-                    auto salt = (dynamic_cast<const ASTCreateUserQuery *>(ast.get())->auth_data)->getSalt();
-                    EXPECT_TRUE(std::regex_match(salt, std::regex(expected_ast)));
-                }
-                else
-                {
-                    EXPECT_TRUE(std::regex_match(serializeAST(*ast->clone(), false), std::regex(expected_ast)));
-                }
-            }
-        }
-    }
-    else
-    {
-        ASSERT_THROW(parseQuery(*parser, input_text.begin(), input_text.end(), 0, 0), DB::Exception);
-    }
 }
 
 INSTANTIATE_TEST_SUITE_P(ParserOptimizeQuery, ParserTest,
@@ -586,5 +541,13 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
          {
              "Customers | summarize t = make_set_if(FirstName, Age > 10, 10) by FirstName",
              "SELECT\n    FirstName,\n    groupUniqArrayIf(10)(FirstName, Age > 10) AS t\nFROM Customers\nGROUP BY FirstName"
+         },
+         {
+             "print output = dynamic([1, 2, 3])",
+             "SELECT [1, 2, 3] AS output"
+         },
+         {
+             "print output = dynamic(['a', 'b', 'c'])",
+             "SELECT ['a', 'b', 'c'] AS output"
          }
 })));
