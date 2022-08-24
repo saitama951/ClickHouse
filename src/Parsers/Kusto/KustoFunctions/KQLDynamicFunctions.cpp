@@ -38,7 +38,7 @@ bool ArrayIif::convertImpl(String & out, IParser::Pos & pos)
     return true;
 }
 
-bool ArrayIndexOf::convertImpl(String & out, IParser::Pos & pos)
+bool ArrayIndexOf::convertImpl(String & out,IParser::Pos & pos)
 {
     const auto fn_name = getKQLFunctionName(pos);
     if (fn_name.empty())
@@ -51,9 +51,16 @@ bool ArrayIndexOf::convertImpl(String & out, IParser::Pos & pos)
     return true;
 }
 
-bool ArrayLength::convertImpl(String & out, IParser::Pos & pos)
+bool ArrayIndexOf::convertImpl(String & out, IParser::Pos & pos)
 {
     return directMapping(out, pos, "length");
+}
+
+bool ArrayLength::convertImpl(String & out, IParser::Pos & pos)
+{
+    String res = String(pos->begin, pos->end);
+    out = res;
+    return false;
 }
 
 bool ArrayReverse::convertImpl(String & out, IParser::Pos & pos)
@@ -86,9 +93,23 @@ bool ArrayShiftLeft::convertImpl(String & out, IParser::Pos & pos)
 
 bool ArrayShiftRight::convertImpl(String & out, IParser::Pos & pos)
 {
-    String res = String(pos->begin, pos->end);
-    out = res;
-    return false;
+    const auto function_name = getKQLFunctionName(pos);
+    if (function_name.empty())
+        return false;
+
+    const auto array = getArgument(function_name, pos);
+    const auto start = getArgument(function_name, pos);
+    const auto end = getArgument(function_name, pos);
+
+    out = std::format(
+        "arraySlice({0}, plus(1, if({1} >= 0, {1}, toInt64(max2(-length({0}), {1})) + length({0}))) as offset_{3}, "
+        "                plus(1, if({2} >= 0, {2}, toInt64(max2(-length({0}), {2})) + length({0}))) - offset_{3} + 1)",
+        array,
+        start,
+        end,
+        generateUniqueIdentifier());
+
+    return true;
 }
 
 bool ArraySlice::convertImpl(String & out, IParser::Pos & pos)
@@ -121,13 +142,6 @@ bool ArraySortAsc::convertImpl(String & out, IParser::Pos & pos)
 
 bool ArraySortDesc::convertImpl(String & out, IParser::Pos & pos)
 {
-    String res = String(pos->begin, pos->end);
-    out = res;
-    return false;
-}
-
-bool ArraySplit::convertImpl(String & out, IParser::Pos & pos)
-{
     const auto function_name = getKQLFunctionName(pos);
     if (function_name.empty())
     return false;
@@ -147,7 +161,7 @@ bool ArraySplit::convertImpl(String & out, IParser::Pos & pos)
     return true;
 }
 
-bool ArraySum::convertImpl(String & out, IParser::Pos & pos)
+bool ArraySplit::convertImpl(String & out, IParser::Pos & pos)
 {
     return directMapping(out, pos, "arraySum");
 }

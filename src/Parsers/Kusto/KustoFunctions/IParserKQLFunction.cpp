@@ -213,6 +213,9 @@ String IParserKQLFunction::getExpression(IParser::Pos & pos)
                 arg = std::to_string(time_span.toSeconds());
         }
     }
+    else if (pos->type == TokenType::QuotedIdentifier)
+        arg = "'" + String(pos->begin + 1,pos->end - 1) + "'";
+
     return arg;
 }
 
