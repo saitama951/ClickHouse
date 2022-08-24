@@ -3,6 +3,7 @@
 
 # August 29, 2022
 ## Aggregate Functions
+
 - [stdev](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/stdev-aggfunction)  
    `Customers | summarize t = stdev(Age) by FirstName`  
 

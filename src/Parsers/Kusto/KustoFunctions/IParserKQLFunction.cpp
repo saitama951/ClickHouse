@@ -18,6 +18,8 @@
 #include <Parsers/ParserSetQuery.h>
 #include <Parsers/Kusto/ParserKQLDateTypeTimespan.h>
 
+#include <pcg_random.hpp>
+
 #include <format>
 
 namespace DB
@@ -80,6 +82,12 @@ bool IParserKQLFunction::directMapping(String & out, IParser::Pos & pos, const S
     return false;
 }
 
+String IParserKQLFunction::generateUniqueIdentifier()
+{
+    static pcg32_unique unique_random_generator;
+    return std::to_string(unique_random_generator());
+}
+
 String IParserKQLFunction::getArgument(const String & function_name, DB::IParser::Pos & pos)
 {
     if (auto optionalArgument = getOptionalArgument(function_name, pos))
@@ -94,7 +102,7 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
     std::vector<String> tokens;
     std::unique_ptr<IParserKQLFunction> fun;
 
-    if (pos->type == TokenType::ClosingRoundBracket)
+    if (pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket)
         return converted_arg;
 
     if (pos->isEnd() || pos->type == TokenType::PipeMark || pos->type == TokenType::Semicolon)
@@ -109,7 +117,7 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
             {
                 tokens.push_back(IParserKQLFunction::getExpression(pos));
             }
-            else if (pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket)
+            else if (pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket)
             {
                 break;
             }
@@ -125,7 +133,7 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
             }
         }
         ++pos;
-        if (pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket)
+        if (pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket)
             break;
     }
     for (auto token : tokens)
@@ -205,6 +213,9 @@ String IParserKQLFunction::getExpression(IParser::Pos & pos)
                 arg = std::to_string(time_span.toSeconds());
         }
     }
+    else if (pos->type == TokenType::QuotedIdentifier)
+        arg = "'" + String(pos->begin + 1,pos->end - 1) + "'";
+
     return arg;
 }
 }
