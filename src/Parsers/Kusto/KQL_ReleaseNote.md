@@ -56,17 +56,11 @@
    `print datetime_diff('quarter',datetime(2017-07-01),datetime(2017-03-30))`
    `print datetime_diff('minute',datetime(2017-10-30 23:05:01),datetime(2017-10-30 23:00:59))` 
 
-- [unixtime_microseconds_todatetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/unixtime-microseconds-todatetimefunction)
-   `print unixtime_microseconds_todatetime(1546300800000000)`    
+- [percentilesw](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/percentiles-aggfunction)  
+   `DataTable | summarize t = percentilesw(Bucket, Frequency, 50, 75, 99.9)`  
 
-- [unixtime_milliseconds_todatetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/unixtime-milliseconds-todatetimefunction)
-   `print unixtime_milliseconds_todatetime(1546300800000)`
-
-- [unixtime_nanoseconds_todatetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/unixtime-nanoseconds-todatetimefunction)
-   `print unixtime_nanoseconds_todatetime(1546300800000000000)`
-
-- [datetime_part] (https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/datetime-partfunction)
-   `print datetime_part('day', datetime(2017-10-30 01:02:03.7654321))`
+- [percentile](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/percentiles-aggfunction)  
+   `Customers | summarize t = percentile(Age, 50) by FirstName`  
 
 - [datetime_add] (https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/datetime-addfunction)
    `print datetime_add('day',1,datetime(2017-10-30 01:02:03.7654321))`
