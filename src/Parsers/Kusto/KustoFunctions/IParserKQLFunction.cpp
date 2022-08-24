@@ -213,9 +213,58 @@ String IParserKQLFunction::getExpression(IParser::Pos & pos)
                 arg = std::to_string(time_span.toSeconds());
         }
     }
-    else if (pos->type == TokenType::QuotedIdentifier)
-        arg = "'" + String(pos->begin + 1,pos->end - 1) + "'";
-
     return arg;
+}
+
+String IParserKQLFunction::ArraySortHelper(String & out,IParser::Pos & pos, bool ascending)
+{
+    String fn_name = getKQLFunctionName(pos);
+    if (fn_name.empty())
+        return "false";
+    String reverse;
+    if(!ascending)
+        reverse = "Reverse";
+    ++pos;
+    String first_arg = getConvertedArgument(fn_name, pos);
+    
+    if(pos->type == TokenType::Comma)
+        ++pos;
+    String second_arg;
+    if(pos->type != TokenType::ClosingRoundBracket  && String(pos->begin, pos->end) != "dynamic")
+    {
+        second_arg = getConvertedArgument(fn_name, pos);
+        out =  "if (" + second_arg + ", array" + reverse + "Sort(" + first_arg + "), concat( arraySlice(array" + reverse + "Sort(" + first_arg + ") as as1, indexOf(as1, NULL) as len1 ), arraySlice( as1, 1, len1-1)))";
+        return out;
+    }
+    --pos;
+    std::vector<String> argument_list;
+    if(pos->type != TokenType::ClosingRoundBracket)
+    {
+        while(pos->type != TokenType::ClosingRoundBracket)
+        {
+            ++pos;
+            second_arg = getConvertedArgument(fn_name, pos);
+            argument_list.push_back("array"+ reverse +"Sort((x, y) -> y, " + second_arg + "," + first_arg + ")");
+        }
+    }
+    else
+    {
+        ++pos;
+        out = "array"+ reverse +"Sort(" + first_arg + ")";
+    }
+
+    if(argument_list.size() > 0)
+    {
+        out = "array"+ reverse +"Sort(" + first_arg + ") AS array0_sorted, ";
+        for(size_t i = 0; i < argument_list.size(); i++)
+        {
+            out += argument_list[i] + "AS array" + std::to_string(i + 1)+ "_sorted";
+
+            if(i < argument_list.size() - 1)
+                out += " , ";
+        }
+        out += " )";
+    }
+    return out;
 }
 }
