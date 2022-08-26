@@ -1,4 +1,3 @@
-
 ## KQL implemented features
 
 # August 29, 2022
