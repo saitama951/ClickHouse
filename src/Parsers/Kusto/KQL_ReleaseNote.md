@@ -2,6 +2,7 @@
 
 # August 29, 2022
 ## Dynamic Array Functions
+**Below functions only support the constant dynamic array**  
 - [array_sort_asc](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arraysortascfunction)  
    `print t = array_sort_asc(dynamic([null, 'd', 'a', 'c', 'c']))`  
    `print t = array_sort_asc(dynamic([4, 1, 3, 2]))`  
