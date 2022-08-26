@@ -1,5 +1,4 @@
-#include "gtest_common.h"
-
+#include <Parsers/tests/gtest_common.h>
 #include <IO/WriteBufferFromOStream.h>
 #include <Interpreters/applyTableOverride.h>
 #include <Parsers/ASTCreateQuery.h>
