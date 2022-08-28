@@ -772,8 +772,10 @@ void ClientBase::processOrdinaryQuery(const String & query_to_execute, ASTPtr pa
     /// Rewrite query only when we have query parameters.
     /// Note that if query is rewritten, comments in query are lost.
     /// But the user often wants to see comments in server logs, query log, processlist, etc.
+    /// For recent versions of the server query parameters will be transferred by network and applied on the server side.
     auto query = query_to_execute;
-    if (!query_parameters.empty())
+    if (!query_parameters.empty()
+        && connection->getServerRevision(connection_parameters.timeouts) < DBMS_MIN_PROTOCOL_VERSION_WITH_PARAMETERS)
     {
         /// Replace ASTQueryParameter with ASTLiteral for prepared statements.
         ReplaceQueryParameterVisitor visitor(query_parameters);
@@ -794,6 +796,7 @@ void ClientBase::processOrdinaryQuery(const String & query_to_execute, ASTPtr pa
             connection->sendQuery(
                 connection_parameters.timeouts,
                 query,
+                query_parameters,
                 global_context->getCurrentQueryId(),
                 query_processing_stage,
                 &global_context->getSettingsRef(),
@@ -1119,7 +1122,8 @@ bool ClientBase::receiveSampleBlock(Block & out, ColumnsDescription & columns_de
 void ClientBase::processInsertQuery(const String & query_to_execute, ASTPtr parsed_query)
 {
     auto query = query_to_execute;
-    if (!query_parameters.empty())
+    if (!query_parameters.empty()
+        && connection->getServerRevision(connection_parameters.timeouts) < DBMS_MIN_PROTOCOL_VERSION_WITH_PARAMETERS)
     {
         /// Replace ASTQueryParameter with ASTLiteral for prepared statements.
         ReplaceQueryParameterVisitor visitor(query_parameters);
@@ -1146,6 +1150,7 @@ void ClientBase::processInsertQuery(const String & query_to_execute, ASTPtr pars
     connection->sendQuery(
         connection_parameters.timeouts,
         query,
+        query_parameters,
         global_context->getCurrentQueryId(),
         query_processing_stage,
         &global_context->getSettingsRef(),
@@ -1518,7 +1523,7 @@ void ClientBase::processParsedSingleQuery(const String & full_query, const Strin
         if (with_output && with_output->settings_ast)
             apply_query_settings(*with_output->settings_ast);
 
-        if (!connection->checkConnected())
+        if (!connection->checkConnected(connection_parameters.timeouts))
             connect();
 
         ASTPtr input_function;
@@ -1862,7 +1867,7 @@ bool ClientBase::executeMultiQuery(const String & all_queries_text)
 
                     have_error = false;
 
-                    if (!connection->checkConnected())
+                    if (!connection->checkConnected(connection_parameters.timeouts))
                         connect();
                 }
 
@@ -1967,7 +1972,7 @@ void ClientBase::runInteractive()
 
     if (home_path.empty())
     {
-        const char * home_path_cstr = getenv("HOME");
+        const char * home_path_cstr = getenv("HOME"); // NOLINT(concurrency-mt-unsafe)
         if (home_path_cstr)
             home_path = home_path_cstr;
     }
@@ -1977,7 +1982,7 @@ void ClientBase::runInteractive()
         history_file = config().getString("history_file");
     else
     {
-        auto * history_file_from_env = getenv("CLICKHOUSE_HISTORY_FILE");
+        auto * history_file_from_env = getenv("CLICKHOUSE_HISTORY_FILE"); // NOLINT(concurrency-mt-unsafe)
         if (history_file_from_env)
             history_file = history_file_from_env;
         else if (!home_path.empty())
@@ -2067,7 +2072,7 @@ void ClientBase::runInteractive()
             /// Client-side exception during query execution can result in the loss of
             /// sync in the connection protocol.
             /// So we reconnect and allow to enter the next query.
-            if (!connection->checkConnected())
+            if (!connection->checkConnected(connection_parameters.timeouts))
                 connect();
         }
     }
@@ -2274,13 +2279,13 @@ void ClientBase::init(int argc, char ** argv)
     if (options.count("version") || options.count("V"))
     {
         showClientVersion();
-        exit(0);
+        exit(0); // NOLINT(concurrency-mt-unsafe)
     }
 
     if (options.count("version-clean"))
     {
         std::cout << VERSION_STRING;
-        exit(0);
+        exit(0); // NOLINT(concurrency-mt-unsafe)
     }
 
     /// Output of help message.
@@ -2288,7 +2293,7 @@ void ClientBase::init(int argc, char ** argv)
         || (options.count("host") && options["host"].as<std::string>() == "elp")) /// If user writes -help instead of --help.
     {
         printHelpMessage(options_description);
-        exit(0);
+        exit(0); // NOLINT(concurrency-mt-unsafe)
     }
 
     /// Common options for clickhouse-client and clickhouse-local.
