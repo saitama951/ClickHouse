@@ -12,20 +12,19 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "print startofweek(datetime(2017-01-01 10:10:17), -1)",
-            "SELECT parseDateTime64BestEffortOrNull(toStartOfWeek(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC')), 9, 'UTC') + toIntervalWeek(-1)"
+            "SELECT parseDateTime64BestEffortOrNull(toString(toStartOfWeek(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'))), 9, 'UTC') + toIntervalWeek(-1)"
         },
         {
             "print startofmonth(datetime(2017-01-01 10:10:17), -1)",
-            "SELECT parseDateTime64BestEffortOrNull(toStartOfMonth(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC')), 9, 'UTC') + toIntervalMonth(-1)"
+            "SELECT parseDateTime64BestEffortOrNull(toString(toStartOfMonth(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'))), 9, 'UTC') + toIntervalMonth(-1)"
         },
         {
             "print startofday(datetime(2017-01-01 10:10:17), -1)",
-            "SELECT parseDateTime64BestEffortOrNull(toStartOfDay(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC')), 9, 'UTC') + toIntervalDay(-1)"
-
+            "SELECT parseDateTime64BestEffortOrNull(toString(toStartOfDay(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'))), 9, 'UTC') + toIntervalDay(-1)"
         },
         {
             "print startofyear(datetime(2017-01-01 10:10:17), -1)",
-            "SELECT parseDateTime64BestEffortOrNull(toStartOfYear(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'), 'UTC'), 9, 'UTC') + toIntervalYear(-1)"
+            "SELECT parseDateTime64BestEffortOrNull(toString(toStartOfYear(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'), 'UTC')), 9, 'UTC') + toIntervalYear(-1)"
         },
         {
             "print monthofyear(datetime(2015-12-14))",
@@ -180,11 +179,11 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
             "SELECT parseDateTime64BestEffortOrNull('2017-10-30 01:02:03.7654321', 9, 'UTC') + toIntervalDay(1)"
         },
         {
-            "print totimespan(time(1d))"
+            "print totimespan(time(1d))",
             "SELECT 86400."
         },
         {
-            "print totimespan('0.01:34:23')"
+            "print totimespan('0.01:34:23')",
             "SELECT 5663."
         }
 
