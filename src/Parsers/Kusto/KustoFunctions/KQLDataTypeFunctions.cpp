@@ -7,16 +7,18 @@
 #include <Parsers/Kusto/KustoFunctions/IParserKQLFunction.h>
 #include <Parsers/Kusto/KustoFunctions/KQLDataTypeFunctions.h>
 #include <Parsers/Kusto/ParserKQLDateTypeTimespan.h>
+
+#include <algorithm>
 #include <format>
+
+namespace DB::ErrorCodes
+{
+extern const int BAD_ARGUMENTS;
+extern const int SYNTAX_ERROR;
+}
 
 namespace DB
 {
-
-namespace ErrorCodes
-{
-    extern const int BAD_ARGUMENTS;
-}
-
 bool DatatypeBool::convertImpl(String &out,IParser::Pos &pos)
 {
     return directMapping(out, pos, "toBool");
@@ -50,28 +52,75 @@ bool DatatypeDatetime::convertImpl(String &out,IParser::Pos &pos)
     return true;
 }
 
-bool DatatypeDynamic::convertImpl(String &out,IParser::Pos &pos)
+bool DatatypeDynamic::convertImpl(String & out, IParser::Pos & pos)
 {
-    const String fn_name = getKQLFunctionName(pos);
-    if (fn_name.empty())
+    const auto function_name = getKQLFunctionName(pos);
+    if (function_name.empty())
         return false;
 
-    String array;
-    ++pos;
-    if (pos->type == TokenType::OpeningSquareBracket) 
-    {   
+    const auto appendToken = [&out, &pos]()
+    {
+        out.push_back('\'');
+        out.append(pos->begin, pos->end);
+        out.push_back('\'');
         ++pos;
-        while (pos->type != TokenType::ClosingRoundBracket)
+    };
+
+    const auto determineKey = [](const DB::TokenType token_type)
+    {
+        if (token_type == DB::TokenType::OpeningCurlyBrace)
+            return "dictionary";
+        else if (token_type == DB::TokenType::OpeningSquareBracket)
+            return "array";
+        else
+            return "scalar";
+    };
+
+    const auto extractAsJSONString = [&function_name, &pos]()
+    {
+        const auto expression = std::invoke(
+            [&function_name, &pos]
+            {
+                if (pos->type == TokenType::BareWord)
+                    return getConvertedArgument(function_name, pos);
+
+                std::string raw(pos->begin, pos->end);
+                std::replace(raw.begin(), raw.end(), '"', '\'');
+                ++pos;
+
+                return raw;
+            });
+
+        return std::format("concat('\"', toString({0}), '\"')", expression);
+    };
+
+    ++pos;
+    out = std::format("concat('{{ \"{0}\": ', ", determineKey(pos->type));
+    while (!pos->isEnd() && pos->type != TokenType::ClosingRoundBracket)
+    {
+        if (const auto token_type = pos->type; token_type == TokenType::ClosingCurlyBrace || token_type == TokenType::ClosingSquareBracket
+            || token_type == TokenType::Colon || token_type == TokenType::Comma || token_type == TokenType::OpeningCurlyBrace
+            || token_type == TokenType::OpeningSquareBracket)
+            appendToken();
+        else if (token_type == TokenType::QuotedIdentifier || token_type == TokenType::StringLiteral)
+            out.append(extractAsJSONString());
+        else if (const std::string_view token(pos->begin, pos->end); token_type == TokenType::BareWord && token != "timespan")
         {
-            auto tmp_arg = getConvertedArgument(fn_name, pos);
-            array = array.empty() ? tmp_arg : array +", " + tmp_arg;
-            ++pos;
+            if (token == "datetime")
+                out.append(extractAsJSONString());
+            else if (token == "dynamic")
+                out.append(std::format("JSONExtractKeysAndValuesRaw({0})[1].2", getConvertedArgument(function_name, pos)));
+            else
+                throw Exception(ErrorCodes::BAD_ARGUMENTS, "Encountered unsupported call {} when parsing {}", token, function_name);
         }
-        out = "array (" + array + ")";
-        return true;
+        else
+            out.append(std::format("toString({})", getConvertedArgument(function_name, pos)));
+
+        out.append(", ");
     }
-    else
-        return false; // should throw exception , later
+
+    out.append("' }')");
+    return true;
 }
 
 bool DatatypeGuid::convertImpl(String &out,IParser::Pos &pos)
@@ -149,5 +198,4 @@ bool DatatypeDecimal::convertImpl(String &out,IParser::Pos &pos)
     out = res;
     return false;
 }
-
 }

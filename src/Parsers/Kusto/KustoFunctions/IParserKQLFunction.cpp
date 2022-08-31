@@ -102,7 +102,8 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
     std::vector<String> tokens;
     std::unique_ptr<IParserKQLFunction> fun;
 
-    if (pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket)
+    if (pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket
+        || pos->type == TokenType::ClosingCurlyBrace)
         return converted_arg;
 
     if (pos->isEnd() || pos->type == TokenType::PipeMark || pos->type == TokenType::Semicolon)
@@ -117,7 +118,9 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
             {
                 tokens.push_back(IParserKQLFunction::getExpression(pos));
             }
-            else if (pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket)
+            else if (
+                pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket
+                || pos->type == TokenType::ClosingCurlyBrace)
             {
                 break;
             }
@@ -125,7 +128,7 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
             {
                 String token;
                 if (pos->type == TokenType::QuotedIdentifier)
-                    token = "'" + String(pos->begin + 1,pos->end - 1) + "'";
+                    token = "'" + String(pos->begin + 1, pos->end - 1) + "'";
                 else
                     token = String(pos->begin, pos->end);
 
@@ -133,7 +136,8 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
             }
         }
         ++pos;
-        if (pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket)
+        if (pos->type == TokenType::Comma || pos->type == TokenType::ClosingRoundBracket || pos->type == TokenType::ClosingSquareBracket
+            || pos->type == TokenType::ClosingCurlyBrace)
             break;
     }
     for (auto token : tokens)
