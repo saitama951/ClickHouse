@@ -492,6 +492,20 @@ endif ()
 
 enable_testing() # Enable for tests without binary
 
+option(ENABLE_CH_BUNDLE_BORINGSSL "Provide user to allow static linking of FIPS compliant OpenSSL library. By default, uses in-house ClickHouse BoringSSL" ON)
+
+message (STATUS "ENABLE_CH_BUNDLE_BORINGSSL: ${ENABLE_CH_BUNDLE_BORINGSSL}")
+if (ENABLE_CH_BUNDLE_BORINGSSL)
+    message (STATUS "Uses in-house ClickHouse FIPS compliant BoringSSL library")
+else ()
+    message (STATUS "Uses FIPS compliant OpenSSL library instead of BoringSSL")
+endif ()
+
+if (NOT ENABLE_CH_BUNDLE_BORINGSSL)
+    set(ENABLE_SSL 1)
+    target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
+endif ()
+
 # when installing to /usr - place configs to /etc but for /usr/local place to /usr/local/etc
 if (CMAKE_INSTALL_PREFIX STREQUAL "/usr")
     set (CLICKHOUSE_ETC_DIR "/etc")
