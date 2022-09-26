@@ -31,7 +31,7 @@ namespace ErrorCodes
     extern const int UNKNOWN_FUNCTION;
 }
 
-bool ParserKQLBase::parseByString(const String expr, ASTPtr & node, const uint32_t & max_depth)
+bool ParserKQLBase::parseByString(const String expr, ASTPtr & node, const uint32_t max_depth)
 {
     Expected expected;
     
@@ -78,7 +78,7 @@ void ParserKQLBase::setSubQuerySource(ASTPtr & select_query, ASTPtr & source, bo
     return;
 }
 
-String ParserKQLBase::getExprFromToken(const String & text, const uint32_t & max_depth)
+String ParserKQLBase::getExprFromToken(const String & text, const uint32_t max_depth)
 {
     Tokens tokens(text.c_str(), text.c_str() + text.size());
     IParser::Pos pos(tokens, max_depth);
