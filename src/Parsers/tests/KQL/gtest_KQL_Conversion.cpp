@@ -55,5 +55,26 @@ INSTANTIATE_TEST_SUITE_P(
         {
             "print todecimal(123456.3456)",
             "SELECT toDecimal128(CAST('123456.3456', 'String'), 12)"
+        },
+        {
+            "print todecimal('abc')",
+            "SELECT NULL"
+        },
+        {
+            "print todecimal('1e5')",
+            "SELECT toDecimal128(CAST('1e5', 'String'), 5)"
+        },
+        {
+            "print decimal(1e-5)",
+            "SELECT toDecimal128(CAST('1e-5', 'String'), 5)"
+        },
+        {
+            "print time(9nanoseconds)",
+            "SELECT CAST('9e-09', 'Float64')"
+        },
+        {
+            "print time(1tick)",
+            "SELECT CAST('1e-10', 'Float64')"
         }
+
 })));

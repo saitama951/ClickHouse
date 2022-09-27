@@ -19,14 +19,12 @@ bool ParserKQLDateTypeTimespan :: parseImpl(Pos & pos,  [[maybe_unused]] ASTPtr 
 
     if (pos->type == TokenType::QuotedIdentifier || pos->type == TokenType::StringLiteral )
         token = String(pos->begin + 1, pos->end -1);
-
     else
         token = String(pos->begin, pos->end);
-
     if (!parseConstKQLTimespan(token))
         return false;
 
-     return true;
+    return true;
 }
 
 double ParserKQLDateTypeTimespan :: toSeconds()
@@ -48,7 +46,7 @@ double ParserKQLDateTypeTimespan :: toSeconds()
         case KQLTimespanUint::nanosec:
             return time_span / 1000000000.0;
         case KQLTimespanUint::tick:
-            return time_span / 10000000000.0;
+            return time_span / 10000000.0;
     }
 }
 
@@ -105,7 +103,7 @@ bool ParserKQLDateTypeTimespan :: parseConstKQLTimespan(const String & text)
             ++index;
         return index > start ? index - start : -1;
     };
-    if(*ptr == '-')
+    if (*ptr == '-')
     {
         sign = true;
         ++ptr;
@@ -124,16 +122,13 @@ bool ParserKQLDateTypeTimespan :: parseConstKQLTimespan(const String & text)
             hours = std::stoi(String(ptr + number_len + 1, ptr + number_len + 1 + fractionLen));
             number_len += fractionLen + 1;
         }
-        else
-        {
-            hours = days;
-            days = 0;
-        }
     }
-
-    if (hours > 23)
-        return false;
-
+    else
+    {
+        hours = days;
+        days = 0;
+    }
+    
     if (*(ptr + number_len) != ':')
     {
         String timespan_suffix(ptr + number_len, ptr + text.size());
@@ -147,7 +142,10 @@ bool ParserKQLDateTypeTimespan :: parseConstKQLTimespan(const String & text)
 
         return true;
     }
-
+    
+    if (hours > 23)
+        return false;
+    
     auto min_len = scanDigit(ptr + number_len + 1);
     if (min_len < 0)
         return false;
@@ -183,7 +181,7 @@ bool ParserKQLDateTypeTimespan :: parseConstKQLTimespan(const String & text)
     auto exponent = 9 - sec_scale_len; // max supported length of fraction of seconds is 9 
     nanoseconds = nanoseconds * pow(10, exponent );
 
-    if(sign)
+    if (sign)
         time_span = -(days * 86400 + hours * 3600 + minutes * 60 + seconds + (nanoseconds /1000000000 ));
     else
         time_span = days * 86400 + hours * 3600 + minutes * 60 + seconds + (nanoseconds /1000000000 );

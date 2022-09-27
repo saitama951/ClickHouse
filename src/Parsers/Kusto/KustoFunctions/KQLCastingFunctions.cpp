@@ -5,6 +5,7 @@
 
 #include <format>
 #include <Poco/String.h>
+#include<regex>
 
 
 namespace DB
@@ -89,34 +90,44 @@ bool ToTimeSpan::convertImpl(String & out, IParser::Pos & pos)
 {
     const auto function_name = getKQLFunctionName(pos);
     if (function_name.empty())
-        return false;   
+        return false;
     ++pos;
-    if(pos->type == TokenType::StringLiteral || pos->type == TokenType::QuotedIdentifier)
+    String arg;
+     if (pos->type == TokenType::QuotedIdentifier)
+        arg = String(pos->begin + 1, pos->end - 1);
+    else if (pos->type == TokenType::StringLiteral)
+        arg = String(pos->begin, pos->end);
+    else
+        arg = getConvertedArgument(function_name, pos);
+    
+    if (pos->type == TokenType::StringLiteral || pos->type == TokenType::QuotedIdentifier)
     {
-        --pos;
-        auto arg = getArgument(function_name,pos, ArgumentState::Raw);
-        auto out1 =  kqlCallToExpression("time", {arg}, pos.max_depth);
-        out = std::format("{}" , out1);
+        ++pos;
+        try
+        {
+           auto result =  kqlCallToExpression("time", {arg}, pos.max_depth);
+            out = std::format("{}" , result);
+        }
+        catch(...)
+        {
+            out = "NULL";
+        }
     }
     else
-    {
-        auto arg = getConvertedArgument(function_name,pos);
         out = std::format("{}" , arg);
-    }
 
     return true;
 }
 
 bool ToDecimal::convertImpl(String & out, IParser::Pos & pos)
 {
-
     const String fn_name = getKQLFunctionName(pos);
     if (fn_name.empty())
         return false;
 
     ++pos;
     String res;
-    int scale =0;
+    int scale = 0;
     int precision;
     
     if (pos->type == TokenType::QuotedIdentifier || pos->type == TokenType::StringLiteral)
@@ -130,21 +141,30 @@ bool ToDecimal::convertImpl(String & out, IParser::Pos & pos)
         res = getConvertedArgument(fn_name, pos);
         precision = 17;
     }
-    bool is_string = std::any_of(res.begin(), res.end(), ::isalpha) &&  Poco::toUpper(res) != "NULL";
-    
-    if ( Poco::toUpper(res) == "NULL")
-        out = std::format("NULL");
-    else if(is_string)
-        throw Exception("Failed to parse String as decimal Literal: " + fn_name, ErrorCodes::BAD_ARGUMENTS);
+    static const std::regex expr{"^[0-9]+e[+-]?[0-9]+"};
+    bool is_string = std::any_of(res.begin(), res.end(), ::isalpha) && !(std::regex_match(res, expr));
+     
+    if (is_string)
+        out = "NULL";
+    else if (std::regex_match(res, expr))
+    {
+        auto exponential_pos = res.find("e");
+        if (res[exponential_pos + 1] == '+' || res[exponential_pos + 1] == '-')
+            scale = std::stoi(res.substr(exponential_pos + 2, res.length()));
+        else
+            scale = std::stoi(res.substr(exponential_pos + 1, res.length()));
+
+        out = std::format("toDecimal128({}::String,{})", res, scale);
+    }
     else
     {
-       auto dot_pos = res.find(".");
-        if(dot_pos != String::npos)
+        auto dot_pos = res.find(".");
+        if (dot_pos != String::npos)
             scale = (precision - (res.substr(0,dot_pos-1)).length()) > 0 ? precision - (res.substr(0,dot_pos-1)).length() : 0;
-        if(scale < 0)
-            out = std::format("NULL");
+        if (scale < 0)
+            out = "NULL";
         else
-          out = std::format("toDecimal128({}::String,{})", res, scale);
+            out = std::format("toDecimal128({}::String,{})", res, scale);
     }
 
     return true;
