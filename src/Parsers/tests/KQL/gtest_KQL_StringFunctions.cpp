@@ -108,7 +108,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_String, ParserTest,
         },
         {
             "print res = bin_at(1h, 1d, 12h)",
-            "SELECT concat(toString(toInt32(((toFloat64(43200.) + (toInt64(((toFloat64(3600.) - toFloat64(43200.)) / 86400) + -1) * 86400)) AS x) / 3600)), ':', toString(toInt32((x % 3600) / 60)), ':', toString(toInt32((x % 3600) % 60))) AS res"
+            "SELECT concat(toString(toInt32(((toFloat64(43200) + (toInt64(((toFloat64(3600) - toFloat64(43200)) / 86400) + -1) * 86400)) AS x) / 3600)), ':', toString(toInt32((x % 3600) / 60)), ':', toString(toInt32((x % 3600) % 60))) AS res"
         },
         {
             "print res = bin_at(datetime(2017-05-15 10:20:00.0), 1d, datetime(1970-01-01 12:00:00.0))",
@@ -153,6 +153,8 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_String, ParserTest,
         {
             "print extract('x=([0-9.]+)', 1, 'hello x=456|wo' , typeof(decimal));",
             "SELECT toDecimal128OrNull(if(countSubstrings(extract('hello x=456|wo', '[0-9.]+'), '.') > 1, NULL, extract('hello x=456|wo', '[0-9.]+')), length(substr(extract('hello x=456|wo', '[0-9.]+'), position(extract('hello x=456|wo', '[0-9.]+'), '.') + 1)))"
+        },
+        {
             "print bin(datetime(1970-05-11 13:45:07.456345672), 1ms)",
             "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.001) * 0.001, 9, 'UTC')"
         },
