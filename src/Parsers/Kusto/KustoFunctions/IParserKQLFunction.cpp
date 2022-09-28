@@ -30,6 +30,7 @@ namespace DB::ErrorCodes
     extern const int NOT_IMPLEMENTED;
     extern const int NUMBER_OF_ARGUMENTS_DOESNT_MATCH;
     extern const int SYNTAX_ERROR;
+    extern const int UNKNOWN_FUNCTION;
 }
 
 namespace
@@ -290,6 +291,16 @@ String IParserKQLFunction::getExpression(IParser::Pos & pos)
         }
         else
         {
+            if (!fun)
+            {
+                ++pos;
+                if (pos->type == TokenType::OpeningRoundBracket)
+                {
+                    if (Poco::toLower(arg) != "and" && Poco::toLower(arg) != "or")
+                        throw Exception(arg + " is not a supported kusto function", ErrorCodes::UNKNOWN_FUNCTION);
+                }
+                --pos;
+            }
             ParserKQLDateTypeTimespan time_span;
             ASTPtr node;
             Expected expected;
