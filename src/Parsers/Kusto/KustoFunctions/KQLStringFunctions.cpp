@@ -437,7 +437,38 @@ bool Split::convertImpl(String & out,IParser::Pos & pos)
 
 bool StrCat::convertImpl(String & out,IParser::Pos & pos)
 {
-    return directMapping(out, pos, "concat");
+    const String fn_name = getKQLFunctionName(pos);
+    if (fn_name.empty())
+        return false;
+    std::vector<String> args;
+    out = "concat(";
+    while (!pos->isEnd() && pos->type != TokenType::Semicolon && pos->type != TokenType::ClosingRoundBracket)
+    {
+        ++pos;
+        String arg = getConvertedArgument(fn_name, pos);
+        bool quote_found = false;
+        for(size_t i = 0; i < arg.size(); i++)
+        {
+            if(arg[i] == '\'' || arg[i] == '\"')
+            {
+                quote_found = true;
+                break;
+            }
+        }
+        if(quote_found)
+            out += arg;
+        else
+            out += '\'' + arg + '\'';
+        out += ',';
+    }
+    for(size_t i = out.size() - 1; i != 0; i--)
+        if(out[i] == ',')
+            {
+                out[i] = ' ';
+                break;
+            }
+    out += ")";
+    return true;
 }
 
 bool StrCatDelim::convertImpl(String & out,IParser::Pos & pos)

@@ -161,5 +161,9 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_String, ParserTest,
         {
             "print bin(datetime(1970-05-11 13:45:07.456345672), 1microseconds)",
             "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.000001) * 0.000001, 9, 'UTC')"
+        },
+        {
+            "print strcat(1, '-', 2, '!~', 3, '***', 4.5)",
+            "SELECT concat('1', '-', '2', '!~', '3', '***', '4.5')"
         }
 })));
