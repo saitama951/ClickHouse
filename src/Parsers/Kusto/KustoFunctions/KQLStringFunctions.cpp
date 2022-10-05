@@ -647,10 +647,14 @@ bool SubString::convertImpl(String & out, IParser::Pos & pos)
     {
         ++pos;
         auto length = getConvertedArgument(fn_name, pos);
-        out = "substr("+ source + ", " + startingIndex + " + 1, " + length + ")";
+
+        if(startingIndex.empty())
+            throw Exception("number of arguments do not match in function: " + fn_name, ErrorCodes::SYNTAX_ERROR);
+        else
+            out = "substr("+ source + ", " + "((" + startingIndex + "% (toInt64(length(" + source + ")) AS n)  + n) % n)  + 1, " + length + ")";
     }
     else
-        out = "substr("+ source + "," + startingIndex + " + 1)";
+        out = "substr("+ source + "," + "((" + startingIndex + "% (toInt64(length(" + source + ")) AS n)  + n) % n) + 1)";
 
     return true;
 }
