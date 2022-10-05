@@ -259,6 +259,9 @@ PINEAPPLE
 ['']
 ['a','','b']
 ['aa','cc']
+['aabbcc']
+['aaa','bbb','ccc']
+[NULL]
 
 -- strcat_delim (https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/strcat-delimfunction); TODO: only support string now.
 1-2-Ab
