@@ -123,6 +123,16 @@ bool ParserKQLDateTypeTimespan :: parseConstKQLTimespan(const String & text)
             number_len += fractionLen + 1;
         }
     }
+    else if (*(ptr + number_len) == '\0')
+    {
+        if (sign)
+            time_span = -(std::stoi(String(ptr, ptr + number_len))) * 86400 ;
+        else
+            time_span = std::stoi(String(ptr, ptr + number_len)) * 86400;
+
+        time_span_unit = KQLTimespanUint::second;
+        return true;
+    }
     else
     {
         hours = days;
