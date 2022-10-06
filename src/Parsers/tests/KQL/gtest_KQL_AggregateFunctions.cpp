@@ -56,6 +56,6 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_Aggregate, ParserTest,
         },
         {
              "Customers | summarize t = make_list_with_nulls(Age) by FirstName",
-             "SELECT\n    FirstName,\n    arrayConcat(groupArray(Age) AS ga, arrayMap(x -> NULL, range(0, toUInt32(count(*) - length(ga)), 1))) AS t\nFROM Customers\nGROUP BY FirstName"
+             "SELECT\n    FirstName,\n    arrayConcat(groupArray(Age), arrayMap(x -> NULL, range(0, toUInt32(count(*) - length(groupArray(Age))), 1))) AS t\nFROM Customers\nGROUP BY FirstName"
         }
 })));
