@@ -128,5 +128,13 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_Dynamic, ParserTest,
          {
             "print t = array_sort_desc(dynamic(['b', 'a', null]), dynamic(['p', 'q', 'r', 's']), 1 < 2)",
             "SELECT [if(1 < 2, arrayReverseSort(['b', 'a', NULL]), concat(arraySlice(arrayReverseSort(['b', 'a', NULL]) AS as1, indexOf(as1, NULL) AS len1), arraySlice(as1, 1, len1 - 1))), [NULL]] AS t"
+         },
+         {
+            "print repeat(1, 3)",
+            "SELECT if(3 < 0, [NULL], arrayWithConstant(abs(3), 1))"
+         },
+         {
+            "print repeat(1, -3)",
+            "SELECT if(-3 < 0, [NULL], arrayWithConstant(abs(-3), 1))"
          }
  })));
