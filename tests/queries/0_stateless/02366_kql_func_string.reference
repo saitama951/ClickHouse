@@ -167,12 +167,6 @@ https://www.test.com/hello word
 https%3A%2F%2Fwww.test.com%2Fhello%20word
 
 -- Customers | project name_abbr = strcat(substring(FirstName,0,3), \' \', substring(LastName,2))
-\N
-Lat en
-Pet ra
-The az
-Ste x
-App 
 
 -- Customers | project name = strcat(FirstName, \' \', LastName)
 \N
@@ -291,6 +285,8 @@ YWUzMTMzZjItNmUyMi00OWFlLWIwNmEtMTZlNmE5YjIxMmVi
 {"Query Parameters":{"k1":"v1","k2":"v2","k3":"v3"}}
 -- strcmp()
 0	1	-1	1
+-- substring()
+CD
 -- translate()
 kusto		xxx
 -- trim()
