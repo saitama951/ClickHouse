@@ -119,6 +119,10 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_String, ParserTest,
             "SELECT toInt64(toFloat64(4.5) / 1) * 1"
         },
         {
+            "print bin(4.5, -1)",
+            "SELECT toInt64(toFloat64(4.5) / -1) * -1"
+        },
+        {
             "print bin(time(16d), 7d)",
             "SELECT concat(toString(toInt32(((toInt64(toFloat64(CAST('1382400', 'Float64')) / 604800) * 604800) AS x) / 3600)), ':', toString(toInt32((x % 3600) / 60)), ':', toString(toInt32((x % 3600) % 60)))"
         },
@@ -161,5 +165,58 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_String, ParserTest,
         {
             "print bin(datetime(1970-05-11 13:45:07.456345672), 1microseconds)",
             "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.000001) * 0.000001, 9, 'UTC')"
+        },
+        {
+            "print parse_version('1.2.3.40')",
+            "SELECT if((length(splitByChar('.', '1.2.3.40')) > 4) OR (length(splitByChar('.', '1.2.3.40')) < 1) OR (match('1.2.3.40', '.*[a-zA-Z]+.*') = 1), toDecimal128OrNull('NULL', 0), toDecimal128OrNull(substring(arrayStringConcat(arrayMap(x -> leftPad(x, 8, '0'), arrayMap(x -> if(empty(x), '0', x), arrayResize(splitByChar('.', '1.2.3.40'), 4)))), 8), 0))"
+        },
+        {
+            "print parse_version('1')",
+            "SELECT if((length(splitByChar('.', '1')) > 4) OR (length(splitByChar('.', '1')) < 1) OR (match('1', '.*[a-zA-Z]+.*') = 1), toDecimal128OrNull('NULL', 0), toDecimal128OrNull(substring(arrayStringConcat(arrayMap(x -> leftPad(x, 8, '0'), arrayMap(x -> if(empty(x), '0', x), arrayResize(splitByChar('.', '1'), 4)))), 8), 0))"
+        },
+        {
+            "print parse_json( dynamic([1, 2, 3]))",
+            "SELECT [1, 2, 3]"
+        },
+        {
+            "print parse_json('{\"a\":123.5, \"b\":\"{\\\"c\\\":456}\"}')",
+            "SELECT if(isValidJSON('{\"a\":123.5, \"b\":\"{\"c\":456}\"}'), JSON_QUERY('{\"a\":123.5, \"b\":\"{\"c\":456}\"}', '$'), toJSONString('{\"a\":123.5, \"b\":\"{\"c\":456}\"}'))"
+        },
+        {
+            "print extract_json( '$.a' , '{\"a\":123, \"b\":\"{\"c\":456}\"}' , typeof(long))",
+            "SELECT accurateCastOrNull(JSON_VALUE('{\"a\":123, \"b\":\"{\"c\":456}\"}', '$.a'), 'Int64')"
+        },
+        {
+            "print bin(datetime(1970-05-11 13:45:07.456345672), 1ms)",
+            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.001) * 0.001, 9, 'UTC')"
+        },
+        {
+            "print bin(datetime(1970-05-11 13:45:07.456345672), 1microseconds)",
+            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.000001) * 0.000001, 9, 'UTC')"
+        },
+        {
+            "print parse_command_line('echo \"hello world!\" print$?', 'windows')",
+            "SELECT if(empty('echo \"hello world!\" print$?') OR hasAll(splitByChar(' ', 'echo \"hello world!\" print$?'), ['']), arrayMap(x -> NULL, splitByChar(' ', '')), splitByChar(' ', 'echo \"hello world!\" print$?'))"
+        },
+        {
+            "print reverse(123)",
+            "SELECT reverse(accurateCastOrNull(123, 'String'))"
+        },
+        {
+            "print reverse(123.34)",
+            "SELECT reverse(accurateCastOrNull(123.34, 'String'))"
+        },
+        {
+            "print reverse('clickhouse')",
+            "SELECT reverse(accurateCastOrNull('clickhouse', 'String'))"
+        },
+        {
+            "print result=parse_csv('aa,b,cc')",
+            "SELECT if(CAST(position('aa,b,cc', '\\n'), 'UInt8'), splitByChar(',', substring('aa,b,cc', 1, position('aa,b,cc', '\\n') - 1)), splitByChar(',', substring('aa,b,cc', 1, length('aa,b,cc')))) AS result"
+        },
+        {
+            "print result_multi_record=parse_csv('record1,a,b,c\nrecord2,x,y,z')",
+            "SELECT if(CAST(position('record1,a,b,c\\nrecord2,x,y,z', '\\n'), 'UInt8'), splitByChar(',', substring('record1,a,b,c\\nrecord2,x,y,z', 1, position('record1,a,b,c\\nrecord2,x,y,z', '\\n') - 1)), splitByChar(',', substring('record1,a,b,c\\nrecord2,x,y,z', 1, length('record1,a,b,c\\nrecord2,x,y,z')))) AS result_multi_record"
         }
-})));
+})));   
+

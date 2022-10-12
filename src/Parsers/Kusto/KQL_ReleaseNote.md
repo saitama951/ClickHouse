@@ -1,5 +1,32 @@
 ## KQL implemented features  
 
+# October 9, 2022
+## String functions
+- [reverse](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/reversefunction)
+   `print reverse(123)`
+   `print reverse(123.34)`
+   `print reverse('clickhouse')`
+   `print reverse(3h)`
+   `print reverse(datetime(2017-1-1 12:23:34))`
+
+- [parse_command_line](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/parse-command-line)
+   `print parse_command_line('echo \"hello world!\" print$?', \"Windows\")`
+  
+- [parse_csv](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/parsecsvfunction)
+  `print result=parse_csv('aa,b,cc')`
+  `print result_multi_record=parse_csv('record1,a,b,c\nrecord2,x,y,z')`
+
+- [parse_json](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/parsejsonfunction)
+   `print parse_json( dynamic([1, 2, 3]))`
+   `print parse_json('{"a":123.5, "b":"{\\"c\\":456}"}')`
+
+- [extract_json](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/extractjsonfunction)
+   `print extract_json( "$.a" , '{"a":123, "b":"{\\"c\\":456}"}' , typeof(int))`
+
+- [parse_version](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/parse-versionfunction)
+ `print parse_version('1')`
+ `print parse_version('1.2.3.40')`
+
 # September 26, 2022
 ## Bug fixed :  
 ["select * from kql" results in syntax error](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1119)  
@@ -24,7 +51,6 @@
 https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/extendoperator  
 `T | extend T | extend duration = endTime - startTime`  
 `T | project endTime, startTime | extend duration = endTime - startTime`
-
 ## Array functions
 - [array_reverse](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/array-reverse-function)  
    `print array_reverse(dynamic(["this", "is", "an", "example"])) == dynamic(["example","an","is","this"])`  
