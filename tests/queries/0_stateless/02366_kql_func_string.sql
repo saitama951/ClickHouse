@@ -10,6 +10,21 @@ CREATE TABLE Customers
 
 INSERT INTO Customers VALUES ('Theodore','Diaz','Skilled Manual','Bachelors',28), ('Stephanie','Cox','Management abcd defg','Bachelors',33),('Peter','Nara','Skilled Manual','Graduate Degree',26),('Latoya','Shen','Professional','Graduate Degree',25),('Apple','','Skilled Manual','Bachelors',28),(NULL,'why','Professional','Partial College',38);
 
+-- datatable (Version:string) [
+--     '1.2.3.4',
+--     '1.2',
+--     '1.2.3',
+--     '1'
+-- ]
+
+DROP TABLE IF EXISTS Versions;
+CREATE TABLE Versions
+(    
+    Version String
+) ENGINE = Memory;
+INSERT INTO Versions VALUES ('1.2.3.4'),('1.2'),('1.2.3'),('1');
+
+
 set dialect='kusto';
 print '-- test String Functions --';
 
@@ -174,12 +189,31 @@ print '';
 print '-- extract_all (https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/extractallfunction); TODO: captureGroups not supported yet';
 Customers | project extract_all('(\\w)(\\w+)(\\w)','The price of PINEAPPLE ice cream is 20') | take 1;
 print '';
+print '-- extract_json (https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/extractjsonfunction)';
+print extract_json('', ''); -- { serverError BAD_ARGUMENTS }
+print extract_json('a', ''); -- { serverError BAD_ARGUMENTS }
+print extract_json('$.firstName', '');
+print extract_json('$.phoneNumbers[0].type', '');
+print extractjson('$.firstName', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}');
+print extract_json('$.phoneNumbers[0].type', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}', typeof(string));
+print extract_json('$.phoneNumbers[0].type', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}', typeof(int));
+print extract_json('$.age', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}');
+print extract_json('$.age', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}', typeof(int));
+print extract_json('$.age', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}', typeof(long));
+-- print extract_json('$.age', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}', typeof(bool)); -> true
+print extract_json('$.age', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}', typeof(double));
+print extract_json('$.age', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}', typeof(guid));
+-- print extract_json('$.phoneNumbers', '{"firstName":"John","lastName":"doe","age":26,"address":{"streetAddress":"naist street","city":"Nara","postalCode":"630-0192"},"phoneNumbers":[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]}', typeof(dynamic)); we won't be able to handle this particular case for a while, because it should return a dictionary
+print '';
 print '-- split (https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/splitfunction)';
 Customers | project split('aa_bb', '_') | take 1;
 Customers | project split('aaa_bbb_ccc', '_', 1) | take 1;
 Customers | project split('', '_') | take 1;
 Customers | project split('a__b', '_') | take 1;
 Customers | project split('aabbcc', 'bb') | take 1;
+Customers | project split('aabbcc', '') | take 1;
+Customers | project split('aaa_bbb_ccc', '_', -1) | take 1;
+Customers | project split('aaa_bbb_ccc', '_', 10) | take 1;
 print '';
 print '-- strcat_delim (https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/strcat-delimfunction); TODO: only support string now.';
 Customers | project strcat_delim('-', '1', '2', strcat('A','b')) | take 1;
@@ -202,6 +236,8 @@ print '-- parse_urlquery()';
 print parse_urlquery('k1=v1&k2=v2&k3=v3');
 print '-- strcmp()';
 print strcmp('ABC','ABC'), strcmp('abc','ABC'), strcmp('ABC','abc'), strcmp('abcde','abc');
+print '-- substring()';
+print substring("ABCD", -2, 2);
 print '-- translate()';
 print translate('krasp', 'otsku', 'spark'), translate('abc', '', 'ab'), translate('abc', 'x', 'abc');
 print '-- trim()';
@@ -228,3 +264,44 @@ print '-- replace_regex';
 print replace_regex(strcat('Number is ', '1'), 'is (\d+)', 'was: \1');
 print '-- has_any_index()';
 print has_any_index('this is an example', dynamic(['this', 'example'])), has_any_index("this is an example", dynamic(['not', 'example'])), has_any_index("this is an example", dynamic(['not', 'found'])), has_any_index("this is an example", dynamic([]));
+print '-- parse_version()';
+print parse_version(42); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
+-- print parse_version(''); -> NULL
+print parse_version('1.2.3.40');
+print parse_version('1.2');
+print parse_version(strcat('1.', '2'));
+print parse_version('1.2.4.5.6');
+print parse_version('moo'); 
+print parse_version('moo.boo.foo');
+print parse_version(strcat_delim('.', 'moo', 'boo', 'foo'));
+Versions | project parse_version(Version);
+print '-- parse_json()';
+print parse_json(dynamic([1, 2, 3]));
+print parse_json('{"a":123.5, "b":"{\\"c\\":456}"}');
+print '-- parse_command_line()';
+print parse_command_line(55, 'windows'); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
+-- print parse_command_line((52 + 3) * 4 % 2, 'windows'); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
+print parse_command_line('', 'windows');
+print parse_command_line(strrep(' ', 6), 'windows'); 
+-- print parse_command_line('echo \"hello world!\" print$?', 'windows'); -> ["echo","hello world!","print$?"]
+-- print parse_command_line("yolo swag 'asd bcd' \"moo moo \"", 'windows'); -> ["yolo","swag","'asd","bcd'","moo moo "]
+-- print parse_command_line(strcat_delim(' ', "yolo", "swag", "\'asd bcd\'", "\"moo moo \""), 'windows'); -> ["yolo","swag","'asd","bcd'","moo moo "]
+print '-- reverse()';
+print reverse(123);
+print reverse(123.34);
+print reverse('');
+print reverse("asd");
+print reverse(dynamic([]));
+print reverse(dynamic([1, 2, 3]));
+print reverse(dynamic(['Darth', "Vader"]));
+print reverse(datetime(2017-10-15 12:00));
+-- print reverse(timespan(3h)); -> 00:00:30
+Customers | where Education contains 'degree' | order by reverse(FirstName);
+print '-- parse_csv()';
+print parse_csv('');
+print parse_csv(65); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
+print parse_csv('aaa');
+print result=parse_csv('aa,b,cc');
+print result_multi_record=parse_csv('record1,a,b,c\nrecord2,x,y,z');
+-- print result=parse_csv('aa,"b,b,b",cc,"Escaping quotes: ""Title""","line1\nline2"'); -> ["aa","b,b,b","cc","Escaping quotes: \"Title\"","line1\nline2"]
+-- print parse_csv(strcat(strcat_delim(',', 'aa', '"b,b,b"', 'cc', '"Escaping quotes: ""Title"""', '"line1\nline2"'), '\r\n', strcat_delim(',', 'asd', 'qcf'))); -> ["aa","b,b,b","cc","Escaping quotes: \"Title\"","line1\nline2"]

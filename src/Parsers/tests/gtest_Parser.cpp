@@ -353,27 +353,23 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             "Customers |summarize count() by Occupation",
-            "SELECT\n    Occupation,\n    count()\nFROM Customers\nGROUP BY Occupation"
+            "SELECT\n    Occupation,\n    count() AS count_\nFROM Customers\nGROUP BY Occupation"
         },
         {
             "Customers|summarize sum(Age) by Occupation",
-            "SELECT\n    Occupation,\n    sum(Age)\nFROM Customers\nGROUP BY Occupation"
+            "SELECT\n    Occupation,\n    sum(Age) AS sum_Age\nFROM Customers\nGROUP BY Occupation"
         },
         {
             "Customers|summarize  avg(Age) by Occupation",
-            "SELECT\n    Occupation,\n    avg(Age)\nFROM Customers\nGROUP BY Occupation"
+            "SELECT\n    Occupation,\n    avg(Age) AS avg_Age\nFROM Customers\nGROUP BY Occupation"
         },
         {
             "Customers|summarize  min(Age) by Occupation",
-            "SELECT\n    Occupation,\n    min(Age)\nFROM Customers\nGROUP BY Occupation"
+            "SELECT\n    Occupation,\n    min(Age) AS min_Age\nFROM Customers\nGROUP BY Occupation"
         },
         {
             "Customers |summarize  max(Age) by Occupation",
-            "SELECT\n    Occupation,\n    max(Age)\nFROM Customers\nGROUP BY Occupation"
-        },
-        {
-            "Customers |summarize count() by bin(Age, 10)",
-            "SELECT\n    toInt64(toFloat64(Age) / 10) * 10,\n    count()\nFROM Customers\nGROUP BY toInt64(toFloat64(Age) / 10) * 10"
+            "SELECT\n    Occupation,\n    max(Age) AS max_Age\nFROM Customers\nGROUP BY Occupation"
         },
         {
             "Customers | where FirstName contains 'pet'",
@@ -473,11 +469,11 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
         },
         {
             " Customers | project split('aa_bb', '_')",
-            "SELECT splitByString('_', 'aa_bb')\nFROM Customers"
+            "SELECT if(empty('_'), splitByString(' ', 'aa_bb'), splitByString('_', 'aa_bb'))\nFROM Customers"
         },
         {
             "Customers | project split('aaa_bbb_ccc', '_', 1)",
-            "SELECT arrayPushBack([], splitByString('_', 'aaa_bbb_ccc')[2])\nFROM Customers"
+            "SELECT multiIf((length(if(empty('_'), splitByString(' ', 'aaa_bbb_ccc'), splitByString('_', 'aaa_bbb_ccc'))) >= 2) AND (2 > 0), arrayPushBack([], if(empty('_'), splitByString(' ', 'aaa_bbb_ccc'), splitByString('_', 'aaa_bbb_ccc'))[2]), 2 = 0, if(empty('_'), splitByString(' ', 'aaa_bbb_ccc'), splitByString('_', 'aaa_bbb_ccc')), arrayPushBack([], NULL[1]))\nFROM Customers"
         },
         {
             "Customers | project strcat_delim('-', '1', '2', 'A')",
@@ -547,11 +543,15 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery, ParserTest,
              "SELECT ['a', 'b', 'c'] AS output"
          },
          {
-             "T | extend T | extend duration = endTime - startTime",
-             "SELECT\n    *,\n    endTime - startTime AS duration\nFROM\n(\n    SELECT\n        *,\n        T\n    FROM T\n)"
+             "T | extend duration = endTime - startTime",
+             "SELECT\n    * EXCEPT duration,\n    endTime - startTime AS duration\nFROM T"
          },
          {
              "T |project endTime, startTime | extend duration = endTime - startTime",
-             "SELECT\n    *,\n    endTime - startTime AS duration\nFROM\n(\n    SELECT\n        endTime,\n        startTime\n    FROM T\n)"
+             "SELECT\n    * EXCEPT duration,\n    endTime - startTime AS duration\nFROM\n(\n    SELECT\n        endTime,\n        startTime\n    FROM T\n)"
+         },
+         {
+             "T | extend c =c*2, b-a, d = a +b , a*b",
+             "SELECT\n    * EXCEPT c EXCEPT d,\n    c * 2 AS c,\n    b - a AS Column1,\n    a + b AS d,\n    a * b AS Column2\nFROM T"
          }
 })));

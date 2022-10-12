@@ -34,6 +34,13 @@ create table EventLog
 
 insert into EventLog values ('Darth Vader has entered the room.', 546), ('Rambo is suspciously looking at Darth Vader.', 245234), ('Darth Sidious electrocutes both using Force Lightning.', 245554);
 
+drop table if exists Dates;
+create table Dates
+(
+    EventTime DateTime,
+) ENGINE = Memory;
+
+Insert into Dates VALUES ('2015-10-12') , ('2016-10-12')
 Select '-- test summarize --' ;
 set dialect='kusto';
 Customers | summarize count(), min(Age), max(Age), avg(Age), sum(Age);
@@ -47,6 +54,7 @@ Customers | summarize dcount(Education);
 Customers | summarize dcountif(Education, Occupation=='Professional');
 Customers | summarize count_ = count() by bin(Age, 10) | order by count_ asc;
 Customers | summarize job_count = count() by Occupation | where job_count > 0;
+Customers | summarize 'Edu Count'=count() by Education | sort by 'Edu Count' desc; -- { clientError 62 }
 
 print '-- make_list() --';
 Customers | summarize f_list = make_list(Education) by Occupation;
@@ -84,11 +92,11 @@ print '-- summarize with bin --';
 EventLog | summarize count=count() by bin(Created, 1000);
 EventLog | summarize count=count() by bin(unixtime_seconds_todatetime(Created/1000), 1s);
 EventLog | summarize count=count() by time_label=bin(Created/1000, 1s);
-
+Dates | project bin(datetime(EventTime), 1m);
 print '-- make_list_with_nulls --';
 Customers | summarize t = make_list_with_nulls(FirstName);
 Customers | summarize f_list = make_list_with_nulls(FirstName) by Occupation;
-
+Customers | summarize f_list = make_list_with_nulls(FirstName), a_list = make_list_with_nulls(Age) by Occupation;
 -- TODO:
 -- arg_max()
 -- arg_min()

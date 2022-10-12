@@ -52,7 +52,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_Datetime, ParserTest,
         },
         {
             "print unixtime_seconds_todatetime(1546300899)",
-            "SELECT toDateTime64(1546300899, 9, 'UTC')"
+            "SELECT if((toTypeName(1546300899) = 'Int64') OR (toTypeName(1546300899) = 'Int32') OR (toTypeName(1546300899) = 'Float64') OR (toTypeName(1546300899) = 'UInt32') OR (toTypeName(1546300899) = 'UInt64'), toDateTime64(1546300899, 9, 'UTC'), toDateTime64(throwIf(true, 'unixtime_seconds_todatetime only accepts Int , Long and double type of arguments'), 9, 'UTC'))"
         },
         {
             "print dayofweek(datetime(2015-12-20))",
@@ -80,11 +80,11 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_Datetime, ParserTest,
         },
         {
             "print endofmonth(datetime(2017-01-01 10:10:17), -1)",
-            "SELECT (toDateTime(toStartOfDay(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC')), 9, 'UTC') + toIntervalMonth(-1 + 1)) - toIntervalMicrosecond(1)"
+            "SELECT (((toDateTime(toLastDayOfMonth(toDateTime(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'), 9, 'UTC') + toIntervalMonth(-1)), 9, 'UTC') + toIntervalHour(23)) + toIntervalMinute(59)) + toIntervalSecond(60)) - toIntervalMicrosecond(1)"
         },
         {
             "print endofmonth(datetime(2017-01-01 10:10:17), 1)",
-            "SELECT (toDateTime(toStartOfDay(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC')), 9, 'UTC') + toIntervalMonth(1 + 1)) - toIntervalMicrosecond(1)"
+            "SELECT (((toDateTime(toLastDayOfMonth(toDateTime(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'), 9, 'UTC') + toIntervalMonth(1)), 9, 'UTC') + toIntervalHour(23)) + toIntervalMinute(59)) + toIntervalSecond(60)) - toIntervalMicrosecond(1)"
         },
         {
             "print endofweek(datetime(2017-01-01 10:10:17), -1)",
@@ -96,11 +96,11 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_Datetime, ParserTest,
         },
         {
             "print endofyear(datetime(2017-01-01 10:10:17), -1) ",
-            "SELECT (toDateTime(toStartOfDay(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC')), 9, 'UTC') + toIntervalYear(-1 + 1)) - toIntervalMicrosecond(1)"
+            "SELECT (((toDateTime(toString(toLastDayOfMonth((toDateTime(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'), 9, 'UTC') + toIntervalYear(-1)) + toIntervalMonth(12 - toInt8(substring(toString(toDateTime(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'), 9, 'UTC')), 6, 2))))), 9, 'UTC') + toIntervalHour(23)) + toIntervalMinute(59)) + toIntervalSecond(60)) - toIntervalMicrosecond(1)"
         },
         {
            "print endofyear(datetime(2017-01-01 10:10:17), 1)" ,
-           "SELECT (toDateTime(toStartOfDay(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC')), 9, 'UTC') + toIntervalYear(1 + 1)) - toIntervalMicrosecond(1)"
+           "SELECT (((toDateTime(toString(toLastDayOfMonth((toDateTime(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'), 9, 'UTC') + toIntervalYear(1)) + toIntervalMonth(12 - toInt8(substring(toString(toDateTime(parseDateTime64BestEffortOrNull('2017-01-01 10:10:17', 9, 'UTC'), 9, 'UTC')), 6, 2))))), 9, 'UTC') + toIntervalHour(23)) + toIntervalMinute(59)) + toIntervalSecond(60)) - toIntervalMicrosecond(1)"
         },
         {
             "print make_datetime(2017,10,01)",
@@ -136,7 +136,7 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_Datetime, ParserTest,
         },
         {
             "print datetime(null)",
-            "SELECT parseDateTime64BestEffortOrNull('null', 9, 'UTC')"
+            "SELECT NULL"
         },
         {
             "print datetime('2014-05-25T08:20:03.123456Z')",
@@ -205,6 +205,14 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_Datetime, ParserTest,
         {
             "print totimespan('abc')",
             "SELECT NULL"
+        },
+        {
+            "print time(2)",
+            "SELECT CAST('172800', 'Float64')"
+        },
+        {
+            "hits | project bin(datetime(EventTime), 1m)",
+            "SELECT toDateTime64(toInt64(toFloat64(if((toTypeName(EventTime) = 'Int64') OR (toTypeName(EventTime) = 'Int32') OR (toTypeName(EventTime) = 'Float64') OR (toTypeName(EventTime) = 'UInt32') OR (toTypeName(EventTime) = 'UInt64'), toDateTime64(EventTime, 9, 'UTC'), parseDateTime64BestEffortOrNull(CAST(EventTime, 'String'), 9, 'UTC'))) / 60) * 60, 9, 'UTC')\nFROM hits"
         }
 
-})));   
+})));

@@ -36,6 +36,15 @@ bool DatatypeDatetime::convertImpl(String & out, IParser::Pos & pos)
         datetime_str = std::format("'{}'", String(pos->begin + 1, pos->end - 1));
     else if (pos->type == TokenType::StringLiteral)
         datetime_str = String(pos->begin, pos->end);
+    else if (pos->type == TokenType::BareWord)
+    {
+        datetime_str = getConvertedArgument(fn_name, pos);
+        if(Poco::toUpper(datetime_str) == "NULL")
+            out = "NULL";
+        else
+            out = std::format("if(toTypeName({0}) = 'Int64' OR toTypeName({0}) = 'Int32'OR toTypeName({0}) = 'Float64' OR  toTypeName({0}) = 'UInt32' OR  toTypeName({0}) = 'UInt64', toDateTime64({0},9,'UTC'), parseDateTime64BestEffortOrNull({0}::String,9,'UTC'))", datetime_str);      
+        return true;
+    }
     else
     {
         auto start = pos;
