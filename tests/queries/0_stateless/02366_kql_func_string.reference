@@ -167,6 +167,12 @@ https://www.test.com/hello word
 https%3A%2F%2Fwww.test.com%2Fhello%20word
 
 -- Customers | project name_abbr = strcat(substring(FirstName,0,3), \' \', substring(LastName,2))
+\N
+Lat en
+Pet ra
+The az
+Ste x
+App 
 
 -- Customers | project name = strcat(FirstName, \' \', LastName)
 \N
@@ -265,6 +271,9 @@ iPhone
 ['']
 ['a','','b']
 ['aa','cc']
+['aabbcc']
+['aaa','bbb','ccc']
+[NULL]
 
 -- strcat_delim (https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/strcat-delimfunction); TODO: only support string now.
 1-2-Ab
