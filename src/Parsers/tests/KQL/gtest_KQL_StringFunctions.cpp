@@ -116,19 +116,19 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_String, ParserTest,
         },
         {
             "print bin(4.5, 1)",
-            "SELECT toInt64(toFloat64(4.5) / 1) * 1"
+            "SELECT CAST(multiIf(toFloat64(1) > 0, toInt64(toFloat64(4.5) / toFloat64(1)) * toFloat64(1), (toFloat64(1) < 0) AND (abs(toFloat64(1)) < toFloat64(4.5)), ceil(toFloat64(4.5) / abs(toFloat64(1))) * abs(toFloat64(1)), (abs(toFloat64(1)) > toFloat64(4.5)) AND (toFloat64(1) < 0), toFloat64(1), NULL), toTypeName(4.5))"
         },
         {
             "print bin(4.5, -1)",
-            "SELECT toInt64(toFloat64(4.5) / -1) * -1"
+            "SELECT CAST(multiIf(toFloat64(-1) > 0, toInt64(toFloat64(4.5) / toFloat64(-1)) * toFloat64(-1), (toFloat64(-1) < 0) AND (abs(toFloat64(-1)) < toFloat64(4.5)), ceil(toFloat64(4.5) / abs(toFloat64(-1))) * abs(toFloat64(-1)), (abs(toFloat64(-1)) > toFloat64(4.5)) AND (toFloat64(-1) < 0), toFloat64(-1), NULL), toTypeName(4.5))"
         },
         {
             "print bin(time(16d), 7d)",
-            "SELECT concat(toString(toInt32(((toInt64(toFloat64(CAST('1382400', 'Float64')) / 604800) * 604800) AS x) / 3600)), ':', toString(toInt32((x % 3600) / 60)), ':', toString(toInt32((x % 3600) % 60)))"
+            "SELECT concat(toString(toInt32((toInt64(toFloat64(CAST('1382400', 'Float64')) / toFloat64(604800)) * toFloat64(604800)) / 86400) AS x), '.', toString(toInt32((x % 86400) / 3600)), ':', toString(toInt32(((x % 86400) % 3600) / 60)), ':', toString(toInt32((((x % 86400) % 3600) % 60) / 60)), if(empty(if(countSubstrings(CAST(toInt64(toFloat64(CAST('1382400', 'Float64')) / toFloat64(604800)) * toFloat64(604800), 'String'), '.') = 0, '', substr(CAST(toInt64(toFloat64(CAST('1382400', 'Float64')) / toFloat64(604800)) * toFloat64(604800), 'String'), position(CAST(toInt64(toFloat64(CAST('1382400', 'Float64')) / toFloat64(604800)) * toFloat64(604800), 'String'), '.') + 1))), '', concat('.', substr(if(countSubstrings(CAST(toInt64(toFloat64(CAST('1382400', 'Float64')) / toFloat64(604800)) * toFloat64(604800), 'String'), '.') = 0, '', substr(CAST(toInt64(toFloat64(CAST('1382400', 'Float64')) / toFloat64(604800)) * toFloat64(604800), 'String'), position(CAST(toInt64(toFloat64(CAST('1382400', 'Float64')) / toFloat64(604800)) * toFloat64(604800), 'String'), '.') + 1)), 1, 4))))"
         },
         {
             "print bin(datetime(1970-05-11 13:45:07), 1d)",
-            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07', 9, 'UTC')) / 86400) * 86400, 9, 'UTC')"
+            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07', 9, 'UTC')) / toFloat64(86400)) * toFloat64(86400), 4, 'UTC')"
         },
         {
             "print extract('x=([0-9.]+)', 1, 'hello x=456|wo' , typeof(bool));",
@@ -159,14 +159,6 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_String, ParserTest,
             "SELECT toDecimal128OrNull(if(countSubstrings(extract('hello x=456|wo', '[0-9.]+'), '.') > 1, NULL, extract('hello x=456|wo', '[0-9.]+')), length(substr(extract('hello x=456|wo', '[0-9.]+'), position(extract('hello x=456|wo', '[0-9.]+'), '.') + 1)))"
         },
         {
-            "print bin(datetime(1970-05-11 13:45:07.456345672), 1ms)",
-            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.001) * 0.001, 9, 'UTC')"
-        },
-        {
-            "print bin(datetime(1970-05-11 13:45:07.456345672), 1microseconds)",
-            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.000001) * 0.000001, 9, 'UTC')"
-        },
-        {
             "print parse_version('1.2.3.40')",
             "SELECT if((length(splitByChar('.', '1.2.3.40')) > 4) OR (length(splitByChar('.', '1.2.3.40')) < 1) OR (match('1.2.3.40', '.*[a-zA-Z]+.*') = 1), toDecimal128OrNull('NULL', 0), toDecimal128OrNull(substring(arrayStringConcat(arrayMap(x -> leftPad(x, 8, '0'), arrayMap(x -> if(empty(x), '0', x), arrayResize(splitByChar('.', '1.2.3.40'), 4)))), 8), 0))"
         },
@@ -188,11 +180,11 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_String, ParserTest,
         },
         {
             "print bin(datetime(1970-05-11 13:45:07.456345672), 1ms)",
-            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.001) * 0.001, 9, 'UTC')"
+            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / toFloat64(0.001)) * toFloat64(0.001), 3, 'UTC')"
         },
         {
             "print bin(datetime(1970-05-11 13:45:07.456345672), 1microseconds)",
-            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / 0.000001) * 0.000001, 9, 'UTC')"
+            "SELECT toDateTime64(toInt64(toFloat64(parseDateTime64BestEffortOrNull('1970-05-11 13:45:07.456345672', 9, 'UTC')) / toFloat64(0.000001)) * toFloat64(0.000001), 6, 'UTC')"
         },
         {
             "print parse_command_line('echo \"hello world!\" print$?', 'windows')",
