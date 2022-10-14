@@ -367,6 +367,7 @@ endif ()
 
 target_link_libraries(clickhouse_common_io PUBLIC ch_contrib::re2_st)
 target_link_libraries(clickhouse_common_io PUBLIC ch_contrib::re2)
+target_link_libraries(clickhouse_common_io PUBLIC ch_contrib::rocksdb)
 
 target_link_libraries(clickhouse_common_io
         PUBLIC
