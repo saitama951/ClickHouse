@@ -65,9 +65,9 @@ elseif (ARCH_PPC64LE)
     # Note that gcc and clang have support for x86 SSE2 intrinsics when building for PowerPC
     option (POWER9 "Build for Power 9 CPU and above" 0)
     if(POWER9)
-        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power9 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS -DHAVE_POWER8=1 -DHAS_ALTIVEC=1"")
+        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power9 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS -DHAVE_POWER8=1 -DHAS_ALTIVEC=1")
     else ()
-        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power8 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS -DHAVE_POWER8=1 -DHAS_ALTIVEC=1"")
+        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power8 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS -DHAVE_POWER8=1 -DHAS_ALTIVEC=1")
     endif ()
 
 elseif (ARCH_AMD64)
