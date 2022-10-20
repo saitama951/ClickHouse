@@ -232,6 +232,8 @@ print '-- base64_decode_toguid()';
 print base64_decode_toguid(base64_encode_fromguid(guid('ae3133f2-6e22-49ae-b06a-16e6a9b212eb'))) == guid('ae3133f2-6e22-49ae-b06a-16e6a9b212eb');
 print '-- parse_url()';
 print parse_url('scheme://username:password@host:1234/this/is/a/path?k1=v1&k2=v2#fragment');
+print '-- parse_url()';
+print parse_url('');
 print '-- parse_urlquery()';
 print parse_urlquery('k1=v1&k2=v2&k3=v3');
 print '-- strcmp()';
