@@ -1,7 +1,7 @@
 /*
 *
 * THIS FILE IS GENERATED WITH
-./crc32_constants -x 0x82f63b78 
+./crc32_constants -x 0x182f63b78 
 
 * This is from https://github.com/antonblanchard/crc32-vpmsum/
 * DO NOT MODIFY IT MANUALLY!
