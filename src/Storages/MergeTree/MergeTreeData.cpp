@@ -1456,7 +1456,7 @@ void MergeTreeData::loadDataParts(bool skip_sanity_checks)
             throw Exception(ErrorCodes::LOGICAL_ERROR, "Part {} has invalid version metadata: {}", part->name, version.toString());
 
         if (version_updated)
-            part->storeVersionMetadata();
+            part->storeVersionMetadata(/* force */ true);
 
         /// Deactivate part if creation was not committed or if removal was.
         if (version.creation_csn == Tx::RolledBackCSN || version.removal_csn)
@@ -5504,7 +5504,8 @@ std::optional<ProjectionCandidate> MergeTreeData::getQueryProcessingStageWithAgg
 {
     const auto & metadata_snapshot = storage_snapshot->metadata;
     const auto & settings = query_context->getSettingsRef();
-    if (!settings.allow_experimental_projection_optimization || query_info.ignore_projections || query_info.is_projection_query)
+    if (!settings.allow_experimental_projection_optimization || query_info.ignore_projections || query_info.is_projection_query
+        || settings.aggregate_functions_null_for_empty /* projections don't work correctly with this setting */)
         return std::nullopt;
 
     // Currently projections don't support parallel replicas reading yet.
