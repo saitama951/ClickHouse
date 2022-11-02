@@ -37,7 +37,7 @@ public:
 
     const String & getPathToArchive() const { return path_to_archive; }
 
-    static void expectException(int code, const String & message, const std::function<void()> & func)
+    static void expectException(int code, const char *  message, const std::function<void()> & func)
     {
         try
         {
