@@ -54,7 +54,7 @@ list (GET COMPILER_VERSION_LIST 0 COMPILER_VERSION_MAJOR)
 option (LINKER_NAME "Linker name or full path")
 
 # s390x doesnt support lld and support for gold is still in progress
-if (NOT ARCH_S390X))
+if (NOT ARCH_S390X)
     if (NOT LINKER_NAME)
         if (COMPILER_GCC)
             find_program (LLD_PATH NAMES "ld.lld")
