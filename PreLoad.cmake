@@ -85,7 +85,7 @@ if (OS MATCHES "Linux"
     elseif (ARCH MATCHES "^(ppc64le.*|PPC64LE.*)")
         set (CMAKE_TOOLCHAIN_FILE "cmake/linux/toolchain-ppc64le.cmake" CACHE INTERNAL "")
     elseif (ARCH MATCHES "^(s390x.*|S390X.*)")
-        set (CMAKE_TOOLCHAIN_FILE "cmake/linux/toolchain-ppc64le.cmake" CACHE INTERNAL "")
+        set (CMAKE_TOOLCHAIN_FILE "cmake/linux/toolchain-s390x.cmake" CACHE INTERNAL "")
     else ()
         message (FATAL_ERROR "Unsupported architecture: ${ARCH}")
     endif ()
