@@ -79,9 +79,7 @@
 #include <Common/ThreadFuzzer.h>
 #include <Common/getHashOfLoadedBinary.h>
 #include <Common/filesystemHelpers.h>
-#if USE_BORINGSSL
 #include <Compression/CompressionCodecEncrypted.h>
-#endif
 #include <Server/MySQLHandlerFactory.h>
 #include <Server/PostgreSQLHandlerFactory.h>
 #include <Server/CertificateReloader.h>
@@ -1266,12 +1264,12 @@ int Server::main(const std::vector<std::string> & /*args*/)
 
             global_context->updateStorageConfiguration(*config);
             global_context->updateInterserverCredentials(*config);
-#if USE_BORINGSSL
+
             CompressionCodecEncrypted::Configuration::instance().tryLoad(*config, "encryption_codecs");
-#endif
-#if USE_SSL
+
+
             CertificateReloader::instance().tryLoad(*config);
-#endif
+
             ProfileEvents::increment(ProfileEvents::MainConfigLoads);
 
             /// Must be the last.
@@ -1473,10 +1471,10 @@ int Server::main(const std::vector<std::string> & /*args*/)
         global_context->getMergeTreeSettings().sanityCheck(background_pool_tasks);
         global_context->getReplicatedMergeTreeSettings().sanityCheck(background_pool_tasks);
     }
-#if USE_BORINGSSL
+
     /// try set up encryption. There are some errors in config, error will be printed and server wouldn't start.
     CompressionCodecEncrypted::Configuration::instance().load(config(), "encryption_codecs");
-#endif
+
 
     SCOPE_EXIT({
         /// Stop reloading of the main config. This must be done before `global_context->shutdown()` because
