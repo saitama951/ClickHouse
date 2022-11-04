@@ -10,7 +10,9 @@
 #include <Common/safe_cast.h>
 
 // This depends on BoringSSL-specific API, notably <openssl/aead.h>.
-#if USE_SSL
+#undef USE_SSL
+#define USE_SSL 0
+#if USE_SSL 
 #include <openssl/digest.h>
 #include <openssl/err.h>
 #include <boost/algorithm/hex.hpp>
