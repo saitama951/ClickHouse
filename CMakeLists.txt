@@ -515,7 +515,7 @@ if (TARGET global-group)
     install (EXPORT global DESTINATION cmake)
 endif ()
 
-#find_package(OpenSSL REQUIRED)
+find_package(OpenSSL REQUIRED)
 add_subdirectory (contrib EXCLUDE_FROM_ALL)
 
 if (NOT ENABLE_JEMALLOC)
