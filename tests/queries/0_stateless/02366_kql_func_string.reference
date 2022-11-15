@@ -281,6 +281,7 @@ iPhone
 YWUzMTMzZjItNmUyMi00OWFlLWIwNmEtMTZlNmE5YjIxMmVi
 -- base64_decode_toarray()
 [75,117,115,116,111]
+[NULL]
 -- base64_decode_toguid()
 1
 -- parse_url()
