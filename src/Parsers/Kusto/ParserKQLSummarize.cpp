@@ -24,6 +24,41 @@
 
 namespace DB
 {
+<<<<<<< HEAD
+=======
+std::pair<String, String> ParserKQLSummarize::removeLastWord(String input)
+{
+    ReadBufferFromString in(input);
+    String token;
+    std::vector<String> temp;
+
+    while (!in.eof())
+    {
+        readStringUntilWhitespace(token, in);
+        if (in.eof())
+            break;
+        skipWhitespaceIfAny(in);
+        temp.push_back(token);
+    }
+
+    String first_part;
+    for (std::size_t i = 0; i < temp.size() - 1; i++)
+    {
+        first_part += temp[i];
+    }
+    if (!temp.empty())
+    {
+        return std::make_pair(first_part, temp[temp.size() - 1]);
+    }
+    if (!temp.empty())
+    {
+        return std::make_pair(first_part, temp[temp.size() - 1]);
+    }
+    if (temp.size() > 0)
+    {
+        return std::make_pair(firstPart, temp[temp.size() - 1]);
+    }
+>>>>>>> Kusto summarize init
 
 namespace ErrorCodes
 {
