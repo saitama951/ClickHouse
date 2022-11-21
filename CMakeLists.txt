@@ -497,10 +497,20 @@ enable_testing() # Enable for tests without binary
 
 option(ENABLE_EXTERNAL_OPENSSL "This option is insecure and not recommended for any occasions. If it is enabled, it allows building with alternative OpenSSL library. By default, ClickHouse is using BoringSSL, which is better. Do not use this option." OFF)
 
+message (STATUS "ENABLE_EXTERNAL_OPENSSL: ${ENABLE_EXTERNAL_OPENSSL}")
 if (ENABLE_EXTERNAL_OPENSSL)
-    message (STATUS "Build and uses OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
-    set(ENABLE_SSL 1)
-    target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
+    message (STATUS "Uses dynamic linking OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
+    set(OPENSSL_ROOT_DIR "/usr/local/ssl")
+    find_package(OpenSSL 3.0.7 REQUIRED)
+
+    if (NOT OPENSSL_FOUND)
+        message(STATUS "OpenSSL 3.0.7 needs to be installed for dynamic linking")
+    else ()
+        set(ENABLE_SSL 1)
+        target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
+        target_compile_options(global-group INTERFACE "-Wno-poison-system-directories")
+    endif ()
 endif ()
 
 # when installing to /usr - place configs to /etc but for /usr/local place to /usr/local/etc
@@ -521,26 +531,6 @@ include (GNUInstallDirs)
 
 if (TARGET global-group)
     install (EXPORT global DESTINATION cmake)
-endif ()
-
-option(ENABLE_CH_BUNDLE_BORINGSSL "Provide the user to allow building of OpenSSL library. By default, uses in-house ClickHouse BoringSSL" OFF)
-
-message (STATUS "ENABLE_CH_BUNDLE_BORINGSSL: ${ENABLE_CH_BUNDLE_BORINGSSL}")
-if (ENABLE_CH_BUNDLE_BORINGSSL)
-    message (STATUS "Uses in-house ClickHouse BoringSSL library")
-else ()
-    message (STATUS "Uses dynamic linking OpenSSL library instead of BoringSSL")
-    set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
-    set(OPENSSL_ROOT_DIR "/usr/local/ssl")
-    find_package(OpenSSL 3.0.0 REQUIRED)
-    if (NOT OPENSSL_FOUND)
-	message(STATUS "OpenSSL 3.0 needs to be installed for dynamic linking")
-    endif ()
-endif ()
-
-if (NOT ENABLE_CH_BUNDLE_BORINGSSL)
-    set(ENABLE_SSL 1)
-    target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
 endif ()
 
 add_subdirectory (contrib EXCLUDE_FROM_ALL)
