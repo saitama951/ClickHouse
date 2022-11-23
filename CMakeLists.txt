@@ -507,7 +507,7 @@ if (OPENSSL_BUILD_INTREE)
     message (STATUS "Build and uses OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
     set(ENABLE_SSL 1)
     target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
-else (OPENSSL_DYNAMIC_LINKING)
+elseif (OPENSSL_DYNAMIC_LINKING)
     message (STATUS "Uses dynamic linking OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
 
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
