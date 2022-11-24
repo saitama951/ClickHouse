@@ -17,5 +17,9 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_General, ParserTest,
         {
             "Customers | extend t = iff(Age < 20, 'little', 'big')",
             "SELECT\n    * EXCEPT t,\n    If(Age < 20, 'little', 'big') AS t\nFROM Customers"
+        },
+        {
+            "Customers | extend t = iif(Age < 20, 'little', 'big')",
+            "SELECT\n    * EXCEPT t,\n    If(Age < 20, 'little', 'big') AS t\nFROM Customers"
         }
 })));

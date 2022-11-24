@@ -197,6 +197,7 @@ namespace DB
         bin_at,
         kase,
         iff,
+        iif,
 
         datatype_bool,
         datatype_datetime,
