@@ -182,7 +182,7 @@ void Sha256Password::authenticate(
         const auto * ciphertext = reinterpret_cast<const unsigned char *>(unpack_auth_response.data());
 
         unsigned char plaintext[RSA_size(&private_key)];
-        int plaintext_size = RSA_private_decrypt(unpack_auth_response.size(), ciphertext, plaintext, &private_key, RSA_PKCS1_OAEP_PADDING);
+        int plaintext_size = RSA_private_decrypt(static_cast<int>(unpack_auth_response.size()), ciphertext, plaintext, &private_key, RSA_PKCS1_OAEP_PADDING);
         if (plaintext_size == -1)
         {
             if (!sent_public_key)

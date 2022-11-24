@@ -96,10 +96,11 @@ void MergeTreeIndexGranuleBloomFilter::deserializeBinary(ReadBuffer & istr, Merg
         static size_t atom_size = 8;
         size_t bytes_size = (bits_per_row * total_rows + atom_size - 1) / atom_size;
         filter = std::make_shared<BloomFilter>(bytes_size, hash_functions, 0);
+
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
         bytes_size = std::max(atom_size, bytes_size);
 #endif
-        istr.read(reinterpret_cast<char *>(filter->getFilter().data()), bytes_size);
+        istr.readStrict(reinterpret_cast<char *>(filter->getFilter().data()), bytes_size);
     }
 }
 
