@@ -516,6 +516,7 @@ if (TARGET global-group)
 endif ()
 
 find_package(OpenSSL REQUIRED)
+
 add_subdirectory (contrib EXCLUDE_FROM_ALL)
 
 if (NOT ENABLE_JEMALLOC)

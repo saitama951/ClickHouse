@@ -53,7 +53,7 @@ list (GET COMPILER_VERSION_LIST 0 COMPILER_VERSION_MAJOR)
 # Example values: `lld-10`, `gold`.
 option (LINKER_NAME "Linker name or full path")
 
-# s390x doesnt support lld and support for gold is still in progress
+# s390x doesnt support lld
 if (NOT ARCH_S390X)
     if (NOT LINKER_NAME)
         if (COMPILER_GCC)

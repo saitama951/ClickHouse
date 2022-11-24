@@ -13,6 +13,13 @@ template <typename To, typename From>
 std::decay_t<To> bit_cast(const From & from)
 {
     To res {};
-    memcpy(static_cast<void*>(&res), &from, std::min(sizeof(res), sizeof(from)));
+    if constexpr (std::endian::native == std::endian::little)
+      memcpy(static_cast<void*>(&res), &from, std::min(sizeof(res), sizeof(from)));
+    else
+    {
+      uint32_t offset_to = (sizeof(res) > sizeof(from)) ? (sizeof(res) - sizeof(from)) : 0;
+      uint32_t offset_from = (sizeof(from) > sizeof(res)) ? (sizeof(from) - sizeof(res)) : 0;
+      memcpy(reinterpret_cast<char *>(&res) + offset_to, reinterpret_cast<const char *>(&from) + offset_from, std::min(sizeof(res), sizeof(from)));
+    }
     return res;
 }
