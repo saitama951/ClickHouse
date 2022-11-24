@@ -81,3 +81,4 @@
 #else
 #define QUERY_PROFILER_DEFAULT_SAMPLE_RATE_NS 0
 #endif
+#define DEFAULT_OPENSSL_CONF_PATH "/etc/clickhouse-server/openssl.conf"
