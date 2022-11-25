@@ -499,15 +499,15 @@ option(ENABLE_EXTERNAL_OPENSSL "This option is insecure and not recommended for 
 
 message (STATUS "ENABLE_EXTERNAL_OPENSSL: ${ENABLE_EXTERNAL_OPENSSL}")
 
-option(OPENSSL_BUILD_INTREE "This option is to use in-tree OpenSSL." OFF)
+option(ENABLE_OPENSSL "This option is to use in-tree OpenSSL." ON)
 
-option(OPENSSL_DYNAMIC_LINKING "This option is to use dynamic linking OpenSSL." ON)
+option(ENABLE_OPENSSL_DYNAMIC "This option is to use dynamic linking OpenSSL." OFF)
 
-if (OPENSSL_BUILD_INTREE)
+if (ENABLE_OPENSSL)
     message (STATUS "Build and uses OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
     set(ENABLE_SSL 1)
     target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
-elseif (OPENSSL_DYNAMIC_LINKING)
+elseif (ENABLE_OPENSSL_DYNAMIC)
     message (STATUS "Uses dynamic linking OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
 
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
