@@ -81,3 +81,6 @@
 #else
 #define QUERY_PROFILER_DEFAULT_SAMPLE_RATE_NS 0
 #endif
+
+// Default openssl.conf in case of in-tree build
+#define DEFAULT_OPENSSL_CONF_PATH "/etc/clickhouse-server/openssl.conf"

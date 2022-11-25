@@ -498,10 +498,28 @@ enable_testing() # Enable for tests without binary
 
 option(ENABLE_EXTERNAL_OPENSSL "This option is insecure and not recommended for any occasions. If it is enabled, it allows building with alternative OpenSSL library. By default, ClickHouse is using BoringSSL, which is better. Do not use this option." OFF)
 
-if (ENABLE_EXTERNAL_OPENSSL)
+option(ENABLE_OPENSSL "This option is to use in-tree OpenSSL." ON)
+
+option(ENABLE_OPENSSL_DYNAMIC "This option is to use dynamic linking OpenSSL." OFF)
+
+if (ENABLE_OPENSSL)
     message (STATUS "Build and uses OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
     set(ENABLE_SSL 1)
     target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
+elseif (ENABLE_OPENSSL_DYNAMIC)
+    message (STATUS "Uses dynamic linking OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
+
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
+    set(OPENSSL_ROOT_DIR "/usr/local/ssl")
+    find_package(OpenSSL 3.0.7 REQUIRED)
+
+    if (OPENSSL_FOUND)
+        set(ENABLE_SSL 1)
+        target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
+        target_compile_options(global-group INTERFACE "-Wno-poison-system-directories")
+    else ()
+        message(STATUS "OpenSSL 3.0.7 needs to be installed for dynamic linking")
+    endif ()
 endif ()
 
 # when installing to /usr - place configs to /etc but for /usr/local place to /usr/local/etc
