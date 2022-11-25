@@ -31,7 +31,6 @@ extern "C" {
 # ifndef OPENSSL_RAND_SEED_OS
 #  define OPENSSL_RAND_SEED_OS
 # endif
-
 # ifndef OPENSSL_THREADS
 #  define OPENSSL_THREADS
 # endif
@@ -47,6 +46,9 @@ extern "C" {
 # ifndef OPENSSL_NO_DEVCRYPTOENG
 #  define OPENSSL_NO_DEVCRYPTOENG
 # endif
+# ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
+#  define OPENSSL_NO_EC_NISTP_64_GCC_128
+# endif
 # ifndef OPENSSL_NO_EGD
 #  define OPENSSL_NO_EGD
 # endif
@@ -61,6 +63,9 @@ extern "C" {
 # endif
 # ifndef OPENSSL_NO_KTLS
 #  define OPENSSL_NO_KTLS
+# endif
+# ifndef OPENSSL_NO_MD2
+#  define OPENSSL_NO_MD2
 # endif
 # ifndef OPENSSL_NO_MSAN
 #  define OPENSSL_NO_MSAN
@@ -117,4 +122,4 @@ extern "C" {
 }
 # endif
 
-#endif  /* OPENSSL_CONFIGURATION_H */
+#endif                          /* OPENSSL_CONFIGURATION_H */
