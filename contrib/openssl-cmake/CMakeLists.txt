@@ -1159,6 +1159,7 @@ if(ENABLE_EXTERNAL_OPENSSL)
     elseif(ENABLE_OPENSSL_DYNAMIC)
         message(STATUS "Uses dynamic linking OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
 
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .so)
         find_package(OpenSSL 3.0 REQUIRED GLOBAL)
 
         if(OPENSSL_FOUND)
