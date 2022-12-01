@@ -1,5 +1,5 @@
 if(ENABLE_OPENSSL)
-    set(ENABLE_SSL 1)
+    set(ENABLE_SSL 1 CACHE INTERNAL "")
     set(OPENSSL_SOURCE_DIR ${ClickHouse_SOURCE_DIR}/contrib/openssl)
     set(OPENSSL_BINARY_DIR ${ClickHouse_BINARY_DIR}/contrib/openssl)
 
@@ -1120,6 +1120,8 @@ if(ENABLE_OPENSSL)
         ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_lib.c
         ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_srvr.c
     )
+
+    target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
 
     add_library(_crypto ${CRYPTO_SRCS})
     add_library(_ssl ${SSL_SRCS})
