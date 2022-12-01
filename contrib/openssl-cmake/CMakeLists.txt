@@ -1,6 +1,5 @@
-if (ENABLE_EXTERNAL_OPENSSL)
-
-    if (ENABLE_OPENSSL)
+if(ENABLE_EXTERNAL_OPENSSL)
+    if(ENABLE_OPENSSL)
         set(ENABLE_SSL 1)
         set(OPENSSL_SOURCE_DIR ${ClickHouse_SOURCE_DIR}/contrib/openssl)
         set(OPENSSL_BINARY_DIR ${ClickHouse_BINARY_DIR}/contrib/openssl)
@@ -11,7 +10,7 @@ if (ENABLE_EXTERNAL_OPENSSL)
 
         add_definitions(-DOPENSSLDIR="${OPENSSLDIR}" -DENGINESDIR="${OPENSSL_ENGINESDIR}" -DMODULESDIR="${OPENSSL_MODULESDIR}")
 
-        if (ARCH_AMD64)
+        if(ARCH_AMD64)
             add_definitions(-DAES_ASM -DBSAES_ASM -DECP_NISTZ256_ASM -DGHASH_ASM -DKECCAK1600_ASM -DMD5_ASM -DOPENSSL_BN_ASM_GF2m -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DPOLY1305_ASM -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DVPAES_ASM -DWHIRLPOOL_ASM -DX25519_ASM -DOPENSSL_USE_NODELETE -DL_ENDIAN)
         elseif(ARCH_AARCH64)
             add_definitions(-DECP_NISTZ256_ASM -DKECCAK1600_ASM -DOPENSSL_BN_ASM_MONT -DOPENSSL_CPUID_OBJ -DPOLY1305_ASM -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DVPAES_ASM -DOPENSSL_USE_NODELETE -DL_ENDIAN)
@@ -19,18 +18,18 @@ if (ENABLE_EXTERNAL_OPENSSL)
 
         enable_language(ASM)
 
-        if (COMPILER_CLANG)
+        if(COMPILER_CLANG)
             add_definitions(-Wno-unused-command-line-argument)
-        endif ()
+        endif()
 
-        if (ARCH_AMD64)
-            if (OS_DARWIN)
-                set (OPENSSL_SYSTEM "macosx")
-            endif ()
+        if(ARCH_AMD64)
+            if(OS_DARWIN)
+                set(OPENSSL_SYSTEM "macosx")
+            endif()
 
             macro(perl_generate_asm FILE_IN FILE_OUT)
-            add_custom_command(OUTPUT ${FILE_OUT}
-                     COMMAND /usr/bin/env perl ${FILE_IN} ${FILE_OUT})
+                add_custom_command(OUTPUT ${FILE_OUT}
+                    COMMAND /usr/bin/env perl ${FILE_IN} ${FILE_OUT})
             endmacro()
 
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/aes/asm/aes-x86_64.pl ${OPENSSL_BINARY_DIR}/crypto/aes/aes-x86_64.s)
@@ -61,15 +60,14 @@ if (ENABLE_EXTERNAL_OPENSSL)
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha1-mb-x86_64.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-mb-x86_64.s)
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha1-x86_64.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-x86_64.s)
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha256-mb-x86_64.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-mb-x86_64.s)
-            perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha512-x86_64.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-x86_64.s)   # This is not a mistake
+            perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha512-x86_64.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-x86_64.s) # This is not a mistake
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha512-x86_64.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha512-x86_64.s)
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/whrlpool/asm/wp-x86_64.pl ${OPENSSL_BINARY_DIR}/crypto/whrlpool/wp-x86_64.s)
 
-        elseif (ARCH_AARCH64)
-
+        elseif(ARCH_AARCH64)
             macro(perl_generate_asm FILE_IN FILE_OUT)
-            add_custom_command(OUTPUT ${FILE_OUT}
-                           COMMAND /usr/bin/env perl ${FILE_IN} "linux64" ${FILE_OUT})
+                add_custom_command(OUTPUT ${FILE_OUT}
+                    COMMAND /usr/bin/env perl ${FILE_IN} "linux64" ${FILE_OUT})
             endmacro()
 
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/aes/asm/aesv8-armx.pl ${OPENSSL_BINARY_DIR}/crypto/aes/aesv8-armx.S)
@@ -82,12 +80,10 @@ if (ENABLE_EXTERNAL_OPENSSL)
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/poly1305/asm/poly1305-armv8.pl ${OPENSSL_BINARY_DIR}/crypto/poly1305/poly1305-armv8.S)
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/keccak1600-armv8.pl ${OPENSSL_BINARY_DIR}/crypto/sha/keccak1600-armv8.S)
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha1-armv8.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-armv8.S)
-            perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha512-armv8.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-armv8.S)   # This is not a mistake
+            perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha512-armv8.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-armv8.S) # This is not a mistake
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/sha/asm/sha512-armv8.pl ${OPENSSL_BINARY_DIR}/crypto/sha/sha512-armv8.S)
             perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/modes/asm/aes-gcm-armv8_64.pl ${OPENSSL_BINARY_DIR}/crypto/modes/asm/aes-gcm-armv8_64.S)
-
-        endif ()
-
+        endif()
 
         set(CRYPTO_SRCS
             ${OPENSSL_SOURCE_DIR}/crypto/aes/aes_cfb.c
@@ -625,569 +621,569 @@ if (ENABLE_EXTERNAL_OPENSSL)
             ${OPENSSL_SOURCE_DIR}/crypto/ocsp/ocsp_srv.c
             ${OPENSSL_SOURCE_DIR}/crypto/ocsp/ocsp_vfy.c
             ${OPENSSL_SOURCE_DIR}/crypto/ocsp/v3_ocsp.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_all.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_info.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_oth.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_pk8.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_pkey.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_sign.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_x509.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_xaux.c
- ${OPENSSL_SOURCE_DIR}/crypto/pem/pvkfmt.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_add.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_asn.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_attr.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_crpt.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_crt.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_decr.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_init.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_key.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_kiss.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_mutl.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_npas.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_p8d.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_p8e.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_sbag.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_utl.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/pk12err.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/bio_pk7.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_asn1.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_attr.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_doit.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_mime.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_smime.c
- ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pkcs7err.c
- ${OPENSSL_SOURCE_DIR}/crypto/poly1305/poly1305.c
- ${OPENSSL_SOURCE_DIR}/crypto/property/defn_cache.c
- ${OPENSSL_SOURCE_DIR}/crypto/property/property.c
- ${OPENSSL_SOURCE_DIR}/crypto/property/property_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/property/property_parse.c
- ${OPENSSL_SOURCE_DIR}/crypto/property/property_query.c
- ${OPENSSL_SOURCE_DIR}/crypto/property/property_string.c
- ${OPENSSL_SOURCE_DIR}/crypto/rand/prov_seed.c
- ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_deprecated.c
- ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_egd.c
- ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/rand/randfile.c
- ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_meth.c
- ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_pool.c
- ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2_cbc.c
- ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2cfb64.c
- ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2_ecb.c
- ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2_skey.c
- ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2ofb64.c
- ${OPENSSL_SOURCE_DIR}/crypto/ripemd/rmd_dgst.c
- ${OPENSSL_SOURCE_DIR}/crypto/ripemd/rmd_one.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_ameth.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_asn1.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_backend.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_chk.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_crpt.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_depr.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_gen.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_meth.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_mp.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_mp_names.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_none.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_oaep.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_ossl.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_pk1.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_pmeth.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_prn.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_pss.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_saos.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_schemes.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_sign.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_sp800_56b_check.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_sp800_56b_gen.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_x931.c
- ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_x931g.c
- ${OPENSSL_SOURCE_DIR}/crypto/seed/seed.c
- ${OPENSSL_SOURCE_DIR}/crypto/seed/seed_cbc.c
- ${OPENSSL_SOURCE_DIR}/crypto/seed/seed_cfb.c
- ${OPENSSL_SOURCE_DIR}/crypto/seed/seed_ecb.c
- ${OPENSSL_SOURCE_DIR}/crypto/seed/seed_ofb.c
- ${OPENSSL_SOURCE_DIR}/crypto/sha/keccak1600.c
- ${OPENSSL_SOURCE_DIR}/crypto/sha/sha1_one.c
- ${OPENSSL_SOURCE_DIR}/crypto/sha/sha1dgst.c
- ${OPENSSL_SOURCE_DIR}/crypto/sha/sha256.c
- ${OPENSSL_SOURCE_DIR}/crypto/sha/sha3.c
- ${OPENSSL_SOURCE_DIR}/crypto/sha/sha512.c
- ${OPENSSL_SOURCE_DIR}/crypto/siphash/siphash.c
- ${OPENSSL_SOURCE_DIR}/crypto/sm2/sm2_crypt.c
- ${OPENSSL_SOURCE_DIR}/crypto/sm2/sm2_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/sm2/sm2_key.c
- ${OPENSSL_SOURCE_DIR}/crypto/sm2/sm2_sign.c
- ${OPENSSL_SOURCE_DIR}/crypto/sm3/legacy_sm3.c
- ${OPENSSL_SOURCE_DIR}/crypto/sm3/sm3.c
- ${OPENSSL_SOURCE_DIR}/crypto/sm4/sm4.c
- ${OPENSSL_SOURCE_DIR}/crypto/srp/srp_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/srp/srp_vfy.c
- ${OPENSSL_SOURCE_DIR}/crypto/stack/stack.c
- ${OPENSSL_SOURCE_DIR}/crypto/store/store_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/store/store_init.c
- ${OPENSSL_SOURCE_DIR}/crypto/store/store_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/store/store_meth.c
- ${OPENSSL_SOURCE_DIR}/crypto/store/store_register.c
- ${OPENSSL_SOURCE_DIR}/crypto/store/store_result.c
- ${OPENSSL_SOURCE_DIR}/crypto/store/store_strings.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_asn1.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_conf.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_req_print.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_req_utils.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_rsp_print.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_rsp_sign.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_rsp_utils.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_rsp_verify.c
- ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_verify_ctx.c
- ${OPENSSL_SOURCE_DIR}/crypto/txt_db/txt_db.c
- ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_null.c
- ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_openssl.c
- ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_util.c
- ${OPENSSL_SOURCE_DIR}/crypto/whrlpool/wp_block.c
- ${OPENSSL_SOURCE_DIR}/crypto/whrlpool/wp_dgst.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/by_dir.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/by_file.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/by_store.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_cache.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_data.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_map.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_node.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_tree.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/t_crl.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/t_req.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/t_x509.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_addr.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_admis.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_akeya.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_akid.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_asid.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_bcons.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_bitst.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_conf.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_cpols.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_crld.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_enum.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3err.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_extku.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_genn.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_ia5.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_info.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_int.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_ist.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_lib.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_ncons.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pci.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pcia.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pcons.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pku.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pmaps.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_prn.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_purp.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_san.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_skid.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_sxnet.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_tlsf.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_utl.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_utf8.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_att.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_cmp.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_d2.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_def.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_err.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_ext.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_lu.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_meth.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509name.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_obj.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_r2x.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_req.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_set.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_trust.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_txt.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_v3.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_vfy.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_vpm.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509cset.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509name.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509rset.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509spki.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x509type.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_all.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_attrib.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_crl.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_exten.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_name.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_pubkey.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_req.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_x509.c
- ${OPENSSL_SOURCE_DIR}/crypto/x509/x_x509a.c
- ${OPENSSL_SOURCE_DIR}/providers/baseprov.c
- ${OPENSSL_SOURCE_DIR}/providers/defltprov.c
- ${OPENSSL_SOURCE_DIR}/providers/nullprov.c
- ${OPENSSL_SOURCE_DIR}/providers/prov_running.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/asymciphers/rsa_enc.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/asymciphers/sm2_enc.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_cbc_hmac_sha1_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_cbc_hmac_sha256_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_cbc_hmac_sha.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_ccm.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_ccm_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_gcm.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_gcm_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_ocb.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_ocb_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_siv.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_siv_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_wrp.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_xts.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_xts_fips.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_xts_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_ccm.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_ccm_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_gcm.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_gcm_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_blowfish.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_blowfish_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_camellia.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_camellia_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_cast5.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_cast5_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20_poly1305.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20_poly1305_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20_poly1305_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_block.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_ccm.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_ccm_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_gcm.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_gcm_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_cts.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_des.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_des_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_desx.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_desx_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_idea.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_idea_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_null.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc2.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc2_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc4.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc4_hmac_md5.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc4_hmac_md5_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc4_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_seed.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_seed_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_sm4.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_sm4_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_common.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_default.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_default_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_wrap.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_wrap_hw.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/blake2_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/blake2b_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/blake2s_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/digestcommon.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/md2_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/md4_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/md5_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/md5_sha1_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/mdc2_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/null_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/ripemd_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/sha2_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/sha3_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/sm3_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/wp_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/exchange/dh_exch.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/exchange/ecdh_exch.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/exchange/ecx_exch.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/exchange/kdf_exch.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/hkdf.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/kbkdf.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/krb5kdf.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/pbkdf1.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/pbkdf2.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/pbkdf2_fips.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/pkcs12kdf.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/scrypt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/sshkdf.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/sskdf.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/tls1_prf.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/x942kdf.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/kem/rsa_kem.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/dh_kmgmt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/dsa_kmgmt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/dsa_kmgmt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/ec_kmgmt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/ecx_kmgmt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/kdf_legacy_kmgmt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/mac_legacy_kmgmt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/rsa_kmgmt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/blake2b_mac.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/blake2s_mac.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/cmac_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/gmac_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/hmac_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/kmac_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/poly1305_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/siphash_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/dsa_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/ecdsa_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/eddsa_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/mac_legacy_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/rsa_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/sm2_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/crngt.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/drbg.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/drbg_ctr.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/drbg_hash.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/drbg_hmac.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seed_src.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/test_rng.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seeding/rand_cpu_x86.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seeding/rand_tsc.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seeding/rand_unix.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seeding/rand_win.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/storemgmt/file_store_any2obj.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/storemgmt/file_store.c
- ${OPENSSL_SOURCE_DIR}/providers/common/bio_prov.c
- ${OPENSSL_SOURCE_DIR}/providers/common/capabilities.c
- ${OPENSSL_SOURCE_DIR}/providers/common/digest_to_nid.c
- ${OPENSSL_SOURCE_DIR}/providers/common/provider_ctx.c
- ${OPENSSL_SOURCE_DIR}/providers/common/provider_err.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_der2key.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_epki2pki.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_msblob2key.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_pem2der.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_pvk2key.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_spki2typespki.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/encode_key2any.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/encode_key2blob.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/encode_key2ms.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/encode_key2text.c
- ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/endecoder_common.c
- ${OPENSSL_SOURCE_DIR}/providers/common/provider_seeding.c
- ${OPENSSL_SOURCE_DIR}/providers/common/provider_util.c
- ${OPENSSL_SOURCE_DIR}/providers/common/provider_util.c
- ${OPENSSL_SOURCE_DIR}/providers/common/securitycheck.c
- ${OPENSSL_SOURCE_DIR}/providers/common/securitycheck_default.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_dsa_key.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_dsa_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_ec_key.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_ec_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_ecx_key.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_rsa_key.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_rsa_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_sm2_key.c
- ${OPENSSL_SOURCE_DIR}/providers/common/der/der_sm2_sig.c
- ${OPENSSL_SOURCE_DIR}/providers/fips/fips_entry.c
- ${OPENSSL_SOURCE_DIR}/providers/fips/fipsprov.c
- ${OPENSSL_SOURCE_DIR}/providers/fips/self_test.c
- ${OPENSSL_SOURCE_DIR}/providers/fips/self_test_kats.c
- der_digests_gen.c
- der_dsa_gen.c
- der_ec_gen.c
- der_ecx_gen.c
- der_rsa_gen.c
- der_sm2_gen.c
- der_wrap_gen.c
- )
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_all.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_info.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_oth.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_pk8.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_pkey.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_sign.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_x509.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pem_xaux.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pem/pvkfmt.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_add.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_asn.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_attr.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_crpt.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_crt.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_decr.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_init.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_key.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_kiss.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_mutl.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_npas.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_p8d.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_p8e.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_sbag.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/p12_utl.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs12/pk12err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/bio_pk7.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_asn1.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_attr.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_doit.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_mime.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pk7_smime.c
+            ${OPENSSL_SOURCE_DIR}/crypto/pkcs7/pkcs7err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/poly1305/poly1305.c
+            ${OPENSSL_SOURCE_DIR}/crypto/property/defn_cache.c
+            ${OPENSSL_SOURCE_DIR}/crypto/property/property.c
+            ${OPENSSL_SOURCE_DIR}/crypto/property/property_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/property/property_parse.c
+            ${OPENSSL_SOURCE_DIR}/crypto/property/property_query.c
+            ${OPENSSL_SOURCE_DIR}/crypto/property/property_string.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rand/prov_seed.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_deprecated.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_egd.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rand/randfile.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_meth.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rand/rand_pool.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2_cbc.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2cfb64.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2_ecb.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2_skey.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rc2/rc2ofb64.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ripemd/rmd_dgst.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ripemd/rmd_one.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_ameth.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_asn1.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_backend.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_chk.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_crpt.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_depr.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_gen.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_meth.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_mp.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_mp_names.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_none.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_oaep.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_ossl.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_pk1.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_pmeth.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_prn.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_pss.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_saos.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_schemes.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_sign.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_sp800_56b_check.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_sp800_56b_gen.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_x931.c
+            ${OPENSSL_SOURCE_DIR}/crypto/rsa/rsa_x931g.c
+            ${OPENSSL_SOURCE_DIR}/crypto/seed/seed.c
+            ${OPENSSL_SOURCE_DIR}/crypto/seed/seed_cbc.c
+            ${OPENSSL_SOURCE_DIR}/crypto/seed/seed_cfb.c
+            ${OPENSSL_SOURCE_DIR}/crypto/seed/seed_ecb.c
+            ${OPENSSL_SOURCE_DIR}/crypto/seed/seed_ofb.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sha/keccak1600.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sha/sha1_one.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sha/sha1dgst.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sha/sha256.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sha/sha3.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sha/sha512.c
+            ${OPENSSL_SOURCE_DIR}/crypto/siphash/siphash.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sm2/sm2_crypt.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sm2/sm2_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sm2/sm2_key.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sm2/sm2_sign.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sm3/legacy_sm3.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sm3/sm3.c
+            ${OPENSSL_SOURCE_DIR}/crypto/sm4/sm4.c
+            ${OPENSSL_SOURCE_DIR}/crypto/srp/srp_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/srp/srp_vfy.c
+            ${OPENSSL_SOURCE_DIR}/crypto/stack/stack.c
+            ${OPENSSL_SOURCE_DIR}/crypto/store/store_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/store/store_init.c
+            ${OPENSSL_SOURCE_DIR}/crypto/store/store_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/store/store_meth.c
+            ${OPENSSL_SOURCE_DIR}/crypto/store/store_register.c
+            ${OPENSSL_SOURCE_DIR}/crypto/store/store_result.c
+            ${OPENSSL_SOURCE_DIR}/crypto/store/store_strings.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_asn1.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_conf.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_req_print.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_req_utils.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_rsp_print.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_rsp_sign.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_rsp_utils.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_rsp_verify.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ts/ts_verify_ctx.c
+            ${OPENSSL_SOURCE_DIR}/crypto/txt_db/txt_db.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_null.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_openssl.c
+            ${OPENSSL_SOURCE_DIR}/crypto/ui/ui_util.c
+            ${OPENSSL_SOURCE_DIR}/crypto/whrlpool/wp_block.c
+            ${OPENSSL_SOURCE_DIR}/crypto/whrlpool/wp_dgst.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/by_dir.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/by_file.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/by_store.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_cache.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_data.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_map.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_node.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/pcy_tree.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/t_crl.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/t_req.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/t_x509.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_addr.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_admis.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_akeya.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_akid.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_asid.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_bcons.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_bitst.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_conf.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_cpols.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_crld.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_enum.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_extku.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_genn.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_ia5.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_info.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_int.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_ist.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_lib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_ncons.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pci.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pcia.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pcons.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pku.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_pmaps.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_prn.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_purp.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_san.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_skid.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_sxnet.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_tlsf.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_utl.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/v3_utf8.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_att.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_cmp.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_d2.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_def.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_err.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_ext.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_lu.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_meth.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509name.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_obj.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_r2x.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_req.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_set.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_trust.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_txt.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_v3.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_vfy.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509_vpm.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509cset.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509name.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509rset.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509spki.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x509type.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_all.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_attrib.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_crl.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_exten.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_name.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_pubkey.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_req.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_x509.c
+            ${OPENSSL_SOURCE_DIR}/crypto/x509/x_x509a.c
+            ${OPENSSL_SOURCE_DIR}/providers/baseprov.c
+            ${OPENSSL_SOURCE_DIR}/providers/defltprov.c
+            ${OPENSSL_SOURCE_DIR}/providers/nullprov.c
+            ${OPENSSL_SOURCE_DIR}/providers/prov_running.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/asymciphers/rsa_enc.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/asymciphers/sm2_enc.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_cbc_hmac_sha1_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_cbc_hmac_sha256_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_cbc_hmac_sha.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_ccm.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_ccm_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_gcm.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_gcm_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_ocb.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_ocb_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_siv.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_siv_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_wrp.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_xts.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_xts_fips.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aes_xts_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_ccm.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_ccm_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_gcm.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_gcm_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_aria_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_blowfish.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_blowfish_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_camellia.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_camellia_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_cast5.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_cast5_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20_poly1305.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20_poly1305_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_chacha20_poly1305_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_block.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_ccm.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_ccm_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_gcm.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_gcm_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/ciphercommon_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_cts.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_des.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_des_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_desx.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_desx_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_idea.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_idea_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_null.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc2.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc2_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc4.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc4_hmac_md5.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc4_hmac_md5_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_rc4_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_seed.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_seed_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_sm4.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_sm4_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_common.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_default.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_default_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_wrap.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/ciphers/cipher_tdes_wrap_hw.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/blake2_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/blake2b_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/blake2s_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/digestcommon.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/md2_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/md4_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/md5_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/md5_sha1_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/mdc2_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/null_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/ripemd_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/sha2_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/sha3_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/sm3_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/digests/wp_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/exchange/dh_exch.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/exchange/ecdh_exch.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/exchange/ecx_exch.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/exchange/kdf_exch.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/hkdf.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/kbkdf.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/krb5kdf.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/pbkdf1.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/pbkdf2.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/pbkdf2_fips.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/pkcs12kdf.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/scrypt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/sshkdf.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/sskdf.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/tls1_prf.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kdfs/x942kdf.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/kem/rsa_kem.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/dh_kmgmt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/dsa_kmgmt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/dsa_kmgmt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/ec_kmgmt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/ecx_kmgmt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/kdf_legacy_kmgmt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/mac_legacy_kmgmt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/keymgmt/rsa_kmgmt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/blake2b_mac.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/blake2s_mac.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/cmac_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/gmac_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/hmac_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/kmac_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/poly1305_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/macs/siphash_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/dsa_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/ecdsa_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/eddsa_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/mac_legacy_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/rsa_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/signature/sm2_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/crngt.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/drbg.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/drbg_ctr.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/drbg_hash.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/drbg_hmac.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seed_src.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/test_rng.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seeding/rand_cpu_x86.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seeding/rand_tsc.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seeding/rand_unix.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/rands/seeding/rand_win.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/storemgmt/file_store_any2obj.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/storemgmt/file_store.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/bio_prov.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/capabilities.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/digest_to_nid.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/provider_ctx.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/provider_err.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_der2key.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_epki2pki.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_msblob2key.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_pem2der.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_pvk2key.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/decode_spki2typespki.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/encode_key2any.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/encode_key2blob.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/encode_key2ms.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/encode_key2text.c
+            ${OPENSSL_SOURCE_DIR}/providers/implementations/encode_decode/endecoder_common.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/provider_seeding.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/provider_util.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/provider_util.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/securitycheck.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/securitycheck_default.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_dsa_key.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_dsa_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_ec_key.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_ec_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_ecx_key.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_rsa_key.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_rsa_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_sm2_key.c
+            ${OPENSSL_SOURCE_DIR}/providers/common/der/der_sm2_sig.c
+            ${OPENSSL_SOURCE_DIR}/providers/fips/fips_entry.c
+            ${OPENSSL_SOURCE_DIR}/providers/fips/fipsprov.c
+            ${OPENSSL_SOURCE_DIR}/providers/fips/self_test.c
+            ${OPENSSL_SOURCE_DIR}/providers/fips/self_test_kats.c
+            der_digests_gen.c
+            der_dsa_gen.c
+            der_ec_gen.c
+            der_ecx_gen.c
+            der_rsa_gen.c
+            der_sm2_gen.c
+            der_wrap_gen.c
+        )
 
-if (ARCH_AMD64)
-     set (CRYPTO_SRCS ${CRYPTO_SRCS}
-         ${OPENSSL_SOURCE_DIR}/crypto/bn/asm/x86_64-gcc.c
-         ${OPENSSL_SOURCE_DIR}/crypto/bn/rsaz_exp.c
-         ${OPENSSL_BINARY_DIR}/crypto/aes/aes-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/aes/aesni-mb-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/aes/aesni-sha1-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/aes/aesni-sha256-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/aes/aesni-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/aes/bsaes-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/aes/vpaes-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/bn/rsaz-avx2.s
-         ${OPENSSL_BINARY_DIR}/crypto/bn/rsaz-avx512.s
-         ${OPENSSL_BINARY_DIR}/crypto/bn/rsaz-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/bn/x86_64-gf2m.s
-         ${OPENSSL_BINARY_DIR}/crypto/bn/x86_64-mont.s
-         ${OPENSSL_BINARY_DIR}/crypto/bn/x86_64-mont5.s
-         ${OPENSSL_BINARY_DIR}/crypto/camellia/cmll-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/chacha/chacha-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/ec/ecp_nistz256-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/ec/x25519-x86_64.s
-	 ${OPENSSL_BINARY_DIR}/crypto/x86_64cpuid.s
-         ${OPENSSL_BINARY_DIR}/crypto/md5/md5-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/modes/aesni-gcm-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/modes/ghash-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/poly1305/poly1305-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/rc4/rc4-md5-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/rc4/rc4-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/sha/keccak1600-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-mb-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-mb-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/sha/sha512-x86_64.s
-         ${OPENSSL_BINARY_DIR}/crypto/whrlpool/wp-x86_64.s)
- elseif (ARCH_AARCH64)
-     set (CRYPTO_SRCS ${CRYPTO_SRCS}
-         ${OPENSSL_SOURCE_DIR}/crypto/aes/aes_cbc.c
-         ${OPENSSL_SOURCE_DIR}/crypto/aes/aes_core.c
-         ${OPENSSL_SOURCE_DIR}/crypto/bn/bn_asm.c
-         ${OPENSSL_SOURCE_DIR}/crypto/camellia/camellia.c
-         ${OPENSSL_SOURCE_DIR}/crypto/camellia/cmll_cbc.c
-         ${OPENSSL_SOURCE_DIR}/crypto/armcap.c
-         ${OPENSSL_SOURCE_DIR}/crypto/rc4/rc4_enc.c
-         ${OPENSSL_SOURCE_DIR}/crypto/rc4/rc4_skey.c
-         ${OPENSSL_SOURCE_DIR}/crypto/whrlpool/wp_block.c
-         ${OPENSSL_BINARY_DIR}/crypto/aes/aesv8-armx.S
-         ${OPENSSL_BINARY_DIR}/crypto/aes/vpaes-armv8.S
-         ${OPENSSL_BINARY_DIR}/crypto/bn/armv8-mont.S
-         ${OPENSSL_BINARY_DIR}/crypto/chacha/chacha-armv8.S
-         ${OPENSSL_BINARY_DIR}/crypto/ec/ecp_nistz256-armv8.S
-         ${OPENSSL_BINARY_DIR}/crypto/arm64cpuid.S
-         ${OPENSSL_BINARY_DIR}/crypto/modes/ghashv8-armx.S
-         ${OPENSSL_BINARY_DIR}/crypto/poly1305/poly1305-armv8.S
-         ${OPENSSL_BINARY_DIR}/crypto/sha/keccak1600-armv8.S
-         ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-armv8.S
-         ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-armv8.S
-         ${OPENSSL_BINARY_DIR}/crypto/sha/sha512-armv8.S
-         ${OPENSSL_BINARY_DIR}/crypto/modes/asm/aes-gcm-armv8_64.S)
- endif ()
+        if(ARCH_AMD64)
+            set(CRYPTO_SRCS ${CRYPTO_SRCS}
+                ${OPENSSL_SOURCE_DIR}/crypto/bn/asm/x86_64-gcc.c
+                ${OPENSSL_SOURCE_DIR}/crypto/bn/rsaz_exp.c
+                ${OPENSSL_BINARY_DIR}/crypto/aes/aes-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/aes/aesni-mb-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/aes/aesni-sha1-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/aes/aesni-sha256-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/aes/aesni-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/aes/bsaes-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/aes/vpaes-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/bn/rsaz-avx2.s
+                ${OPENSSL_BINARY_DIR}/crypto/bn/rsaz-avx512.s
+                ${OPENSSL_BINARY_DIR}/crypto/bn/rsaz-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/bn/x86_64-gf2m.s
+                ${OPENSSL_BINARY_DIR}/crypto/bn/x86_64-mont.s
+                ${OPENSSL_BINARY_DIR}/crypto/bn/x86_64-mont5.s
+                ${OPENSSL_BINARY_DIR}/crypto/camellia/cmll-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/chacha/chacha-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/ec/ecp_nistz256-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/ec/x25519-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/x86_64cpuid.s
+                ${OPENSSL_BINARY_DIR}/crypto/md5/md5-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/modes/aesni-gcm-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/modes/ghash-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/poly1305/poly1305-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/rc4/rc4-md5-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/rc4/rc4-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/sha/keccak1600-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-mb-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-mb-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/sha/sha512-x86_64.s
+                ${OPENSSL_BINARY_DIR}/crypto/whrlpool/wp-x86_64.s)
+        elseif(ARCH_AARCH64)
+            set(CRYPTO_SRCS ${CRYPTO_SRCS}
+                ${OPENSSL_SOURCE_DIR}/crypto/aes/aes_cbc.c
+                ${OPENSSL_SOURCE_DIR}/crypto/aes/aes_core.c
+                ${OPENSSL_SOURCE_DIR}/crypto/bn/bn_asm.c
+                ${OPENSSL_SOURCE_DIR}/crypto/camellia/camellia.c
+                ${OPENSSL_SOURCE_DIR}/crypto/camellia/cmll_cbc.c
+                ${OPENSSL_SOURCE_DIR}/crypto/armcap.c
+                ${OPENSSL_SOURCE_DIR}/crypto/rc4/rc4_enc.c
+                ${OPENSSL_SOURCE_DIR}/crypto/rc4/rc4_skey.c
+                ${OPENSSL_SOURCE_DIR}/crypto/whrlpool/wp_block.c
+                ${OPENSSL_BINARY_DIR}/crypto/aes/aesv8-armx.S
+                ${OPENSSL_BINARY_DIR}/crypto/aes/vpaes-armv8.S
+                ${OPENSSL_BINARY_DIR}/crypto/bn/armv8-mont.S
+                ${OPENSSL_BINARY_DIR}/crypto/chacha/chacha-armv8.S
+                ${OPENSSL_BINARY_DIR}/crypto/ec/ecp_nistz256-armv8.S
+                ${OPENSSL_BINARY_DIR}/crypto/arm64cpuid.S
+                ${OPENSSL_BINARY_DIR}/crypto/modes/ghashv8-armx.S
+                ${OPENSSL_BINARY_DIR}/crypto/poly1305/poly1305-armv8.S
+                ${OPENSSL_BINARY_DIR}/crypto/sha/keccak1600-armv8.S
+                ${OPENSSL_BINARY_DIR}/crypto/sha/sha1-armv8.S
+                ${OPENSSL_BINARY_DIR}/crypto/sha/sha256-armv8.S
+                ${OPENSSL_BINARY_DIR}/crypto/sha/sha512-armv8.S
+                ${OPENSSL_BINARY_DIR}/crypto/modes/asm/aes-gcm-armv8_64.S)
+        endif()
 
-set(SSL_SRCS
- ${OPENSSL_SOURCE_DIR}/crypto/packet.c
- ${OPENSSL_SOURCE_DIR}/ssl/bio_ssl.c
- ${OPENSSL_SOURCE_DIR}/ssl/d1_lib.c
- ${OPENSSL_SOURCE_DIR}/ssl/d1_msg.c
- ${OPENSSL_SOURCE_DIR}/ssl/d1_srtp.c
- ${OPENSSL_SOURCE_DIR}/ssl/methods.c
- ${OPENSSL_SOURCE_DIR}/ssl/pqueue.c
- ${OPENSSL_SOURCE_DIR}/ssl/s3_cbc.c
- ${OPENSSL_SOURCE_DIR}/ssl/s3_enc.c
- ${OPENSSL_SOURCE_DIR}/ssl/s3_lib.c
- ${OPENSSL_SOURCE_DIR}/ssl/s3_msg.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_asn1.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_cert.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_ciph.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_conf.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_err.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_init.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_lib.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_mcnf.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_rsa.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_rsa_legacy.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_sess.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_stat.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_txt.c
- ${OPENSSL_SOURCE_DIR}/ssl/ssl_utst.c
- ${OPENSSL_SOURCE_DIR}/ssl/t1_enc.c
- ${OPENSSL_SOURCE_DIR}/ssl/t1_lib.c
- ${OPENSSL_SOURCE_DIR}/ssl/t1_trce.c
- ${OPENSSL_SOURCE_DIR}/ssl/tls13_enc.c
- ${OPENSSL_SOURCE_DIR}/ssl/tls_depr.c
- ${OPENSSL_SOURCE_DIR}/ssl/tls_srp.c
- ${OPENSSL_SOURCE_DIR}/ssl/record/dtls1_bitmap.c
- ${OPENSSL_SOURCE_DIR}/ssl/record/rec_layer_d1.c
- ${OPENSSL_SOURCE_DIR}/ssl/record/rec_layer_s3.c
- ${OPENSSL_SOURCE_DIR}/ssl/record/ssl3_buffer.c
- ${OPENSSL_SOURCE_DIR}/ssl/record/ssl3_record.c
- ${OPENSSL_SOURCE_DIR}/ssl/record/ssl3_record_tls13.c
- ${OPENSSL_SOURCE_DIR}/ssl/record/tls_pad.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/extensions.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/extensions_clnt.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/extensions_cust.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/extensions_srvr.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/statem.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_clnt.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_dtls.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_lib.c
- ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_srvr.c
- )
+        set(SSL_SRCS
+            ${OPENSSL_SOURCE_DIR}/crypto/packet.c
+            ${OPENSSL_SOURCE_DIR}/ssl/bio_ssl.c
+            ${OPENSSL_SOURCE_DIR}/ssl/d1_lib.c
+            ${OPENSSL_SOURCE_DIR}/ssl/d1_msg.c
+            ${OPENSSL_SOURCE_DIR}/ssl/d1_srtp.c
+            ${OPENSSL_SOURCE_DIR}/ssl/methods.c
+            ${OPENSSL_SOURCE_DIR}/ssl/pqueue.c
+            ${OPENSSL_SOURCE_DIR}/ssl/s3_cbc.c
+            ${OPENSSL_SOURCE_DIR}/ssl/s3_enc.c
+            ${OPENSSL_SOURCE_DIR}/ssl/s3_lib.c
+            ${OPENSSL_SOURCE_DIR}/ssl/s3_msg.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_asn1.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_cert.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_ciph.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_conf.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_err.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_init.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_lib.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_mcnf.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_rsa.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_rsa_legacy.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_sess.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_stat.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_txt.c
+            ${OPENSSL_SOURCE_DIR}/ssl/ssl_utst.c
+            ${OPENSSL_SOURCE_DIR}/ssl/t1_enc.c
+            ${OPENSSL_SOURCE_DIR}/ssl/t1_lib.c
+            ${OPENSSL_SOURCE_DIR}/ssl/t1_trce.c
+            ${OPENSSL_SOURCE_DIR}/ssl/tls13_enc.c
+            ${OPENSSL_SOURCE_DIR}/ssl/tls_depr.c
+            ${OPENSSL_SOURCE_DIR}/ssl/tls_srp.c
+            ${OPENSSL_SOURCE_DIR}/ssl/record/dtls1_bitmap.c
+            ${OPENSSL_SOURCE_DIR}/ssl/record/rec_layer_d1.c
+            ${OPENSSL_SOURCE_DIR}/ssl/record/rec_layer_s3.c
+            ${OPENSSL_SOURCE_DIR}/ssl/record/ssl3_buffer.c
+            ${OPENSSL_SOURCE_DIR}/ssl/record/ssl3_record.c
+            ${OPENSSL_SOURCE_DIR}/ssl/record/ssl3_record_tls13.c
+            ${OPENSSL_SOURCE_DIR}/ssl/record/tls_pad.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/extensions.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/extensions_clnt.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/extensions_cust.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/extensions_srvr.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/statem.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_clnt.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_dtls.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_lib.c
+            ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_srvr.c
+        )
 
-add_library(_crypto ${CRYPTO_SRCS})
-add_library(_ssl ${SSL_SRCS})
+        add_library(_crypto ${CRYPTO_SRCS})
+        add_library(_ssl ${SSL_SRCS})
 
-if (ARCH_AMD64)
-    target_include_directories(_crypto
-         SYSTEM PUBLIC linux_x86_64/include
-         PRIVATE linux_x86_64/include_private)
-elseif (ARCH_AARCH64)
-    target_include_directories(_crypto
-        SYSTEM PUBLIC linux_aarch64/include
-        PRIVATE linux_aarch64/include_private)
-endif()
+        if(ARCH_AMD64)
+            target_include_directories(_crypto
+                SYSTEM PUBLIC linux_x86_64/include
+                PRIVATE linux_x86_64/include_private)
+        elseif(ARCH_AARCH64)
+            target_include_directories(_crypto
+                SYSTEM PUBLIC linux_aarch64/include
+                PRIVATE linux_aarch64/include_private)
+        endif()
 
-target_include_directories(_crypto
- SYSTEM PUBLIC ${OPENSSL_SOURCE_DIR}/include
- PRIVATE ${OPENSSL_SOURCE_DIR}/providers/common/include
- PRIVATE ${OPENSSL_SOURCE_DIR}/providers/implementations/include
- PRIVATE ${OPENSSL_SOURCE_DIR}/crypto
- PRIVATE ${OPENSSL_SOURCE_DIR}/crypto/include
- PRIVATE ${OPENSSL_SOURCE_DIR}/crypto/ec/curve448
- PRIVATE ${OPENSSL_SOURCE_DIR}/crypto/ec/curve448/arch_32
- PRIVATE ${OPENSSL_SOURCE_DIR}/crypto/ec/curve448/arch_64
- PRIVATE ${OPENSSL_SOURCE_DIR})
+        target_include_directories(_crypto
+            SYSTEM PUBLIC ${OPENSSL_SOURCE_DIR}/include
+            PRIVATE ${OPENSSL_SOURCE_DIR}/providers/common/include
+            PRIVATE ${OPENSSL_SOURCE_DIR}/providers/implementations/include
+            PRIVATE ${OPENSSL_SOURCE_DIR}/crypto
+            PRIVATE ${OPENSSL_SOURCE_DIR}/crypto/include
+            PRIVATE ${OPENSSL_SOURCE_DIR}/crypto/ec/curve448
+            PRIVATE ${OPENSSL_SOURCE_DIR}/crypto/ec/curve448/arch_32
+            PRIVATE ${OPENSSL_SOURCE_DIR}/crypto/ec/curve448/arch_64
+            PRIVATE ${OPENSSL_SOURCE_DIR})
 
-target_include_directories(_ssl
- PRIVATE ${OPENSSL_SOURCE_DIR})
+        target_include_directories(_ssl
+            PRIVATE ${OPENSSL_SOURCE_DIR})
 
-target_link_libraries(_ssl _crypto)
+        target_link_libraries(_ssl _crypto)
 
-add_library(OpenSSL::Crypto ALIAS _crypto)
-add_library(OpenSSL::SSL ALIAS _ssl)
+        add_library(OpenSSL::Crypto ALIAS _crypto)
+        add_library(OpenSSL::SSL ALIAS _ssl)
 
-install(FILES openssl.conf fipsmodule.conf DESTINATION "${CLICKHOUSE_ETC_DIR}/clickhouse-server" COMPONENT clickhouse)
+        install(FILES openssl.conf fipsmodule.conf DESTINATION "${CLICKHOUSE_ETC_DIR}/clickhouse-server" COMPONENT clickhouse)
 
-elseif (ENABLE_OPENSSL_DYNAMIC)
-    message (STATUS "Uses dynamic linking OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
+    elseif(ENABLE_OPENSSL_DYNAMIC)
+        message(STATUS "Uses dynamic linking OpenSSL library instead of BoringSSL. This is strongly discouraged. Your build of ClickHouse will be unsupported.")
 
-    find_package(OpenSSL 3.0.7 REQUIRED)
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .so)
+        find_package(OpenSSL 3.0 REQUIRED GLOBAL)
 
-    if (OPENSSL_FOUND)
-        set(ENABLE_SSL 1)
+        if(OPENSSL_FOUND)
+            set(ENABLE_SSL 1)
 
-        target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
-        target_compile_options(global-group INTERFACE "-Wno-poison-system-directories")
+            target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
+            target_compile_options(global-group INTERFACE "-Wno-poison-system-directories")
 
-	set(INTERNAL_OPENSSL_SOURCE_DIR "${ClickHouse_SOURCE_DIR}/contrib/openssl")
+            set(INTERNAL_OPENSSL_SOURCE_DIR "${ClickHouse_SOURCE_DIR}/contrib/openssl")
 
-	if (ARCH_AMD64)
-	    set(INTERNAL_OPENSSL_CMAKE_DIR "linux_x86_64/include")
-	elseif (ARCH_AARCH64)
-	    set(INTERNAL_OPENSSL_CMAKE_DIR "linux_aarch64/include")
-	elseif (ARCH_PPC64LE)
-	    set(INTERNAL_OPENSSL_CMAKE_DIR "linux_ppc64le/include")
-	endif ()
+            if(ARCH_AMD64)
+                set(INTERNAL_OPENSSL_CMAKE_DIR "linux_x86_64/include")
+            elseif(ARCH_AARCH64)
+                set(INTERNAL_OPENSSL_CMAKE_DIR "linux_aarch64/include")
+            elseif(ARCH_PPC64LE)
+                set(INTERNAL_OPENSSL_CMAKE_DIR "linux_ppc64le/include")
+            endif()
 
-	target_include_directories(OpenSSL::Crypto INTERFACE "${INTERNAL_OPENSSL_CMAKE_DIR}")
-	target_include_directories(OpenSSL::Crypto INTERFACE "${INTERNAL_OPENSSL_SOURCE_DIR}/include")
-	target_include_directories(OpenSSL::SSL INTERFACE "${INTERNAL_OPENSSL_CMAKE_DIR}")
-	target_include_directories(OpenSSL::SSL INTERFACE "${INTERNAL_OPENSSL_SOURCE_DIR}/include")
-    else ()
+            target_include_directories(OpenSSL::Crypto INTERFACE "${INTERNAL_OPENSSL_CMAKE_DIR}")
+            target_include_directories(OpenSSL::Crypto INTERFACE "${INTERNAL_OPENSSL_SOURCE_DIR}/include")
+            target_include_directories(OpenSSL::SSL INTERFACE "${INTERNAL_OPENSSL_CMAKE_DIR}")
+            target_include_directories(OpenSSL::SSL INTERFACE "${INTERNAL_OPENSSL_SOURCE_DIR}/include")
+        else()
             message(STATUS "OpenSSL 3.0.7 needs to be installed for dynamic linking")
-    endif ()
-
-endif ()
-endif ()
+        endif()
+    endif()
+endif()
