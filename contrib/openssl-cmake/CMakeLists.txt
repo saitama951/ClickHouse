@@ -1,4 +1,4 @@
-if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
+if(ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL)
     set(ENABLE_SSL 1 CACHE INTERNAL "")
     set(OPENSSL_SOURCE_DIR ${ClickHouse_SOURCE_DIR}/contrib/openssl)
     set(OPENSSL_BINARY_DIR ${ClickHouse_BINARY_DIR}/contrib/openssl)
@@ -10,7 +10,7 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
     add_definitions(-DOPENSSLDIR="${OPENSSLDIR}" -DENGINESDIR="${OPENSSL_ENGINESDIR}" -DMODULESDIR="${OPENSSL_MODULESDIR}")
     target_compile_options(global-group INTERFACE "-Wno-deprecated-declarations")
     target_compile_options(global-group INTERFACE "-Wno-poison-system-directories")
-    
+
     if(ARCH_AMD64)
         set(PLATFORM_DIRECTORY linux_x86_64)
         add_definitions(-DOPENSSL_NO_SCTP -DAES_ASM -DBSAES_ASM -DCMLL_ASM -DECP_NISTZ256_ASM -DGHASH_ASM -DKECCAK1600_ASM -DMD5_ASM -DOPENSSL_BN_ASM_GF2m -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DPOLY1305_ASM -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DVPAES_ASM -DWHIRLPOOL_ASM -DX25519_ASM -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DDEVRANDOM="/dev/urandom")
@@ -20,37 +20,37 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
     endif()
 
     file(STRINGS "${PLATFORM_DIRECTORY}/include/openssl/opensslv.h" OPENSSL_VERSION_STR
-         REGEX "^#[\t ]*define[\t ]+OPENSSL_VERSION_STR[\t ]+\"([0-9])+\\.([0-9])+\\.([0-9])+\".*")
+        REGEX "^#[\t ]*define[\t ]+OPENSSL_VERSION_STR[\t ]+\"([0-9])+\\.([0-9])+\\.([0-9])+\".*")
     string(REGEX REPLACE "^.*OPENSSL_VERSION_STR[\t ]+\"([0-9]+\\.[0-9]+\\.[0-9]+)\".*$"
-           "\\1" OPENSSL_VERSION_STR "${OPENSSL_VERSION_STR}")
+        "\\1" OPENSSL_VERSION_STR "${OPENSSL_VERSION_STR}")
 
     set(OPENSSL_VERSION "${OPENSSL_VERSION_STR}")
 
     string(REGEX MATCHALL "([0-9])+" OPENSSL_VERSION_NUMBER "${OPENSSL_VERSION}")
     list(POP_FRONT OPENSSL_VERSION_NUMBER
-      OPENSSL_VERSION_MAJOR
-      OPENSSL_VERSION_MINOR
-      OPENSSL_VERSION_FIX)
+        OPENSSL_VERSION_MAJOR
+        OPENSSL_VERSION_MINOR
+        OPENSSL_VERSION_FIX)
 
     unset(OPENSSL_VERSION_NUMBER)
     unset(OPENSSL_VERSION_STR)
 
-    message( STATUS "OpenSSL version ${OPENSSL_VERSION}" )
-    
-    set( VERSION_MAJOR ${OPENSSL_VERSION_MAJOR} )
-    set( VERSION_MINOR ${OPENSSL_VERSION_MINOR} )
-    set( VERSION_PATCH ${OPENSSL_VERSION_FIX} )
-    
-    set( VERSION_STRING ${OPENSSL_VERSION} )
-    set( LIB_VERSION ${VERSION_MAJOR} )
-    set( LIB_SOVERSION ${VERSION_MAJOR} )
+    message(STATUS "OpenSSL version ${OPENSSL_VERSION}")
+
+    set(VERSION_MAJOR ${OPENSSL_VERSION_MAJOR})
+    set(VERSION_MINOR ${OPENSSL_VERSION_MINOR})
+    set(VERSION_PATCH ${OPENSSL_VERSION_FIX})
+
+    set(VERSION_STRING ${OPENSSL_VERSION})
+    set(LIB_VERSION ${VERSION_MAJOR})
+    set(LIB_SOVERSION ${VERSION_MAJOR})
 
     enable_language(ASM)
 
     if(COMPILER_CLANG)
         add_definitions(-Wno-unused-command-line-argument)
     endif()
-    
+
     if(ARCH_AMD64)
         if(OS_DARWIN)
             set(OPENSSL_SYSTEM "macosx")
@@ -98,6 +98,7 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
             add_custom_command(OUTPUT ${FILE_OUT}
                 COMMAND /usr/bin/env perl ${FILE_IN} "linux64" ${FILE_OUT})
         endmacro()
+
         perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/aes/asm/aesv8-armx.pl ${OPENSSL_BINARY_DIR}/crypto/aes/aesv8-armx.S)
         perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/aes/asm/vpaes-armv8.pl ${OPENSSL_BINARY_DIR}/crypto/aes/vpaes-armv8.S)
         perl_generate_asm(${OPENSSL_SOURCE_DIR}/crypto/bn/asm/armv8-mont.pl ${OPENSSL_BINARY_DIR}/crypto/bn/armv8-mont.S)
@@ -119,6 +120,7 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
         der_ec_gen.c
         der_ecx_gen.c
         der_rsa_gen.c
+        der_wrap_gen.c
         ${OPENSSL_SOURCE_DIR}/providers/common/der/der_dsa_key.c
         ${OPENSSL_SOURCE_DIR}/providers/common/der/der_dsa_sig.c
         ${OPENSSL_SOURCE_DIR}/providers/common/der/der_ec_key.c
@@ -393,7 +395,6 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
         ${OPENSSL_SOURCE_DIR}/crypto/bio/bss_null.c
         ${OPENSSL_SOURCE_DIR}/crypto/bio/bss_sock.c
         ${OPENSSL_SOURCE_DIR}/crypto/bio/ossl_core_bio.c
-        ${OPENSSL_SOURCE_DIR}/crypto/bn/asm/x86_64-gcc.c
         ${OPENSSL_SOURCE_DIR}/crypto/bn/bn_add.c
         ${OPENSSL_SOURCE_DIR}/crypto/bn/bn_blind.c
         ${OPENSSL_SOURCE_DIR}/crypto/bn/bn_const.c
@@ -426,7 +427,6 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
         ${OPENSSL_SOURCE_DIR}/crypto/bn/bn_srp.c
         ${OPENSSL_SOURCE_DIR}/crypto/bn/bn_word.c
         ${OPENSSL_SOURCE_DIR}/crypto/bn/bn_x931p.c
-        ${OPENSSL_SOURCE_DIR}/crypto/bn/rsaz_exp.c
         ${OPENSSL_SOURCE_DIR}/crypto/bn/rsaz_exp_x2.c
         ${OPENSSL_SOURCE_DIR}/crypto/buffer/buf_err.c
         ${OPENSSL_SOURCE_DIR}/crypto/buffer/buffer.c
@@ -775,7 +775,7 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
         ${OPENSSL_SOURCE_DIR}/crypto/threads_none.c
         ${OPENSSL_SOURCE_DIR}/crypto/threads_pthread.c
         ${OPENSSL_SOURCE_DIR}/crypto/threads_win.c
-        ${OPENSSL_SOURCE_DIR}/crypto/trace.c 
+        ${OPENSSL_SOURCE_DIR}/crypto/trace.c
         ${OPENSSL_SOURCE_DIR}/crypto/uid.c
         ${OPENSSL_SOURCE_DIR}/crypto/md2/md2_dgst.c
         ${OPENSSL_SOURCE_DIR}/crypto/md2/md2_one.c
@@ -1133,22 +1133,22 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
         ${OPENSSL_SOURCE_DIR}/ssl/statem/statem_srvr.c
     )
 
-    if (ENABLE_OPENSSL_DYNAMIC)
+    if(ENABLE_OPENSSL_DYNAMIC)
         add_library(crypto SHARED ${CRYPTO_SRC})
-        set_target_properties( crypto PROPERTIES VERSION "${LIB_VERSION}" SOVERSION "${LIB_SOVERSION}" )
-        set_target_properties( crypto PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/programs)
+        set_target_properties(crypto PROPERTIES VERSION "${LIB_VERSION}" SOVERSION "${LIB_SOVERSION}")
+        set_target_properties(crypto PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/programs)
 
         add_library(ssl SHARED ${SSL_SRC})
-        set_target_properties( ssl PROPERTIES VERSION "${LIB_VERSION}" SOVERSION "${LIB_SOVERSION}" )
-        set_target_properties( ssl PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/programs)
-    else ()
+        set_target_properties(ssl PROPERTIES VERSION "${LIB_VERSION}" SOVERSION "${LIB_SOVERSION}")
+        set_target_properties(ssl PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/programs)
+    else()
         add_library(crypto ${CRYPTO_SRC})
         add_library(ssl ${SSL_SRC})
     endif()
 
     target_include_directories(crypto
         SYSTEM PUBLIC "${PLATFORM_DIRECTORY}/include"
-        PRIVATE "${PLATFORM_DIRECTORY}/include_private" )
+        PRIVATE "${PLATFORM_DIRECTORY}/include_private")
 
     target_include_directories(crypto
         SYSTEM PUBLIC ${OPENSSL_SOURCE_DIR}/include
@@ -1169,7 +1169,7 @@ if ( ENABLE_OPENSSL_DYNAMIC OR ENABLE_OPENSSL )
     add_library(OpenSSL::Crypto ALIAS crypto)
     add_library(OpenSSL::SSL ALIAS ssl)
 
-    if (ENABLE_OPENSSL)
+    if(ENABLE_OPENSSL)
         install(FILES openssl.conf fipsmodule.conf DESTINATION "${CLICKHOUSE_ETC_DIR}/clickhouse-server" COMPONENT clickhouse)
-    endif ()
+    endif()
 endif()
