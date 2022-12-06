@@ -11,11 +11,27 @@
  */
 
 #define PLATFORM "platform: linux-aarch64"
-#define DATE "built on: Tue Jun 21 01:42:26 2022 UTC"
+#define DATE "built on: Tue Dec  6 15:43:00 2022 UTC"
 
 /*
  * Generate compiler_flags as an array of individual characters. This is a
  * workaround for the situation where CFLAGS gets too long for a C90 string
  * literal
  */
-static const char compiler_flags[] = "";
+static const char compiler_flags[] = {
+    'c','o','m','p','i','l','e','r',':',' ','g','c','c',' ','-','f',
+    'P','I','C',' ','-','p','t','h','r','e','a','d',' ','-','W','a',
+    ',','-','-','n','o','e','x','e','c','s','t','a','c','k',' ','-',
+    'W','a','l','l',' ','-','O','3',' ','-','W','a',',','-','-','n',
+    'o','e','x','e','c','s','t','a','c','k',' ','-','W','a',',','-',
+    '-','g','e','n','e','r','a','t','e','-','m','i','s','s','i','n',
+    'g','-','b','u','i','l','d','-','n','o','t','e','s','=','y','e',
+    's',' ','-','D','P','U','R','I','F','Y',' ',' ','-','D','O','P',
+    'E','N','S','S','L','_','U','S','E','_','N','O','D','E','L','E',
+    'T','E',' ','-','D','O','P','E','N','S','S','L','_','P','I','C',
+    ' ','-','D','O','P','E','N','S','S','L','_','B','U','I','L','D',
+    'I','N','G','_','O','P','E','N','S','S','L',' ','-','D','N','D',
+    'E','B','U','G',' ','-','D','D','E','V','R','A','N','D','O','M',
+    '=','"','\\','"','/','d','e','v','/','u','r','a','n','d','o','m',
+    '\\','"','"','\0'
+};
