@@ -1,5 +1,18 @@
 ## KQL implemented features  
 
+# January XX, 2023
+
+## Functions
+-[in~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/inoperator)
+   `print t = 'a' in~ ('A', 'b', 'c')`
+   `Customers | where FirstName in~ ((Customers | project FirstName | where FirstName == 'Peter'))`
+-[!in~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/not-in-operator)
+   `print t = 'a' !in~ (dynamic(['A', 'b', 'c']))`
+   `Customers | where FirstName !in~ ('peter', 'apple')`
+-[=~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/equals-operator)
+   `Customers | where FirstName =~ 'peter' and LastName =~ 'naRA'`
+-[!~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/not-equals-operator)
+   `Customers | where FirstName !~ 'nEyMaR' and LastName =~ 'naRA'`
 # December 7, 2022
 
 ## Functions
