@@ -71,7 +71,7 @@ bool ParserKQLTaleFunction::parseImpl(Pos & pos, ASTPtr & node, Expected & expec
     String kql_statement;
 
     if (s_lparen.ignore(pos, expected))
-    {   
+    {
         ++paren_count;
         auto pos_start = pos;
         while (!pos->isEnd())
