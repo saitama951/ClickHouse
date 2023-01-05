@@ -67,6 +67,9 @@
    sales | top-nested of region by sum(amount);
    ```
    
+## Bugs
+ - [reverse() with datetime and timespan arguments needs to be improved.](https://github.ibm.com/ClickHouse/issue-repo/issues/1458)
+
 # December 7, 2022
 
 ## Functions
