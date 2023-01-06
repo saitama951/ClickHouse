@@ -67,6 +67,9 @@
    sales | top-nested of region by sum(amount);
    ```
    
+## Bugs
+- [KQL Phase 2 - totimespan should return null when convertion fails.](https://github.ibm.com/ClickHouse/issue-repo/issues/1150)  
+
 # December 7, 2022
 
 ## Functions

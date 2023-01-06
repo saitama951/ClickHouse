@@ -152,11 +152,13 @@ print '-- todatetime()';
 print todatetime("2015-12-24") == datetime(2015-12-24);
 print todatetime('abc') == null;
 print '-- totimespan()';
+print totimespan(null);
 print totimespan(1tick);
 print totimespan('0.00:01:00');
 print totimespan('abc');
 print totimespan('12.23:12:23') / totimespan(1s);
--- print totimespan(strcat('12.', '23', ':12:', '23')) / timespan(1s); -> 1120343
+print totimespan(strcat('12.', '23', ':12:', '23')) / timespan(1s);
+print totimespan(timespan(16:30));
 print '-- tolong()';
 print tolong('123');
 print tolong('abc');
