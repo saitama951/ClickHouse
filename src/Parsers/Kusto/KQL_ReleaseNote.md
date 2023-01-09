@@ -68,7 +68,7 @@
    ```
    
 ## Bugs
- - [reverse() with datetime and timespan arguments needs to be improved.](https://github.ibm.com/ClickHouse/issue-repo/issues/1458)
+ - [reverse() with datetime and timespan arguments needs to be improved.]  
 
 # December 7, 2022
 
