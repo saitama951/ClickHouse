@@ -1,6 +1,6 @@
 ## KQL implemented features  
 
-# January 3, 2023
+# January XX, 2023
 ## Operator
 - [top-nested](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/topnestedoperator)
 
@@ -66,10 +66,17 @@
    print '-- all top regions by sales--';
    sales | top-nested of region by sum(amount);
    ```
-   
+
 ## Bugs
+- [KQL Phase 2 - base64_encode_fromguid encodes strings as opposed to binary]  
+- [KQL Phase 2: summarize with bin and format_datetime]  
+- [make_datetime creates wrong date time]  
+- [KQL Phase 2: summarize using bin has different result than Azure Data Explorer using the same sample data]  
+- [KQL Phase 3: datetime should be rounded in certain cases]  
+- [kql_bin does not accept DateTime type]  
 - [KQL Phase 2 - totimespan should return null when convertion fails.]  
 - [reverse() with datetime and timespan arguments needs to be improved.]  
+
 
 # December 7, 2022
 
