@@ -77,5 +77,9 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_Aggregate, ParserTest,
         {
             "Customers | summarize count_distinctif(Education,Age >30)",
             "SELECT countIfDistinct(Education, Age > 30) AS Columns1\nFROM Customers"
+        },
+        {
+            "Customers | summarize by FirstName, LastName, Age",
+            "SELECT\n    FirstName,\n    LastName,\n    Age\nFROM Customers\nGROUP BY\n    FirstName,\n    LastName,\n    Age"
         }
 })));
