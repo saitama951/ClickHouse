@@ -1,4 +1,3 @@
-#include <format>
 #include <Parsers/ASTIdentifier.h>
 #include <Parsers/ASTLiteral.h>
 #include <Parsers/ASTSelectQuery.h>
@@ -29,6 +28,9 @@
 #include <Parsers/Kusto/ParserKQLTopHitter.h>
 #include <Parsers/ParserSelectWithUnionQuery.h>
 #include <Parsers/ParserTablesInSelectQuery.h>
+#include <Parsers/Kusto/ParserKQLTopNested.h>
+
+#include <format>
 
 namespace DB
 {
@@ -59,6 +61,7 @@ std::unordered_map<std::string, ParserKQLQuery::KQLOperatorDataFlowState> kql_pa
     {"top-hitters", {"top-hitters", true, true, true, 5}},
     {"lookup", {"lookup", true, true, false, 3}},
     {"join", {"join", true, true, false, 3}},
+    {"top-nested", {"top-nested", true, true, true, 5}},
 };
 
 bool ParserKQLBase::parseByString(const String expr, ASTPtr & node, const uint32_t max_depth)
@@ -81,7 +84,7 @@ bool ParserKQLBase::parseSQLQueryByString(ParserPtr && parser, String & query, A
 };
 
 bool ParserKQLBase::setSubQuerySource(
-    ASTPtr & select_query, ASTPtr & source, const bool dest_is_subquery, const bool src_is_subquery, const String alias)
+    ASTPtr & select_query, ASTPtr & source, const bool dest_is_subquery, const bool src_is_subquery, const String alias, const int32_t table_index)
 {
     ASTPtr table_expr;
     auto apply_alias = [&]()
@@ -108,7 +111,7 @@ bool ParserKQLBase::setSubQuerySource(
         if (!select_query || !select_query->as<ASTSelectQuery>()->tables()
             || select_query->as<ASTSelectQuery>()->tables()->as<ASTTablesInSelectQuery>()->children.empty())
             return false;
-        table_expr = select_query->as<ASTSelectQuery>()->tables()->as<ASTTablesInSelectQuery>()->children[0];
+        table_expr = select_query->as<ASTSelectQuery>()->tables()->as<ASTTablesInSelectQuery>()->children[table_index];
 
         if (!src_is_subquery)
         {
@@ -125,21 +128,21 @@ bool ParserKQLBase::setSubQuerySource(
     }
 
     if (!select_query || select_query->as<ASTTablesInSelectQuery>()->children.empty()
-        || !select_query->as<ASTTablesInSelectQuery>()->children[0]->as<ASTTablesInSelectQueryElement>()->table_expression
+        || !select_query->as<ASTTablesInSelectQuery>()->children[table_index]->as<ASTTablesInSelectQueryElement>()->table_expression
         || select_query->as<ASTTablesInSelectQuery>()
-               ->children[0]
+               ->children[table_index]
                ->as<ASTTablesInSelectQueryElement>()
                ->table_expression->as<ASTTableExpression>()
                ->subquery->children.empty()
         || select_query->as<ASTTablesInSelectQuery>()
-               ->children[0]
+               ->children[table_index]
                ->as<ASTTablesInSelectQueryElement>()
                ->table_expression->as<ASTTableExpression>()
                ->subquery->children[0]
                ->as<ASTSelectWithUnionQuery>()
                ->list_of_selects->children.empty()
         || select_query->as<ASTTablesInSelectQuery>()
-               ->children[0]
+               ->children[table_index]
                ->as<ASTTablesInSelectQueryElement>()
                ->table_expression->as<ASTTableExpression>()
                ->subquery->children[0]
@@ -152,7 +155,7 @@ bool ParserKQLBase::setSubQuerySource(
         return false;
 
     table_expr = select_query->as<ASTTablesInSelectQuery>()
-                     ->children[0]
+                     ->children[table_index]
                      ->as<ASTTablesInSelectQueryElement>()
                      ->table_expression->as<ASTTableExpression>()
                      ->subquery->children[0]
@@ -396,6 +399,8 @@ std::unique_ptr<ParserKQLBase> ParserKQLQuery::getOperator(String & op_name)
         return std::make_unique<ParserKQLLookup>();
     else if (op_name == "join")
         return std::make_unique<ParserKQLJoin>();
+    else if (op_name == "top-nested")
+        return std::make_unique<ParserKQLTopNested>();
     else
         return nullptr;
 }

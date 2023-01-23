@@ -1,29 +1,15 @@
-#include <Parsers/ASTExpressionList.h>
-#include <Parsers/ASTSelectWithUnionQuery.h>
-#include <Parsers/IParserBase.h>
-#include <Parsers/Kusto/KustoFunctions/IParserKQLFunction.h>
-#include <Parsers/Kusto/KustoFunctions/KQLAggregationFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLBinaryFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLCastingFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLDateTimeFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLDynamicFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLFunctionFactory.h>
-#include <Parsers/Kusto/KustoFunctions/KQLGeneralFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLIPFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLStringFunctions.h>
-#include <Parsers/Kusto/KustoFunctions/KQLTimeSeriesFunctions.h>
-#include <Parsers/Kusto/ParserKQLTimespan.h>
+#include "KQLFunctionFactory.h"
+
 #include <Parsers/Kusto/ParserKQLOperators.h>
-#include <Parsers/Kusto/ParserKQLQuery.h>
-#include <Parsers/Kusto/ParserKQLStatement.h>
-#include <Parsers/ParserSetQuery.h>
+#include <Parsers/Kusto/ParserKQLTimespan.h>
 #include <Parsers/Kusto/Utilities.h>
+
 #include <boost/lexical_cast.hpp>
-
-
 #include <pcg_random.hpp>
+#include <Poco/String.h>
 
 #include <format>
+#include <numeric>
 #include <stack>
 
 namespace DB::ErrorCodes
@@ -183,7 +169,7 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
                     break;
                 if (pos->type == TokenType::ClosingRoundBracket && round_bracket_count == -1)
                     break;
-                if (pos->type == TokenType::ClosingSquareBracket && round_bracket_count == 0)
+                if (pos->type == TokenType::ClosingSquareBracket && square_bracket_count == 0)
                     break;
                 tokens.push_back(String(pos->begin, pos->end));
             }
@@ -217,7 +203,7 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
                 break;
             if (pos->type == TokenType::ClosingRoundBracket && round_bracket_count == -1)
                 break;
-            if (pos->type == TokenType::ClosingSquareBracket && round_bracket_count == 0)
+            if (pos->type == TokenType::ClosingSquareBracket && square_bracket_count == 0)
                 break;
         }
     }
@@ -249,7 +235,7 @@ IParserKQLFunction::getOptionalArgument(const String & function_name, DB::IParse
             magic_enum::enum_type_name<ArgumentState>(),
             magic_enum::enum_name(argument_state));
 
-    String expression;
+    const auto* begin = pos->begin;
     std::stack<DB::TokenType> scopes;
     while (!pos->isEnd() && (!scopes.empty() || (pos->type != DB::TokenType::Comma && pos->type != DB::TokenType::ClosingRoundBracket)))
     {
@@ -265,19 +251,10 @@ IParserKQLFunction::getOptionalArgument(const String & function_name, DB::IParse
             scopes.pop();
         }
 
-        if (token_type == DB::TokenType::QuotedIdentifier)
-        {
-            expression.push_back('\'');
-            expression.append(pos->begin + 1, pos->end - 1);
-            expression.push_back('\'');
-        }
-        else
-            expression.append(pos->begin, pos->end);
-
         ++pos;
     }
 
-    return expression;
+    return std::string(begin, pos->begin);
 }
 
 String IParserKQLFunction::getKQLFunctionName(IParser::Pos & pos)
