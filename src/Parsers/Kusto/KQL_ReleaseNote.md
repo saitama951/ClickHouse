@@ -1,8 +1,7 @@
 ## KQL implemented features  
 
 # January XX, 2023
-
-## Functions
+## Case Insensitive Operators
 -[in~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/inoperator)
    `print t = 'a' in~ ('A', 'b', 'c')`
    `Customers | where FirstName in~ ((Customers | project FirstName | where FirstName == 'Peter'))`
@@ -13,6 +12,89 @@
    `Customers | where FirstName =~ 'peter' and LastName =~ 'naRA'`
 -[!~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/not-equals-operator)
    `Customers | where FirstName !~ 'nEyMaR' and LastName =~ 'naRA'`
+## Aggregate Functions
+- [take_any()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/take-any-aggfunction)
+   ```
+   Note: * is not currently a supported argument.
+   ```
+- [take_anyif()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/take-anyif-aggfunction)
+## Operator
+- [top-nested](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/topnestedoperator)
+
+   ```
+   CREATE TABLE sales
+   (salesdate String,salesperson String,region String,amount UInt32) ENGINE = Memory;
+
+   INSERT INTO sales VALUES ( '12/31/1995','Robert','ON-Ontario',1);
+   INSERT INTO sales VALUES ( '12/31/1995','Joseph','ON-Ontario',2);
+   INSERT INTO sales VALUES ( '12/31/1995','Joseph','QC-Quebec',3);
+   INSERT INTO sales VALUES ( '12/31/1995','Joseph','MA-Manitoba',4);
+   INSERT INTO sales VALUES ( '12/31/1995','Steven','QC-Quebec',5);
+   INSERT INTO sales VALUES ( '03/29/1996','Joseph','ON-Ontario',6);
+   INSERT INTO sales VALUES ( '03/29/1996','Robert','QC-Quebec',7);
+   INSERT INTO sales VALUES ( '03/29/1996','Joseph','ON-Ontario',8);
+   INSERT INTO sales VALUES ( '03/29/1996','Joseph','BC-British Columbia',9);
+   INSERT INTO sales VALUES ( '03/29/1996','Joseph','QC-Quebec',10);
+   INSERT INTO sales VALUES ( '03/29/1996','Joseph','MA-Manitoba',11);
+   INSERT INTO sales VALUES ( '03/29/1996','Steven','ON-Ontario',12);
+   INSERT INTO sales VALUES ( '03/29/1996','Steven','QC-Quebec',13);
+   INSERT INTO sales VALUES ( '03/29/1996','Steven','MA-Manitoba',14);
+   INSERT INTO sales VALUES ( '03/30/1996','Robert','ON-Ontario',15);
+   INSERT INTO sales VALUES ( '03/30/1996','Robert','QC-Quebec',16);
+   INSERT INTO sales VALUES ( '03/30/1996','Robert','MA-Manitoba',17);
+   INSERT INTO sales VALUES ( '03/30/1996','Joseph','ON-Ontario',18);
+   INSERT INTO sales VALUES ( '03/30/1996','Joseph','BC-British Columbia',19);
+   INSERT INTO sales VALUES ( '03/30/1996','Joseph','QC-Quebec',20);
+   INSERT INTO sales VALUES ( '03/30/1996','Joseph','MA-Manitoba',21);
+   INSERT INTO sales VALUES ( '03/30/1996','Steven','ON-Ontario',22);
+   INSERT INTO sales VALUES ( '03/30/1996','Steven','QC-Quebec',23);
+   INSERT INTO sales VALUES ( '03/30/1996','Steven','MA-Manitoba',24);
+   INSERT INTO sales VALUES ( '03/31/1996','Robert','MA-Manitoba',25);
+   INSERT INTO sales VALUES ( '03/31/1996','Thomas','ON-Ontario',26);
+   INSERT INTO sales VALUES ( '03/31/1996','Thomas','BC-British Columbia',27);
+   INSERT INTO sales VALUES ( '03/31/1996','Thomas','QC-Quebec',28);
+   INSERT INTO sales VALUES ( '03/31/1996','Thomas','MA-Manitoba',29);
+   INSERT INTO sales VALUES ( '03/31/1996','Steven','ON-Ontario',30);
+
+   print '-- top 3 regions by sales--';
+   sales | top-nested 3 of region by sum(amount);
+
+   print '-- top 2 salespeople in each of these regions?--';
+   sales | top-nested 3 of region by sum(amount), top-nested 2 of salesperson by sum(amount);
+
+   print '--top 3 and other regions by sales--';
+   sales | top-nested 3 of region with others = 'all other region' by sum(amount);
+
+   print '--top 3 and other regions by sales and top 2 and  other salespeople in each of these regions--';
+   sales | top-nested 3 of region with others = 'all other region' by sum(amount),  top-nested 2 of salesperson with others = 'all other person' by sum(amount);
+
+   print '--top 3 and other regions by sales and top 2 salespeople in each of these regions--';
+   sales | top-nested 3 of region with others = 'all other region' by sum(amount),  top-nested 2 of salesperson by sum(amount)
+
+   print '--top 3 regions by sales and top 2 and  other salespeople in each of these regions--';
+   sales | top-nested 3 of region  by sum(amount), top-nested 2 of salesperson with others = 'all other person' by sum(amount);
+
+   print '--top 3 regions by difference between max sales and min sales--';
+   sales | top-nested 3 of region by sum(amount) - min(amount);
+
+   print '-- top 3 regions using abbreviations by sales--';
+   sales | top-nested 3 of substring(region, 0, 2)  by sum(amount);
+
+   print '-- all top regions by sales--';
+   sales | top-nested of region by sum(amount);
+   ```
+
+## Bugs
+- [KQL Phase 2 - base64_encode_fromguid encodes strings as opposed to binary]  
+- [KQL Phase 2: summarize with bin and format_datetime]  
+- [make_datetime creates wrong date time]  
+- [KQL Phase 2: summarize using bin has different result than Azure Data Explorer using the same sample data]  
+- [KQL Phase 3: datetime should be rounded in certain cases]  
+- [kql_bin does not accept DateTime type]  
+- [KQL Phase 2 - totimespan should return null when convertion fails.]  
+- [reverse() with datetime and timespan arguments needs to be improved.]  
+
+
 # December 7, 2022
 
 ## Functions
@@ -23,11 +105,11 @@
 - [iff](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/ifffunction)  
    `Customers | extend t = iff(Age <= 10, "smaller", "bigger");`  
 - [iif](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/iiffunction)  
-   `Customers | extend t = iif(Age <= 10, "smaller", "bigger");`  
+   `Customers | extend t = iif(Age <= 10, "smaller", "bigger");`
 ## bug fixed
-- [indexOf function doesn't work for extended parameters](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1272)  
-- [Create generic function for time arithmetic](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1442)  
-- [KQL Phase 2: tolong should return the number of ticks when supplied with a timespan](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1520)  
+- [indexOf function doesn't work for extended parameters]  
+- [Create generic function for time arithmetic]  
+- [KQL Phase 2: tolong should return the number of ticks when supplied with a timespan]  
 
 # November 23, 2022
 
@@ -122,13 +204,13 @@
    ```
 
 ## Bugs fixed
-   - [Incorrect Regx convertion](https://github.ibm.com/ClickHouse/issue-repo/issues/1817)  
-   - [KQL phase 2 - timespan calculation results in exception](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1129)  
-   - [KQL phase 2 - format_timespan returns incorrect results](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1133)  
-   - [Bin function should support time intervals less than 1 second](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1207)  
-   - [KQL Phase 2: datetime subtraction results in exception](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1321)  
-   - [Timespan() doesn't parse bareword arguments.](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1329)
-   - [KQL-phase2 distinct operator does not support alias](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1505)  
+   - [Incorrect Regx convertion]  
+   - [KQL phase 2 - timespan calculation results in exception]  
+   - [KQL phase 2 - format_timespan returns incorrect results]  
+   - [Bin function should support time intervals less than 1 second]  
+   - [KQL Phase 2: datetime subtraction results in exception]  
+   - [Timespan() doesn't parse bareword arguments.]
+   - [KQL-phase2 distinct operator does not support alias]  
 
 # November 7, 2022
 ## Improvement
@@ -198,16 +280,16 @@
 - [case](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/casefunction)  
    `Customers | extend t = case(Age <= 10, "A", Age <= 20, "B", Age <= 30, "C", "D");`
 ## Bug fixed
-- [summarize crash if aggregation function is missing](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1705)
+- [summarize crash if aggregation function is missing]
    ```
    fixed with throw exception:
 
    Exception on client:
    Code: 62. DB::Exception: Syntax error near keyword "by". (SYNTAX_ERROR)
    ```
-- [make_datetime creates wrong date time](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1262)
+- [make_datetime creates wrong date time]
 
-- [todecimal() doesn't work with column arguments](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1413)
+- [todecimal() doesn't work with column arguments]
 
 
 
@@ -236,11 +318,11 @@
 `Customers | top-hitters 2 of Age | where approximate_count_Age > 2;`  
 
 ## Bugs fixed
-- [parse_version needs to return null when parameter is empty string](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1492)  
-- [Different expressions with the same alias in function substring](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1489)  
-- [parse_version needs to return null when parameter is empty string](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1492)  
-- [parse_url() output mismatch for empty string](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1345)  
-- [array_sum and array_length return incorrect results](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1120)  
+- [parse_version needs to return null when parameter is empty string]  
+- [Different expressions with the same alias in function substring]  
+- [parse_version needs to return null when parameter is empty string]  
+- [parse_url() output mismatch for empty string]  
+- [array_sum and array_length return incorrect results]  
 
 # October 9, 2022  
 
@@ -279,9 +361,9 @@
  `print parse_version('1.2.3.40')`  
 
 ## Bug fixed
-- [correct array index in expression](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1474)  
+- [correct array index in expression]  
    array index should start with 0  
-- [Summarize should generate alias or use correct columns](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1303)
+- [Summarize should generate alias or use correct columns]
    - if bin is used , the column should be in select list if no alias include  
    - if no column included in aggregate functions,  ( like count() ), should has alias with fun name + '_',e.g  count_  
    - if column name included in aggregate functions, should have fun name + "_" + column name , like count(Age) -> count_Age  
@@ -306,40 +388,40 @@
       │       30 │      4 │
       └──────────┴────────┘
       ```
-- [extend doesn't replace existing columns](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1246)  
+- [extend doesn't replace existing columns]  
 
-- [throw exception if use quoted string as alias](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1470)  
+- [throw exception if use quoted string as alias]  
 
-- [repeat() doesn't work with count argument as negative value](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1368)  
+- [repeat() doesn't work with count argument as negative value]  
 
-- [substring() doesn't work right with negative offsets](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1336)  
-- [endofmonth() doesn't return correct result](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1370)  
+- [substring() doesn't work right with negative offsets]  
+- [endofmonth() doesn't return correct result]  
 
-- [split() outputs array instead of string](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1343)  
+- [split() outputs array instead of string]  
 
-- [split() returns empty string when arg goes out of bound](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1328)  
+- [split() returns empty string when arg goes out of bound]  
 
-- [split() doesn't work with negative index](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1325)  
+- [split() doesn't work with negative index]  
 
 
 # September 26, 2022
 ## Bug fixed :  
-["select * from kql" results in syntax error](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1119)  
-[Parsing ipv4 with arrayStringConcat throws exception](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1259)  
-[CH Client crashes on invalid function name](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1266)  
-[extract() doesn't work right with 4th argument i.e typeof()](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1327)  
-[parse_ipv6_mask return incorrect results](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1050)  
-[timespan returns wrong output in seconds](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1275)  
-[timespan doesn't work for nanoseconds and tick](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1298)  
-[totimespan() doesn't work for nanoseconds and tick timespan unit](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1301)  
-[data types should throw exception in certain cases](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1112)  
-[decimal does not support scientific notation](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1197)  
-[extend statement causes client core dumping](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1260)  
-[extend crashes with array sorting](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1247)  
-[Core dump happens when WHERE keyword doesn't follow field name](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1335)  
-[Null values are missing in the result of `make_list_with_nulls'](https://github.ibm.com/ClickHouse/issue-repo/issues/1009)  
-[trim functions use non-unique aliases](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1111)  
-[format_ipv4_mask returns incorrect mask value](https://zenhub.ibm.com/workspaces/clickhouse-project-61250df53aaf060db4e08052/issues/clickhouse/issue-repo/1039)  
+["select * from kql" results in syntax error]  
+[Parsing ipv4 with arrayStringConcat throws exception]  
+[CH Client crashes on invalid function name]  
+[extract() doesn't work right with 4th argument i.e typeof()]  
+[parse_ipv6_mask return incorrect results]  
+[timespan returns wrong output in seconds]  
+[timespan doesn't work for nanoseconds and tick]  
+[totimespan() doesn't work for nanoseconds and tick timespan unit]  
+[data types should throw exception in certain cases]  
+[decimal does not support scientific notation]  
+[extend statement causes client core dumping]  
+[extend crashes with array sorting]  
+[Core dump happens when WHERE keyword doesn't follow field name]  
+[Null values are missing in the result of `make_list_with_nulls']  
+[trim functions use non-unique aliases]  
+[format_ipv4_mask returns incorrect mask value]  
 
 # September 12, 2022
 ## Extend operator
@@ -646,6 +728,8 @@ https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/make-seriesoper
    `print array_iif(dynamic([true, false, true]), dynamic([1, 2, 3, 4]), dynamic([4, 5, 6])) == dynamic([1, 5, 3])`  
    `print array_iif(dynamic([true, false, true, false]), dynamic([1, 2, 3, 4]), dynamic([4, 5, 6])) == dynamic([1, 5, 3, null])`  
    `print array_iif(dynamic([1, 0, -1, 44, 0]), dynamic([1, 2, 3, 4]), dynamic([4, 5, 6])) == dynamic([1, 5, 3, 4, null])`  
+   `print t = array_iif(dynamic([true, false, true, false, true]), dynamic([1.1, 2.2, 3.3, 4.4, 5.5]), 999.99);`
+   `print t = array_iif(dynamic([true, false, true, false, true]), 90, dynamic([1, 3]));`
 
 - [array_slice](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/arrayslicefunction)  
    `print array_slice(dynamic([1,2,3]), 1, 2) == dynamic([2, 3])`  
@@ -1237,4 +1321,3 @@ Please note that the functions listed below only take constant parameters for no
  - dcount()
  - dcountif()
  - bin
- 
