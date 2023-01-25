@@ -322,7 +322,7 @@ farmHash64
 file
 filesystemAvailable
 filesystemCapacity
-filesystemFree
+filesystemUnreserved
 finalizeAggregation
 firstSignificantSubdomainCustom
 firstSignificantSubdomainCustomRFC
@@ -377,8 +377,6 @@ hasAny
 hasColumnInTable
 hasSubstr
 hasThreadFuzzer
-hasToken
-hasTokenCaseInsensitive
 hashid
 hex
 hiveHash

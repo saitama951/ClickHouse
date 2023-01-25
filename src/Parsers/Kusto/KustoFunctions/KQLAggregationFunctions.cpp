@@ -67,6 +67,7 @@ bool DCount::convertImpl(String & out, IParser::Pos & pos)
         return false;
     ++pos;
     String value = getConvertedArgument(fn_name, pos);
+<<<<<<< HEAD
     if (pos->type == TokenType::Comma)
     {
         ++pos;
@@ -75,6 +76,10 @@ bool DCount::convertImpl(String & out, IParser::Pos & pos)
     }
     else
         out = "count ( DISTINCT " + value + " ) ";
+=======
+
+    out = "count ( DISTINCT " + value + " ) ";
+>>>>>>> c20c3801d76ae98ebc6667bb668a2a7cafb36e6b
     return true;
 }
 
@@ -88,6 +93,7 @@ bool DCountIf::convertImpl(String & out, IParser::Pos & pos)
     String value = getConvertedArgument(fn_name, pos);
     ++pos;
     String condition = getConvertedArgument(fn_name, pos);
+<<<<<<< HEAD
     if (pos->type == TokenType::Comma)
     {
         ++pos;
@@ -96,6 +102,9 @@ bool DCountIf::convertImpl(String & out, IParser::Pos & pos)
     }
     else
         out = "countIf ( DISTINCT " + value + " , " + condition + " ) ";
+=======
+    out = "countIf ( DISTINCT " + value + " , " + condition + " ) ";
+>>>>>>> c20c3801d76ae98ebc6667bb668a2a7cafb36e6b
     return true;
 }
 

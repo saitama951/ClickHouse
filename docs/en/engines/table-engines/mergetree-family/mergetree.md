@@ -461,6 +461,9 @@ The `set` index can be used with all functions. Function subsets for other index
 | [empty](/docs/en/sql-reference/functions/array-functions#function-empty)                                | ✔           | ✔      | ✗           | ✗           | ✗             |
 | [notEmpty](/docs/en/sql-reference/functions/array-functions#function-notempty)                          | ✔           | ✔      | ✗           | ✗           | ✗             |
 | hasToken                                                                                                   | ✗           | ✗      | ✗           | ✔           | ✗             |
+| hasTokenOrNull                                                                                                   | ✗           | ✗      | ✗           | ✔           | ✗             |
+| hasTokenCaseInsensitive                                                                                                   | ✗           | ✗      | ✗           | ✔           | ✗             |
+| hasTokenCaseInsensitiveOrNull                                                                                                   | ✗           | ✗      | ✗           | ✔           | ✗             |
 
 Functions with a constant argument that is less than ngram size can’t be used by `ngrambf_v1` for query optimization.
 
@@ -940,6 +943,10 @@ Optional parameters:
 -   `cache_path` — Path on local FS where to store cached mark and index files. Default value is `/var/lib/clickhouse/disks/<disk_name>/cache/`.
 -   `skip_access_check` — If true, disk access checks will not be performed on disk start-up. Default value is `false`.
 -   `server_side_encryption_customer_key_base64` — If specified, required headers for accessing S3 objects with SSE-C encryption will be set.
+-   `s3_max_put_rps` — Maximum PUT requests per second rate before throttling. Default value is `0` (unlimited).
+-   `s3_max_put_burst` — Max number of requests that can be issued simultaneously before hitting request per second limit. By default (`0` value) equals to `s3_max_put_rps`.
+-   `s3_max_get_rps` — Maximum GET requests per second rate before throttling. Default value is `0` (unlimited).
+-   `s3_max_get_burst` — Max number of requests that can be issued simultaneously before hitting request per second limit. By default (`0` value) equals to `s3_max_get_rps`.
 
 S3 disk can be configured as `main` or `cold` storage:
 ``` xml
