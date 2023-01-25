@@ -198,7 +198,7 @@ namespace DB
 {
 namespace ErrorCodes
 {
-    extern const int BAD_ARGUMENTS;
+    extern const int CANNOT_PARSE_DOMAIN_VALUE_FROM_STRING;
 }
 
 std::string kqlTicksToInterval(const std::optional<Int64> ticks)
@@ -208,8 +208,8 @@ std::string kqlTicksToInterval(const std::optional<Int64> ticks)
 
 std::optional<Int64> ParserKQLTimespan::parse(const std::string_view expression)
 {
-    const auto throw_exception
-        = [&expression] { throw Exception(ErrorCodes::BAD_ARGUMENTS, "Not a correct timespan expression: {}", expression); };
+    const auto throw_exception = [&expression]
+    { throw Exception(ErrorCodes::CANNOT_PARSE_DOMAIN_VALUE_FROM_STRING, "Not a correct timespan expression: {}", expression); };
 
     auto first = expression.cbegin();
     auto last = expression.cend();
@@ -229,7 +229,7 @@ std::optional<Int64> ParserKQLTimespan::parse(const std::string_view expression)
                 const auto ticks = kql_timespan.toTicks();
                 if (!ticks)
                     throw_exception();
-                
+
                 return *ticks;
             }
             else if constexpr (std::is_same_v<Type, KQLTimespanValueWithUnit>)

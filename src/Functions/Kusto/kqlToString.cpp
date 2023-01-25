@@ -36,11 +36,6 @@ FunctionKqlToString::executeImpl(const ColumnsWithTypeAndName & arguments, const
     const auto & argument = arguments.front();
     if (WhichDataType which_data_type(*argument.type); which_data_type.isInterval())
     {
-        static const auto TICKS_PER_DAY = ParserKQLTimespan::parse("1d").value();
-        static const auto TICKS_PER_HOUR = ParserKQLTimespan::parse("1h").value();
-        static const auto TICKS_PER_MINUTE = ParserKQLTimespan::parse("1m").value();
-        static const auto TICKS_PER_SECOND = ParserKQLTimespan::parse("1s").value();
-
         const auto & in_column = *argument.column;
         auto out_column = ColumnString::create();
         auto & chars = out_column->getChars();
@@ -48,20 +43,8 @@ FunctionKqlToString::executeImpl(const ColumnsWithTypeAndName & arguments, const
         for (size_t i = 0; i < input_rows_count; ++i)
         {
             const auto value = in_column.getInt(i);
-            const auto abs_ticks = std::abs(value / 100);
-
-            std::string timespan_as_string = value < 0 ? "-" : "";
-            if (abs_ticks >= TICKS_PER_DAY)
-                timespan_as_string.append(std::format("{}.", abs_ticks / TICKS_PER_DAY));
-
-            timespan_as_string.append(std::format(
-                "{:02}:{:02}:{:02}",
-                (abs_ticks / TICKS_PER_HOUR) % 24,
-                (abs_ticks / TICKS_PER_MINUTE) % 60,
-                (abs_ticks / TICKS_PER_SECOND) % 60));
-
-            if (const auto fractional_second = abs_ticks % TICKS_PER_SECOND)
-                timespan_as_string.append(std::format(".{:07}", fractional_second));
+            const auto ticks = value / 100;
+            const auto timespan_as_string = ParserKQLTimespan::compose(ticks);
 
             const auto chars_old_length = chars.size();
             const auto str_length_with_terminator = timespan_as_string.length() + 1;
