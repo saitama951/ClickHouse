@@ -5,7 +5,7 @@ import json
 
 import requests  # type: ignore
 from get_robot_token import get_parameter_from_ssm
-
+from env_helper import GITHUB_REPOSITORY
 
 class InsertException(Exception):
     pass
@@ -138,7 +138,7 @@ def prepare_tests_results_for_clickhouse(
     check_name,
 ):
 
-    pull_request_url = "https://github.com/ClickHouse/ClickHouse/commits/master"
+    pull_request_url = "https://github.com/{}/commits/master".format(GITHUB_REPOSITORY)
     base_ref = "master"
     head_ref = "master"
     base_repo = pr_info.repo_full_name
