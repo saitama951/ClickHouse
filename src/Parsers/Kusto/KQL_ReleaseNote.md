@@ -1,6 +1,9 @@
 ## KQL implemented features  
 
 # January XX, 2023
+## Improvement
+- [dcount()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/dcount-aggfunction) and [dcountif()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/dcountif-aggfunction)
+   docunt and dcountif now accept the additional accuracy parameter which is the base-2 logarithm of the number of cells in  [HyperLogLog](https://en.wikipedia.org/wiki/HyperLogLog).
 ## Case Insensitive Operators
 -[in~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/inoperator)
    `print t = 'a' in~ ('A', 'b', 'c')`
@@ -18,6 +21,7 @@
    Note: * is not currently a supported argument.
    ```
 - [take_anyif()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/take-anyif-aggfunction)
+- [dcount() and dcountif()]
 ## Operator
 - [top-nested](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/topnestedoperator)
 
