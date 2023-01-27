@@ -353,4 +353,9 @@ bool Zip::convertImpl(String & out, IParser::Pos & pos)
 
     return true;
 }
+
+bool Range::convertImpl(String & out, IParser::Pos & pos)
+{
+    return directMapping(out, pos, "kql_range");
+}
 }

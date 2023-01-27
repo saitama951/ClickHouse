@@ -4,18 +4,62 @@
 ## Improvement
 - [dcount()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/dcount-aggfunction) and [dcountif()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/dcountif-aggfunction)
    docunt and dcountif now accept the additional accuracy parameter which is the base-2 logarithm of the number of cells in  [HyperLogLog](https://en.wikipedia.org/wiki/HyperLogLog).
+## Functions
+- [range()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/rangefunction)  
+Difference from ADX:  
+   Return  empty array [] if range is empty, while ADX return NULL
+   The maxamum number of elements of array is 1000000 (limitation of clickhouse), 1,048,576  in ADX
+```
+print '-- range function int, int, int --';
+print range(1, 10, 2);
+print '-- range function int, int --';
+print range(1, 10);
+print '-- range function float, float, float --';
+print range(1.2, 10.3, 2.2);
+print '-- range function postive float, float, int --';
+print range(1.2, 10.3, 2);
+print '-- range function postive float, int, float --';
+print range(1.2, 10, 2.2);
+print '-- range function postive integer, int, float --';
+print range(1, 10, 2.2);
+print '-- range function postive intger, float, float --';
+print range(1, 10.5, 2.2);
+print '-- range function postive float, int, int --';
+print range(1.2, 10, 2);
+print '-- range function postive int, int, negative int --';
+print range(12, 3, -2);
+print '-- range function postive float, int, negative float --';
+print range(12.8, 3, -2.3);
+print '-- range function datetime, datetime, timespan --';
+print range(datetime('2001-01-01'), datetime('2001-01-02'), 5h);
+print '-- range function datetime, datetime, negative timespan --';
+print range(datetime('2001-01-03'), datetime('2001-01-02'), -5h);
+print '-- range function datetime, datetime --';
+print range(datetime('2001-01-01'), datetime('2001-01-02'));
+print '-- range function timespan, timespan, timespan --';
+print range(1h, 5h, 2h);
+print '-- range function timespan, timespan --';
+print range(1h, 5h);
+print '-- range function timespan, timespan, negative timespan --';
+print range(11h, 5h, -2h);
+print '-- range function float timespan, timespan, timespan --';
+print range(1.5h, 5h, 2h);
+print '-- range function endofday, endofday, timespan --';
+print range(endofday(datetime(2017-01-01 10:10:17)), endofday(datetime(2017-01-03 10:10:17)), 1d);
+```  
+
 ## Case Insensitive Operators
--[in~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/inoperator)
-   `print t = 'a' in~ ('A', 'b', 'c')`
-   `Customers | where FirstName in~ ((Customers | project FirstName | where FirstName == 'Peter'))`
--[!in~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/not-in-operator)
-   `print t = 'a' !in~ (dynamic(['A', 'b', 'c']))`
-   `Customers | where FirstName !in~ ('peter', 'apple')`
--[=~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/equals-operator)
-   `Customers | where FirstName =~ 'peter' and LastName =~ 'naRA'`
--[!~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/not-equals-operator)
-   `Customers | where FirstName !~ 'nEyMaR' and LastName =~ 'naRA'`
-## Aggregate Functions
+- [in~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/inoperator)  
+   `print t = 'a' in~ ('A', 'b', 'c')`  
+   `Customers | where FirstName in~ ((Customers | project FirstName | where FirstName == 'Peter'))`  
+- [!in~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/not-in-operator)  
+   `print t = 'a' !in~ (dynamic(['A', 'b', 'c']))`  
+   `Customers | where FirstName !in~ ('peter', 'apple')`  
+- [=~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/equals-operator)  
+   `Customers | where FirstName =~ 'peter' and LastName =~ 'naRA'`  
+- [!~](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/not-equals-operator)  
+   `Customers | where FirstName !~ 'nEyMaR' and LastName =~ 'naRA'`  
+## Aggregate Functions  
 - [take_any()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/take-any-aggfunction)
    ```
    Note: * is not currently a supported argument.
@@ -23,6 +67,9 @@
 - [take_anyif()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/take-anyif-aggfunction)
 - [dcount() and dcountif()]
 ## Operator
+- [range](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/rangeoperator)  
+   `range LastWeek from ago(7d) to now() step 1d`  
+   `range Steps from 1 to 8 step 3`  
 - [top-nested](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/topnestedoperator)
 
    ```
@@ -97,6 +144,7 @@
 - [kql_bin does not accept DateTime type]  
 - [KQL Phase 2 - totimespan should return null when convertion fails.]  
 - [reverse() with datetime and timespan arguments needs to be improved.]  
+- [String operator has throws exception when needle has white space or separator characters]  
 
 
 # December 7, 2022
