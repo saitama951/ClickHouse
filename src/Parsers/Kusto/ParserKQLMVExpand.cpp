@@ -53,10 +53,10 @@ bool ParserKQLMVExpand::parseColumnArrayExprs(ColumnArrayExprs & column_array_ex
 
     while (!pos->isEnd() && pos->type != TokenType::PipeMark && pos->type != TokenType::Semicolon)
     {
-        if(pos->type == TokenType::OpeningRoundBracket)
+        if (pos->type == TokenType::OpeningRoundBracket)
             ++bracket_count;
 
-        if(pos->type == TokenType::ClosingRoundBracket)
+        if (pos->type == TokenType::ClosingRoundBracket)
             --bracket_count;
 
         if (String(pos->begin,pos->end) == "=")
@@ -68,7 +68,7 @@ bool ParserKQLMVExpand::parseColumnArrayExprs(ColumnArrayExprs & column_array_ex
             expr_begin_pos = pos;
         }
 
-        auto addColumns = [&]
+        auto add_columns = [&]
         {
             column_array_expr = getExprFromToken(String(expr_begin_pos->begin, expr_end_pos->end), pos.max_depth);
 
@@ -110,7 +110,7 @@ bool ParserKQLMVExpand::parseColumnArrayExprs(ColumnArrayExprs & column_array_ex
                 expr_end_pos = pos;
                 --expr_end_pos;
             }
-            addColumns();
+            add_columns();
             expr_begin_pos = pos;
             expr_end_pos = pos;
             ++expr_begin_pos;
@@ -133,7 +133,7 @@ bool ParserKQLMVExpand::parseColumnArrayExprs(ColumnArrayExprs & column_array_ex
                 expr_end_pos = pos;
                 --expr_end_pos;
             }
-            addColumns();
+            add_columns();
             break;
         }
     }
@@ -194,19 +194,19 @@ bool ParserKQLMVExpand::genQuery(KQLMVExpand & kql_mv_expand, ASTPtr & select_no
     String cast_type_column_restore, cast_type_column_restore_name ;
     String row_count_str;
     String extra_columns;
-    String input = "dummy_input"; 
+    String input = "dummy_input";
     for (auto column : kql_mv_expand.column_array_exprs)
     {
         if (column.alias == column.column_array_expr)
             expand_str = expand_str.empty() ? String("ARRAY JOIN ") + column.alias : expand_str + "," + column.alias;
         else
         {
-            expand_str = expand_str.empty() ? std::format("ARRAY JOIN {} AS {} ",  column.column_array_expr, column.alias): expand_str + std::format(", {} AS {}", column.column_array_expr, column.alias);
+            expand_str = expand_str.empty() ? std::format("ARRAY JOIN {} AS {} ", column.column_array_expr, column.alias): expand_str + std::format(", {} AS {}", column.column_array_expr, column.alias);
             extra_columns = extra_columns + ", " + column.alias;
         }
 
         if (!column.to_type.empty())
-        {  
+        {
             cast_type_column_remove = cast_type_column_remove.empty() ? " Except " + column.alias : cast_type_column_remove + " Except " + column.alias ;
             String rename_str;
 
@@ -217,7 +217,7 @@ bool ParserKQLMVExpand::genQuery(KQLMVExpand & kql_mv_expand, ASTPtr & select_no
 
             cast_type_column_rename = cast_type_column_rename.empty() ? rename_str : cast_type_column_rename + "," + rename_str;
             cast_type_column_restore = cast_type_column_restore.empty() ? std::format(" Except {}_ali ", column.alias) : cast_type_column_restore + std::format(" Except {}_ali ", column.alias);
-            cast_type_column_restore_name =  cast_type_column_restore_name.empty() ? std::format("{0}_ali as {0}", column.alias ) :cast_type_column_restore_name + std::format(", {0}_ali as {0}", column.alias);
+            cast_type_column_restore_name = cast_type_column_restore_name.empty() ? std::format("{0}_ali as {0}", column.alias) : cast_type_column_restore_name + std::format(", {0}_ali as {0}", column.alias);
         }
 
         if (!kql_mv_expand.with_itemindex.empty())

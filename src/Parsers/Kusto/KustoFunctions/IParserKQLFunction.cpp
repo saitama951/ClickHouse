@@ -119,8 +119,8 @@ String IParserKQLFunction::generateUniqueIdentifier()
 
 String IParserKQLFunction::getArgument(const String & function_name, DB::IParser::Pos & pos, const ArgumentState argument_state)
 {
-    if (auto optionalArgument = getOptionalArgument(function_name, pos, argument_state))
-        return std::move(*optionalArgument);
+    if (auto optional_argument = getOptionalArgument(function_name, pos, argument_state))
+        return std::move(*optional_argument);
 
     throw Exception(std::format("Required argument was not provided in {}", function_name), ErrorCodes::NUMBER_OF_ARGUMENTS_DOESNT_MATCH);
 }
@@ -156,7 +156,7 @@ String IParserKQLFunction::getConvertedArgument(const String & fn_name, IParser:
         if (pos->type == TokenType::ClosingSquareBracket)
             --square_bracket_count;
 
-        if (!KQLOperators().convert(tokens, pos))
+        if (!KQLOperators::convert(tokens, pos))
         {
             if (pos->type == TokenType::BareWord)
             {

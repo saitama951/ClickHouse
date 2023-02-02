@@ -332,7 +332,7 @@ ASTPtr ClientBase::parseQuery(const char *& pos, const char * end, bool allow_mu
 
     const Dialect & dialect = settings.dialect;
 
-    auto begin = pos;
+    const auto * begin = pos;
 
     if (is_interactive || ignore_error)
     {
@@ -367,7 +367,7 @@ ASTPtr ClientBase::parseQuery(const char *& pos, const char * end, bool allow_mu
             {
                 res = parseQueryAndMovePosition(parser, pos, end, "", allow_multi_statements, max_length, settings.max_parser_depth);
             }
-            catch(...)
+            catch (...)
             {
                 pos = begin;
                 res = parseQueryAndMovePosition(kql_parser, begin, end, "", allow_multi_statements, max_length, settings.max_parser_depth);

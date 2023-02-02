@@ -22,7 +22,6 @@ namespace ErrorCodes
     extern const int ILLEGAL_COLUMN;
     extern const int ILLEGAL_TYPE_OF_ARGUMENT;
     extern const int NUMBER_OF_ARGUMENTS_DOESNT_MATCH;
-    extern const int TYPE_MISMATCH;
 }
 
 static constexpr size_t max_array_size_as_field = 1000000; // the value from ColumnArray.cpp
@@ -268,8 +267,10 @@ private:
 
         if (!res)
         {
-            throw Exception{
-                "Illegal columns " + column_ptrs[0]->getName() + " of argument of function " + getName(), ErrorCodes::ILLEGAL_COLUMN};
+            throw Exception
+            {
+                "Illegal columns " + column_ptrs[0]->getName() + " of argument of function " + getName(), ErrorCodes::ILLEGAL_COLUMN
+            };
         }
 
         return res;
@@ -295,9 +296,11 @@ private:
         for (size_t row_idx = 0; row_idx < input_rows_count; ++row_idx)
         {
             if (start < end_data[row_idx] && step == 0)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, the 3rd argument step can't be zero",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             if (step > 0 && start <= end_data[row_idx])
             {
@@ -312,9 +315,11 @@ private:
             }
 
             if (pre_values < total_values)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             total_values = pre_values;
             if (total_values > total_elements)
@@ -332,28 +337,38 @@ private:
         {
             if (step > 0)
             {
-                for (T st = start, ed = end_data[row_idx]; st <= ed; st += step)
+                T st = start;
+                T ed = end_data[row_idx];
+                while (st <= ed)
                 {
                     out_data[offset++] = st;
                     if (offset >= total_values)
                         break;
                     if (st > st + step)
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
+                    st += step;
                 }
             }
             else
             {
-                for (T st = start, ed = end_data[row_idx]; st >= ed; st += step)
+                T st = start;
+                T ed = end_data[row_idx];
+                while (st >= ed)
                 {
                     out_data[offset++] = st;
                     if (offset >= total_values)
                         break;
                     if (st < st + step)
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
+                    st += step;
                 }
             }
             out_offsets[row_idx] = offset;
@@ -384,9 +399,11 @@ private:
         for (size_t row_idx = 0; row_idx < input_rows_count; ++row_idx)
         {
             if (start_data[row_idx] < end_data[row_idx] && step == 0)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, the 3rd argument step can't be zero",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             if (step > 0 && start_data[row_idx] <= end_data[row_idx])
             {
@@ -401,9 +418,11 @@ private:
             }
 
             if (pre_values < total_values)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             total_values = pre_values;
             if (total_values > total_elements)
@@ -421,28 +440,38 @@ private:
         {
             if (step > 0)
             {
-                for (T st = start_data[row_idx], ed = end_data[row_idx]; st <= ed; st += step)
+                T st = start_data[row_idx];
+                T ed = end_data[row_idx];
+                while (st <= ed)
                 {
                     out_data[offset++] = st;
                     if (offset >= total_values)
                         break;
                     if (st > st + step)
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
+                    st += step;
                 }
             }
             else
             {
-                for (T st = start_data[row_idx], ed = end_data[row_idx]; st >= ed; st += step)
+                T st = start_data[row_idx];
+                T ed = end_data[row_idx];
+                while (st >= ed)
                 {
                     out_data[offset++] = st;
                     if (offset >= total_values)
                         break;
                     if (st < st + step)
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
+                    st += step;
                 }
             }
             out_offsets[row_idx] = offset;
@@ -473,9 +502,11 @@ private:
         for (size_t row_idx = 0; row_idx < input_rows_count; ++row_idx)
         {
             if (start < end_data[row_idx] && step_data[row_idx] == 0)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, the 3rd argument step can't be zero",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             if (step_data[row_idx] > 0 && start <= end_data[row_idx])
             {
@@ -490,9 +521,11 @@ private:
             }
 
             if (pre_values < total_values)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             total_values = pre_values;
             if (total_values > total_elements)
@@ -510,28 +543,38 @@ private:
         {
             if (step_data[row_idx] > 0)
             {
-                for (T st = start, ed = end_data[row_idx]; st <= ed; st += step_data[row_idx])
+                T st = start;
+                T ed = end_data[row_idx];
+                while (st <= ed)
                 {
                     out_data[offset++] = st;
                     if (offset >= total_values)
                         break;
                     if (st > st + step_data[row_idx])
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
+                    st += step_data[row_idx];
                 }
             }
             else
             {
-                for (T st = start, ed = end_data[row_idx]; st >= ed; st += step_data[row_idx])
+                T st = start;
+                T ed = end_data[row_idx];
+                while (st >= ed)
                 {
                     out_data[offset++] = st;
                     if (offset >= total_values)
                         break;
                     if (st < st + step_data[row_idx])
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
+                    st += step_data[row_idx];
                 }
             }
             out_offsets[row_idx] = offset;
@@ -566,9 +609,11 @@ private:
         for (size_t row_idx = 0; row_idx < input_rows_count; ++row_idx)
         {
             if (start_data[row_idx] < end_start[row_idx] && step_data[row_idx] == 0)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, the 3rd argument step can't be zero",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             if (step_data[row_idx] > 0 && start_data[row_idx] <= end_start[row_idx])
             {
@@ -583,9 +628,11 @@ private:
             }
 
             if (pre_values < total_values)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             total_values = pre_values;
             if (total_values > total_elements)
@@ -603,28 +650,38 @@ private:
         {
             if (step_data[row_idx] > 0)
             {
-                for (auto st = start_data[row_idx], ed = end_start[row_idx]; st <= ed; st += step_data[row_idx])
+                auto st = start_data[row_idx];
+                auto ed = end_start[row_idx];
+                while (st <= ed)
                 {
                     out_data[offset++] = st;
                     if (offset >= total_values)
                         break;
                     if (st > st + step_data[row_idx])
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
+                    st += step_data[row_idx];
                 }
             }
             else
             {
-                for (auto st = start_data[row_idx], ed = end_start[row_idx]; st >= ed; st += step_data[row_idx])
+                auto st = start_data[row_idx];
+                auto ed = end_start[row_idx];
+                while (st >= ed)
                 {
                     out_data[offset++] = st;
                     if (offset >= total_values)
                         break;
                     if (st < st + step_data[row_idx])
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
+                    st += step_data[row_idx];
                 }
             }
             out_offsets[row_idx] = offset;
@@ -640,8 +697,8 @@ private:
         const auto & end_col = arguments[1].column;
         Int64 step_value = 3600000000000;
 
-        auto & start_data = typeid_cast<const ColumnDecimal<DateTime64> &>(*start_col).getData();
-        auto & end_data = typeid_cast<const ColumnDecimal<DateTime64> &>(*end_col).getData();
+        const auto & start_data = typeid_cast<const ColumnDecimal<DateTime64> &>(*start_col).getData();
+        const auto & end_data = typeid_cast<const ColumnDecimal<DateTime64> &>(*end_col).getData();
 
         //The maximum number of values in KQL is 1,048,576 (2^20).
         size_t total_elements = max_elements < 1048576 ? max_elements : 1048576;
@@ -656,9 +713,11 @@ private:
                 step_value = arguments[2].column->getInt(row_idx);
 
             if (start_data[row_idx] < end_data[row_idx] && step_value == 0)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, the 3rd argument step can't be zero",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             if (step_value > 0 && start_data[row_idx] <= end_data[row_idx])
             {
@@ -673,9 +732,11 @@ private:
             }
 
             if (pre_values < total_values)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             total_values = pre_values;
             if (total_values > total_elements)
@@ -700,9 +761,11 @@ private:
                     if (offset >= total_values)
                         break;
                     if (st > st + step_value)
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
                 }
             }
             else
@@ -713,9 +776,11 @@ private:
                     if (offset >= total_values)
                         break;
                     if (st < st + step_value)
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
                 }
             }
             out_offsets[row_idx] = offset;
@@ -730,8 +795,8 @@ private:
         const auto & end_col = arguments[1].column;
         Int64 step_value = 3600000000000;
 
-        auto & start_data = typeid_cast<const ColumnVector<Int64> &>(*start_col).getData();
-        auto & end_data = typeid_cast<const ColumnVector<Int64> &>(*end_col).getData();
+        const auto & start_data = typeid_cast<const ColumnVector<Int64> &>(*start_col).getData();
+        const auto & end_data = typeid_cast<const ColumnVector<Int64> &>(*end_col).getData();
 
         //The maximum number of values in KQL is 1,048,576 (2^20).
         size_t total_elements = max_elements < 1048576 ? max_elements : 1048576;
@@ -746,9 +811,11 @@ private:
                 step_value = arguments[2].column->getInt(row_idx);
 
             if (start_data[row_idx] < end_data[row_idx] && step_value == 0)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, the 3rd argument step can't be zero",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             if (step_value > 0 && start_data[row_idx] <= end_data[row_idx])
             {
@@ -762,9 +829,11 @@ private:
                                 :  static_cast<size_t>((start_data[row_idx] - end_data[row_idx]) / (-step_value) + 1);
             }
             if (pre_values < total_values)
-                throw Exception{
+                throw Exception
+                {
                     "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                    ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                    ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                };
 
             total_values = pre_values;
             if (total_values > total_elements)
@@ -791,9 +860,11 @@ private:
                     if (current_offset >= total_values)
                         break;
                     if (st > st + step_value)
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
                 }
             }
             else
@@ -805,9 +876,11 @@ private:
                     if (current_offset >= total_values)
                         break;
                     if (st < st + step_value)
-                        throw Exception{
+                        throw Exception
+                        {
                             "A call to function " + getName() + " overflows, investigate the values of arguments you are passing",
-                            ErrorCodes::ARGUMENT_OUT_OF_BOUND};
+                            ErrorCodes::ARGUMENT_OUT_OF_BOUND
+                        };
                 }
             }
             out_offsets[row_idx] = current_offset;

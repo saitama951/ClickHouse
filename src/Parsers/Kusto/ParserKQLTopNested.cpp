@@ -178,7 +178,7 @@ String ParserKQLTopNested ::calculateTopNestedWithOthers(const TopNestedClauses 
         {
             auto other_values = top_nested_clauses[i].agg_alias;
             String all_others_table = std::format("tb{}_all_others AS (SELECT ", i);
-            String seperator;
+            String separator;
             String first_list;
             for (size_t j = 0; j < i; ++j)
             {
@@ -190,22 +190,22 @@ String ParserKQLTopNested ::calculateTopNestedWithOthers(const TopNestedClauses 
             all_others_table += first_list;
             for (size_t j = i; j < size; ++j)
             {
-                seperator = (i == 0) ? "" : ",";
+                separator = (i == 0) ? "" : ",";
                 if (i == 0)
                 {
-                    seperator = (j == 0) ? "" : ",";
+                    separator = (j == 0) ? "" : ",";
                 }
                 else
-                    seperator = ",";
+                    separator = ",";
                 if (top_nested_clauses[j].others.empty())
                     all_others_table
                         = all_others_table
                         + std::format(
-                              "{} NULL AS {} , NULL AS {}", seperator, top_nested_clauses[j].expr_alias, top_nested_clauses[j].agg_alias);
+                              "{} NULL AS {} , NULL AS {}", separator, top_nested_clauses[j].expr_alias, top_nested_clauses[j].agg_alias);
                 else
                     all_others_table = all_others_table
                         + std::format("{} {} AS {} , {}_value AS {}",
-                                      seperator,
+                                      separator,
                                       getExprFromToken(top_nested_clauses[j].others, max_depth),
                                       top_nested_clauses[j].expr_alias,
                                       other_values,
@@ -221,12 +221,12 @@ String ParserKQLTopNested ::calculateTopNestedWithOthers(const TopNestedClauses 
         String last_others_table = std::format("tb{}_others", size - 1);
         query = query
             + std::format(
-                    ", last_query AS ( SELECT {0} FROM {1} UNION ALL SELECT {2} FROM {3}",
+                    ", last_query AS (SELECT {0} FROM {1} UNION ALL SELECT {2} FROM {3}",
                     last_select_list,
                     last_normal_table,
                     last_others_list,
                     last_others_table);
-        if (size > 1 )
+        if (size > 1)
         {
             for (size_t i = 0; i < size - 1; ++i)
             {
@@ -418,7 +418,7 @@ bool ParserKQLTopNested ::parseImpl(Pos & pos, ASTPtr & node, Expected & expecte
 
     auto with_node = select_node->as<ASTSelectQuery>()->with();
 
-    auto with_elem = with_node->children[0]->as<ASTWithElement>();
+    auto * with_elem = with_node->children[0]->as<ASTWithElement>();
 
     auto sub_select = with_elem->children[0]->children[0]->children[0]->children[0];
     if (!setSubQuerySource(sub_select, node, false, false, ""))

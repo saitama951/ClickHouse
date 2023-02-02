@@ -24,6 +24,7 @@ namespace ErrorCodes
     extern const int ILLEGAL_TYPE_OF_ARGUMENT;
     extern const int ARGUMENT_OUT_OF_BOUND;
     extern const int DECIMAL_OVERFLOW;
+    extern const int LOGICAL_ERROR;
 }
 
 
@@ -570,7 +571,7 @@ private:
             if constexpr (execution_error_policy == ExecutionErrorPolicy::Null)
                 return result_col;
             else if constexpr (execution_error_policy == ExecutionErrorPolicy::Throw)
-                throw Exception(ErrorCodes::ARGUMENT_OUT_OF_BOUND, "Value for second argument of function {} must be positive.",  getName());
+                throw Exception(ErrorCodes::ARGUMENT_OUT_OF_BOUND, "Value for second argument of function {} must be positive.", getName());
         }
 
         const auto scale_multiplier = DecimalUtils::scaleMultiplier<DateTime64>(scale);

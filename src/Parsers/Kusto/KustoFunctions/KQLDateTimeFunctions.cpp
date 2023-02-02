@@ -11,6 +11,7 @@
 
 namespace
 {
+
 bool mapToEndOfPeriod(std::string & out, DB::IParser::Pos & pos, const std::string_view period)
 {
     const auto function_name = DB::IParserKQLFunction::getKQLFunctionName(pos);
@@ -47,6 +48,7 @@ namespace DB::ErrorCodes
 extern const int BAD_ARGUMENTS;
 extern const int ILLEGAL_TYPE_OF_ARGUMENT;
 extern const int SYNTAX_ERROR;
+extern const int LOGICAL_ERROR;
 }
 
 namespace DB
@@ -81,11 +83,11 @@ bool DatetimeAdd::convertImpl(String & out, IParser::Pos & pos)
 
     const auto offset = getArgument(fn_name, pos);
     const auto datetime = getArgument(fn_name, pos);
-    
+
     out = std::format("date_add({}, {}, {})",period,offset,datetime);
 
     return true;
-   
+
 };
 
 bool DatetimePart::convertImpl(String & out, IParser::Pos & pos)
@@ -110,10 +112,10 @@ bool DatetimePart::convertImpl(String & out, IParser::Pos & pos)
          date = getConvertedArgument(fn_name, pos);
     }
     String format;
-    
+
     if (part == "YEAR")
         format = "%G";
-    else if (part == "QUARTER") 
+    else if (part == "QUARTER")
         format = "%Q";
     else if (part == "MONTH")
         format = "%m";
@@ -129,7 +131,7 @@ bool DatetimePart::convertImpl(String & out, IParser::Pos & pos)
         format = "%M";
     else if (part == "SECOND")
         format = "%S";
-    else 
+    else
         throw Exception("Unexpected argument " + part + " for " + fn_name, ErrorCodes::SYNTAX_ERROR);
 
     out = std::format("formatDateTime({}, '{}')", date, format);
@@ -204,14 +206,14 @@ bool FormatDateTime::convertImpl(String & out, IParser::Pos & pos)
     auto format = getConvertedArgument(fn_name, pos);
     trim(format);
 
-    //remove quotes and end space from format argument. 
+    //remove quotes and end space from format argument.
     if (format.front() == '\"' || format.front() == '\'')
     {
         format.erase( 0, 1); // erase the first quote
         format.erase( format.size() - 1); // erase the last quote
     }
 
-    std::vector<String> res;    
+    std::vector<String> res;
     getTokens(format, res);
     std::string::size_type i = 0;
     size_t decimal =0;
@@ -220,18 +222,18 @@ bool FormatDateTime::convertImpl(String & out, IParser::Pos & pos)
         char c = format[i];
         if (!isalpha(c))
         {
-            //delimeter 
+            //delimiter
             if (c == ' ' || c == '-' || c == '_' || c == '[' || c == ']' || c == '/' || c == ',' || c == '.' || c == ':')
                 formatspecifier = formatspecifier + c;
             else
-                throw Exception("Invalid format delimeter in function:" + fn_name, ErrorCodes::SYNTAX_ERROR);
+                throw Exception("Invalid format delimiter in function:" + fn_name, ErrorCodes::SYNTAX_ERROR);
             ++i;
         }
         else
         {
             //format specifier
             String arg = res.back();
-           
+
             if (arg == "y" || arg == "yy")
               formatspecifier = formatspecifier + "%y";
             else if (arg == "yyyy")
@@ -254,23 +256,23 @@ bool FormatDateTime::convertImpl(String & out, IParser::Pos & pos)
                 formatspecifier = formatspecifier + "%p";
             else if (arg.starts_with('f') || arg.starts_with('F'))
                 decimal = arg.size();
-            else 
+            else
                 throw Exception("Format specifier " + arg + " in function:" + fn_name + "is not supported", ErrorCodes::SYNTAX_ERROR);
             res.pop_back();
             i = i + arg.size();
-        } 
+        }
     }
     if (decimal > 0 && formatspecifier.find('.') != String::npos)
-    {   
-    
+    {
+
     out = std::format("concat("
-        "substring(toString(formatDateTime( {0} , '{1}')),1, position(toString(formatDateTime({0},'{1}')),'.')) ,"
+        "substring(toString(formatDateTime({0}, '{1}')), 1, position(toString(formatDateTime({0}, '{1}')), '.')) ,"
         "substring(substring(toString({0}), position(toString({0}),'.')+1),1,{2}),"
-        "substring(toString(formatDateTime( {0},'{1}')), position(toString(formatDateTime({0},'{1}')),'.')+1 ,length (toString(formatDateTime({0},'{1}'))))) ", datetime, formatspecifier,decimal);
+        "substring(toString(formatDateTime({0}, '{1}')), position(toString(formatDateTime({0}, '{1}')), '.') + 1, length(toString(formatDateTime({0}, '{1}')))))", datetime, formatspecifier, decimal);
     }
     else
-        out = std::format("formatDateTime( {0},'{1}')",datetime, formatspecifier);
-    
+        out = std::format("formatDateTime({0}, '{1}')", datetime, formatspecifier);
+
     return true;
 }
 
@@ -468,7 +470,7 @@ bool UnixTimeMillisecondsToDateTime::convertImpl(String & out, IParser::Pos & po
     if (fn_name.empty())
         return false;
 
-    const auto value = getArgument(fn_name, pos);    
+    const auto value = getArgument(fn_name, pos);
     out = std::format("kql_todatetime(fromUnixTimestamp64Milli({}, 'UTC'))", value);
 
     return true;
@@ -480,7 +482,7 @@ bool UnixTimeNanosecondsToDateTime::convertImpl(String & out, IParser::Pos & pos
     if (fn_name.empty())
         return false;
 
-    const auto value = getArgument(fn_name, pos);     
+    const auto value = getArgument(fn_name, pos);
     out = std::format("kql_todatetime(fromUnixTimestamp64Nano({}, 'UTC'))", value);
 
     return true;
