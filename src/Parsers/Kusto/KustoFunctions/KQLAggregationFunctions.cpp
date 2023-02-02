@@ -162,7 +162,7 @@ bool MakeListWithNulls::convertImpl(String & out, IParser::Pos & pos)
     ++pos;
     const auto column_name = getConvertedArgument(fn_name, pos);
     out = "arrayConcat(groupArray(" + column_name + "), arrayMap(x -> null, range(0, toUInt32(count(*)-length(  groupArray(" + column_name
-        + ") )),1)))";
+        + "))),1)))";
     return true;
 }
 
@@ -264,7 +264,7 @@ bool Percentilew::convertImpl(String & out, IParser::Pos & pos)
     String value = getConvertedArgument(fn_name, pos);
     trim(value);
 
-    out = "quantileExactWeighted( " + value + "/100)(" + bucket_column + "," + frequency_column + ")";
+    out = "quantileExactWeighted(" + value + "/100)(" + bucket_column + "," + frequency_column +")";
     return true;
 }
 
@@ -293,7 +293,7 @@ bool Percentiles::convertImpl(String & out, IParser::Pos & pos)
         else
             ++pos;
     }
-    out = expr + " )(" + column_name + ")";
+    out = expr + ")("+ column_name +")";
     return true;
 }
 
@@ -353,7 +353,7 @@ bool Percentilesw::convertImpl(String & out, IParser::Pos & pos)
     String frequency_column = getConvertedArgument(fn_name, pos);
     trim(frequency_column);
 
-    String expr = "quantilesExactWeighted( ";
+    String expr = "quantilesExactWeighted(";
     String value;
 
     while (pos->type != TokenType::ClosingRoundBracket)

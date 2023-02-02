@@ -30,11 +30,11 @@ public:
     bool isSuitableForShortCircuitArgumentsExecution(const DataTypesWithConstInfo & /*arguments*/) const override { return true; }
     bool isVariadic() const override { return true; }
     bool useDefaultImplementationForConstants() const override { return true; }
-    
+
     bool useDefaultImplementationForNulls() const override { return false; }
     bool useDefaultImplementationForNothing() const override { return false; }
 
-    bool isDataTypeBoolORBoolConvertible(std::string_view datatype_name) const;
+    static bool isDataTypeBoolORBoolConvertible(std::string_view datatype_name);
 
     DataTypePtr getReturnTypeImpl(const DataTypes & arguments) const override;
     ColumnPtr executeImpl(const ColumnsWithTypeAndName & arguments, const DataTypePtr & result_type, size_t input_rows_count) const override;
@@ -43,11 +43,13 @@ private:
     ContextPtr context;
 };
 
-bool FunctionKqlArrayIif::isDataTypeBoolORBoolConvertible(std::string_view datatype_name) const
+bool FunctionKqlArrayIif::isDataTypeBoolORBoolConvertible(std::string_view datatype_name)
 {
-    if(datatype_name.find("Int") != datatype_name.npos || datatype_name.find("Float") != datatype_name.npos
-    || datatype_name.find("Decimal") != datatype_name.npos || datatype_name.find("Bool") != datatype_name.npos)
-    return true;
+    if (datatype_name.find("Int") != datatype_name.npos ||
+        datatype_name.find("Float") != datatype_name.npos ||
+        datatype_name.find("Decimal") != datatype_name.npos ||
+        datatype_name.find("Bool") != datatype_name.npos)
+        return true;
     return false;
 }
 
@@ -58,7 +60,7 @@ DataTypePtr FunctionKqlArrayIif::getReturnTypeImpl(const DataTypes & arguments) 
         throw Exception("First argument for function " + getName() + " must be an array but it has type "
                         + arguments[0]->getName() + ".", ErrorCodes::ILLEGAL_TYPE_OF_ARGUMENT);
 
-    DataTypePtr nested_type1, nested_type2; 
+    DataTypePtr nested_type1, nested_type2;
 
     const auto * array_type1 = typeid_cast<const DataTypeArray *>(arguments[1].get());
     if (!array_type1)
@@ -82,17 +84,17 @@ DataTypePtr FunctionKqlArrayIif::getReturnTypeImpl(const DataTypes & arguments) 
 }
 
 ColumnPtr FunctionKqlArrayIif::executeImpl(const ColumnsWithTypeAndName & arguments, const DataTypePtr & result_type, const size_t input_rows_count) const
-{   
+{
     const DataTypePtr & elem_type = static_cast<const DataTypeArray &>(*result_type).getNestedType();
     auto out = ColumnArray::create(elem_type->createColumn());
 
-    if(input_rows_count == 0)
+    if (input_rows_count == 0)
         return out;
 
     IColumn & out_data = out->getData();
     IColumn::Offsets & out_offsets = out->getOffsets();
     size_t total_length = 0;
-    for(size_t i = 0; i < input_rows_count; i++)
+    for (size_t i = 0; i < input_rows_count; i++)
     {
         Field array0;
         arguments[0].column->get(i, array0);
@@ -103,27 +105,27 @@ ColumnPtr FunctionKqlArrayIif::executeImpl(const ColumnsWithTypeAndName & argume
     out_offsets.resize(input_rows_count);
     IColumn::Offset current_offset = 0;
 
-    for(size_t i = 0; i < input_rows_count; i++)
+    for (size_t i = 0; i < input_rows_count; i++)
     {
         Field array0;
         arguments[0].column->get(i, array0);
         size_t len0 = array0.get<Array>().size();
-        for(size_t k = 0; k < len0; k++)
-        { 
-            if(!isDataTypeBoolORBoolConvertible(array0.get<Array>().at(k).getTypeName()))
+        for (size_t k = 0; k < len0; k++)
+        {
+            if (!isDataTypeBoolORBoolConvertible(array0.get<Array>().at(k).getTypeName()))
                 out_data.insert(Field());
             else
             {
                 Field temp;
                 std::string dump = array0.get<Array>().at(k).dump();
-                dump = dump.substr(dump.find("_") + 1);
-                if(dump == "0" || dump == "-0")
+                dump = dump.substr(dump.find('_') + 1);
+                if (dump == "0" || dump == "-0")
                     arguments[2].column->get(i, temp);
                 else
                     arguments[1].column->get(i, temp);
-                if(temp.getTypeName() == "Array")
+                if (temp.getTypeName() == "Array")
                 {
-                    if(k < temp.get<Array>().size())
+                    if (k < temp.get<Array>().size())
                         out_data.insert(temp.get<Array>().at(k));
                     else
                         out_data.insert(Field());
