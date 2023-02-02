@@ -361,7 +361,7 @@ String ParserKQLBase::getExprFromToken(Pos & pos)
         }
     }
 
-    for (auto token : columns)
+    for (auto const & token : columns)
         res = res.empty() ? token : res + "," + token;
     return res;
 }
