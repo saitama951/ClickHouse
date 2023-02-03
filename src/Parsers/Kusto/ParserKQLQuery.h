@@ -17,6 +17,13 @@ public:
     static bool parseSQLQueryByString(ParserPtr && parser, String & query, ASTPtr & select_node, int32_t max_depth);
     bool parseByString(const String expr, ASTPtr & node, const uint32_t max_depth);
     virtual bool updatePipeLine (OperationsPos & /*operations*/, String & /*query*/) {return false;}
+    static std::unordered_set<String> columns_set;
+    static bool has_column(const String & column)
+    {
+        if (columns_set.empty())
+            return true;
+        return columns_set.contains(column);
+    }
 };
 
 class ParserKQLQuery : public IParserBase

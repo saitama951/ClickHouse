@@ -65,6 +65,8 @@ std::unordered_map<std::string, ParserKQLQuery::KQLOperatorDataFlowState> kql_pa
     {"range", {"range", false, true, false, 3}},
 };
 
+std::unordered_set<String> ParserKQLBase::columns_set = {};
+
 bool ParserKQLBase::parseByString(const String expr, ASTPtr & node, const uint32_t max_depth)
 {
     Expected expected;
