@@ -1,6 +1,8 @@
 ## KQL implemented features  
 
 # January XX, 2023
+## bug fixed
+- [parse_url() may not return the correct hostname and port when a username:password@ is present]
 ## Functions
 - [range()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/rangefunction)  
 Difference from ADX:  
