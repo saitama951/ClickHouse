@@ -1,6 +1,7 @@
 ## KQL implemented features  
+# February 26, 2023
 
-# January XX, 2023
+# January 26, 2023
 ## Functions
 - [range()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/rangefunction)  
 Difference from ADX:  
