@@ -142,9 +142,9 @@ String genEqOpExprCis(std::vector<String> & tokens, DB::IParser::Pos & token_pos
     new_expr += "lower(" + tokens.back() + ")";
     new_expr += ch_op;
     ++token_pos;
-    new_expr += " lower(" + DB::String(token_pos->begin, token_pos->end) + ")" + " ";
-    tokens.pop_back();
+    new_expr += " lower(" + DB::IParserKQLFunction::kqlCallToExpression("tostring", {DB::String(token_pos->begin, token_pos->end)}, token_pos.max_depth) + ")" + " ";
 
+    tokens.pop_back();
     return new_expr;
 }
 

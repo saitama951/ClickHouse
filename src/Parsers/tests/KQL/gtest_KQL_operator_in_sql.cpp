@@ -101,10 +101,10 @@ INSTANTIATE_TEST_SUITE_P(ParserKQLQuery_operator_in_sql, ParserTest,
         },
         {
             "select * from kql(Customers | where FirstName =~ 'peter' and LastName =~ 'naRA')",
-            "SELECT *\nFROM\n(\n    SELECT *\n    FROM Customers\n    WHERE (lower(FirstName) = lower('peter')) AND (lower(LastName) = lower('naRA'))\n)"
+            "SELECT *\nFROM\n(\n    SELECT *\n    FROM Customers\n    WHERE (lower(FirstName) = lower(ifNull(kql_tostring('peter'), ''))) AND (lower(LastName) = lower(ifNull(kql_tostring('naRA'), '')))\n)"
         },
         {
             "select * from kql(Customers | where FirstName !~ 'nEyMaR' and LastName =~ 'naRA')",
-            "SELECT *\nFROM\n(\n    SELECT *\n    FROM Customers\n    WHERE (lower(FirstName) != lower('nEyMaR')) AND (lower(LastName) = lower('naRA'))\n)"
+            "SELECT *\nFROM\n(\n    SELECT *\n    FROM Customers\n    WHERE (lower(FirstName) != lower(ifNull(kql_tostring('nEyMaR'), ''))) AND (lower(LastName) = lower(ifNull(kql_tostring('naRA'), '')))\n)"
         }
 })));
