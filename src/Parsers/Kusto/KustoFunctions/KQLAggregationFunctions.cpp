@@ -67,8 +67,14 @@ bool DCount::convertImpl(String & out, IParser::Pos & pos)
         return false;
     ++pos;
     String value = getConvertedArgument(fn_name, pos);
-
-    out = "count ( DISTINCT " + value + " )";
+    if (pos->type == TokenType::Comma)
+    {
+        ++pos;
+        const auto accuracy = getConvertedArgument(fn_name, pos);
+        out = "count(DISTINCT " + value + " , " + accuracy + ")";
+    }
+    else
+        out = "count(DISTINCT " + value + ")";
     return true;
 }
 
@@ -82,7 +88,14 @@ bool DCountIf::convertImpl(String & out, IParser::Pos & pos)
     String value = getConvertedArgument(fn_name, pos);
     ++pos;
     String condition = getConvertedArgument(fn_name, pos);
-    out = "countIf ( DISTINCT " + value + " , " + condition + " )";
+    if (pos->type == TokenType::Comma)
+    {
+        ++pos;
+        const auto accuracy = getConvertedArgument(fn_name, pos);
+        out = "count(DISTINCT " + value + " , " + condition + " , " + accuracy + ")";
+    }
+    else
+        out = "countIf(DISTINCT " + value + " , " + condition + ")";
     return true;
 }
 
@@ -251,7 +264,7 @@ bool Percentilew::convertImpl(String & out, IParser::Pos & pos)
     String value = getConvertedArgument(fn_name, pos);
     trim(value);
 
-    out = "quantileExactWeighted(" + value + "/100)(" + bucket_column + "," + frequency_column +")";
+    out = "quantileExactWeighted(" + value + "/100)(" + bucket_column + "," + frequency_column + ")";
     return true;
 }
 
@@ -280,7 +293,7 @@ bool Percentiles::convertImpl(String & out, IParser::Pos & pos)
         else
             ++pos;
     }
-    out = expr + ")("+ column_name +")";
+    out = expr + ")(" + column_name + ")";
     return true;
 }
 
