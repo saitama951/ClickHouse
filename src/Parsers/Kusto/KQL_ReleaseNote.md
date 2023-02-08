@@ -1,6 +1,9 @@
 ## KQL implemented features  
 
 # January XX, 2023
+## Improvement
+- [dcount()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/dcount-aggfunction) and [dcountif()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/dcountif-aggfunction)
+   docunt and dcountif now accept the additional accuracy parameter which is the base-2 logarithm of the number of cells in  [HyperLogLog](https://en.wikipedia.org/wiki/HyperLogLog).
 ## Functions
 - [range()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/rangefunction)  
 Difference from ADX:  
@@ -62,6 +65,7 @@ print range(endofday(datetime(2017-01-01 10:10:17)), endofday(datetime(2017-01-0
    Note: * is not currently a supported argument.
    ```
 - [take_anyif()](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/take-anyif-aggfunction)
+- [dcount() and dcountif()]
 ## Operator
 - [range](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/rangeoperator)  
    `range LastWeek from ago(7d) to now() step 1d`  
