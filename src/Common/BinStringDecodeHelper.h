@@ -13,19 +13,7 @@ static void inline hexStringDecode(const char * pos, const char * end, char *& o
         ++out;
         ++pos;
     }
-    if constexpr (std::endian::native == std::endian::little)
-    {
-
-    	while (pos < end)
-        {
-        	*out = unhex2(pos);
-                 pos += word_size;
-                 ++out;
-        }
-        *out = '\0';
-        ++out;
-    }
-    else
+    if constexpr (std::endian::native == std::endian::big)
     {
         auto *p = const_cast<char *>(pos);
         int start_pos = 0;
@@ -39,17 +27,16 @@ static void inline hexStringDecode(const char * pos, const char * end, char *& o
   
   	       ++start_pos;
            --end_pos;
-
         }
-        while (pos < end)
-        {
-           *out = unhex2(pos);
-            pos += word_size;
-            ++out;
-         }
-         *out = '\0';
-         ++out;
     }
+    while (pos < end)
+    {
+        *out = unhex2(pos);
+         pos += word_size;
+         ++out;
+     }
+     *out = '\0';
+     ++out;
 }
 
 static void inline binStringDecode(const char * pos, const char * end, char *& out)
