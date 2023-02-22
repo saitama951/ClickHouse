@@ -37,7 +37,7 @@ static void inline hexStringDecode(const char * pos, const char * end, char *& o
            p[end_pos] ^= p[start_pos];
            p[start_pos] ^= p[end_pos];
   
-  	   ++start_pos;
+  	       ++start_pos;
            --end_pos;
 
         }
