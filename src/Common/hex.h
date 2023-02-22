@@ -107,9 +107,16 @@ inline UInt8 unhex(char c)
 
 inline UInt8 unhex2(const char * data)
 {
-    return
+    if(std::endian::native == std::endian::little)
+    {
+        return
           static_cast<UInt8>(unhex(data[0])) * 0x10
         + static_cast<UInt8>(unhex(data[1]));
+
+    }
+    return
+          static_cast<UInt8>(unhex(data[0]))
+        + static_cast<UInt8>(unhex(data[1])) * 0x10;
 }
 
 inline UInt16 unhex4(const char * data)
