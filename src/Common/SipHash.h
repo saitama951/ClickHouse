@@ -17,7 +17,9 @@
 #include <string>
 #include <type_traits>
 #include <Core/Defines.h>
+#include <base/IPv4andIPv6.h>
 #include <base/extended_types.h>
+#include <base/strong_typedef.h>
 #include <base/types.h>
 #include <base/unaligned.h>
 #include <Common/Exception.h>
@@ -29,6 +31,61 @@ namespace ErrorCodes
 {
     extern const int LOGICAL_ERROR;
 }
+
+template <typename T>
+struct TransformToLittleEndian
+{
+    T operator()(const T & x) const noexcept
+    {
+        static_assert(std::is_scalar_v<T>);
+
+        auto rev_x = x;
+        auto * start = reinterpret_cast<std::byte *>(&rev_x);
+        auto * end = start + sizeof(T);
+        std::reverse(start, end);
+
+        return rev_x;
+    }
+};
+
+template <size_t Bits, typename Signed>
+struct TransformToLittleEndian<wide::integer<Bits, Signed>>
+{
+    wide::integer<Bits, Signed> operator()(const wide::integer<Bits, Signed> & x) const noexcept
+    {
+        auto transformed = x;
+        std::ranges::reverse(transformed.items);
+        std::ranges::transform(transformed.items, std::begin(transformed.items), std::byteswap<typename wide::integer<Bits, Signed>::base_type>);
+        return transformed;
+    }
+};
+
+template <>
+struct TransformToLittleEndian<IPv6>
+{
+    IPv6 operator()(const IPv6 & x) const noexcept
+    {
+        return IPv6(TransformToLittleEndian<IPv6::UnderlyingType>()(x.toUnderType()));
+    }
+};
+
+template <typename T, typename Tag>
+struct TransformToLittleEndian<StrongTypedef<T, Tag>>
+{
+    StrongTypedef<T, Tag> operator()(const StrongTypedef<T, Tag> & x) const noexcept
+    {
+        return StrongTypedef<T, Tag>(TransformToLittleEndian<typename StrongTypedef<T, Tag>::UnderlyingType>()(x.toUnderType()));
+    }
+};
+
+template <typename A, typename B>
+struct TransformToLittleEndian<std::pair<A, B>>
+{
+    std::pair<A, B> operator()(const std::pair<A, B> & x) const noexcept
+    {
+        return {TransformToLittleEndian<A>()(x.first), TransformToLittleEndian<B>()(x.second)};
+    }
+};
 }
 
 #define SIPROUND                                                  \
@@ -47,6 +104,12 @@ namespace ErrorCodes
 #else
 #define CURRENT_BYTES_IDX(i) (i)
 #endif
+
+template <typename T>
+struct is_array_class : public std::false_type {};
+
+template <typename T, size_t N>
+struct is_array_class<std::array<T, N>> : public std::true_type {};
 
 class SipHash
 {
@@ -161,15 +224,21 @@ public:
         }
     }
 
-    template <typename T>
+    template <typename Transform = void, typename T>
     ALWAYS_INLINE void update(const T & x)
     {
         if constexpr (std::endian::native == std::endian::big)
         {
-            T rev_x = x;
-            char *start = reinterpret_cast<char *>(&rev_x);
-            char *end = start + sizeof(T);
-            std::reverse(start, end);
+            static constexpr auto instantiate_transform = std::invoke(
+                []()
+                {
+                    if constexpr (!std::is_same_v<Transform, void>)
+                        return Transform();
+                    else
+                        return DB::TransformToLittleEndian<T>();
+                });
+
+            const auto rev_x = instantiate_transform(x);
             update(reinterpret_cast<const char *>(&rev_x), sizeof(rev_x)); /// NOLINT
         }
         else
@@ -210,6 +279,7 @@ public:
     }
 
     template <typename T>
+    requires (is_array_class<T>::value || is_big_int_v<T>)
     ALWAYS_INLINE void get128(T & dst)
     {
         static_assert(sizeof(T) == 16);
@@ -227,6 +297,12 @@ public:
         UInt128 res;
         get128(res);
         return res;
+    }
+
+    std::pair<UInt64, UInt64> get128LoHi()
+    {
+        finalize();
+        return { v0 ^ v1, v2 ^ v3 };
     }
 
     UInt128 get128Reference()
