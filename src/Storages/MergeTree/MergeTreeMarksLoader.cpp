@@ -154,7 +154,7 @@ MarkCache::MappedPtr MergeTreeMarksLoader::loadMarksImpl()
         {
             reader->readStrict(
                 reinterpret_cast<char *>(plain_marks.data() + i * columns_in_mark), columns_in_mark * sizeof(MarkInCompressedFile));
-            readIntBinary(granularity, *reader);
+            readBinaryLittleEndian(granularity, *reader);
             ++i;
         }
 
