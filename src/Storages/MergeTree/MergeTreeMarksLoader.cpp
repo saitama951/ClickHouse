@@ -167,6 +167,16 @@ MarkCache::MappedPtr MergeTreeMarksLoader::loadMarksImpl()
         }
     }
 
+#if __BYTE_ORDER == __BIG_ENDIAN
+    std::ranges::for_each(
+        plain_marks,
+        [](auto & plain_mark)
+        {
+            plain_mark.offset_in_compressed_file = std::byteswap(plain_mark.offset_in_compressed_file);
+            plain_mark.offset_in_decompressed_block = std::byteswap(plain_mark.offset_in_decompressed_block);
+        });
+#endif
+
     auto res = std::make_shared<MarksInCompressedFile>(plain_marks);
 
     ProfileEvents::increment(ProfileEvents::LoadedMarksCount, marks_count * columns_in_mark);
