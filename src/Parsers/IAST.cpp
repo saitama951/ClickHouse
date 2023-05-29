@@ -118,9 +118,8 @@ IAST::Hash IAST::getTreeHash() const
 {
     SipHash hash_state;
     updateTreeHash(hash_state);
-    IAST::Hash res;
-    hash_state.get128(res);
-    return res;
+
+    return hash_state.get128LoHi();
 }
 
 
