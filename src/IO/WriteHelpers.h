@@ -1182,20 +1182,25 @@ inline void writeBinaryEndian(T x, WriteBuffer & buf)
 }
 
 template <std::endian endian, typename T>
+requires std::is_scoped_enum_v<T>
+inline void writeBinaryEndian(const T & x, WriteBuffer & buf)
+{
+    using UnderlyingType = std::underlying_type_t<T>;
+    writeBinaryEndian<endian>(reinterpret_cast<const UnderlyingType &>(x), buf);
+}
+
+template <std::endian endian, typename T>
 requires is_decimal<T> || std::is_floating_point_v<T>
 inline void writeBinaryEndian(T x, WriteBuffer & buf)
 {
     if constexpr (std::endian::native != endian)
     {
-         T tmp(x);
-        char *start = reinterpret_cast<char*>(&tmp);
-        char *end = start + sizeof(T);
+        char * start = reinterpret_cast<char *>(&x);
+        char * end = start + sizeof(T);
         std::reverse(start, end);
-
-        buf.write(reinterpret_cast<const char *>(&tmp), sizeof(tmp)); /// NOLINT
     }
-    else
-        writePODBinary(x, buf);
+
+    writePODBinary(x, buf);
 }
 
 template <std::endian endian, typename T>
@@ -1215,13 +1220,13 @@ inline void writeBinaryEndian(const T & x, WriteBuffer & buf)
 }
 
 template <typename T>
-inline void writeBinaryLittleEndian(T x, WriteBuffer & buf)
+inline void writeBinaryLittleEndian(const T & x, WriteBuffer & buf)
 {
     writeBinaryEndian<std::endian::little>(x, buf);
 }
 
 template <typename T>
-inline void writeBinaryBigEndian(T x, WriteBuffer & buf)
+inline void writeBinaryBigEndian(const T & x, WriteBuffer & buf)
 {
     writeBinaryEndian<std::endian::big>(x, buf);
 }
