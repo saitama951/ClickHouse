@@ -1107,6 +1107,14 @@ inline void readBinaryEndian(T & x, ReadBuffer & buf)
 }
 
 template <std::endian endian, typename T>
+requires std::is_scoped_enum_v<T>
+inline void readBinaryEndian(T & x, ReadBuffer & buf)
+{
+    using UnderlyingType = std::underlying_type_t<T>;
+    readBinaryEndian<endian>(reinterpret_cast<UnderlyingType &>(x), buf);
+}
+
+template <std::endian endian, typename T>
 requires is_decimal<T> || std::is_floating_point_v<T>
 inline void readBinaryEndian(T & x, ReadBuffer & buf)
 {
