@@ -13,6 +13,7 @@
 #include <Common/DateLUT.h>
 #include <Common/LocalDate.h>
 #include <Common/LocalDateTime.h>
+#include <Common/TransformEndianness.hpp>
 #include <base/find_symbols.h>
 #include <base/StringRef.h>
 #include <base/DecomposedFloat.h>
@@ -1173,50 +1174,10 @@ inline void writeNullTerminatedString(const String & s, WriteBuffer & buffer)
 }
 
 template <std::endian endian, typename T>
-requires std::is_integral_v<T> && (sizeof(T) <= 8)
 inline void writeBinaryEndian(T x, WriteBuffer & buf)
 {
-    if constexpr (std::endian::native != endian)
-        x = std::byteswap(x);
+    transformEndianness<endian>(x);
     writePODBinary(x, buf);
-}
-
-template <std::endian endian, typename T>
-requires std::is_scoped_enum_v<T>
-inline void writeBinaryEndian(const T & x, WriteBuffer & buf)
-{
-    using UnderlyingType = std::underlying_type_t<T>;
-    writeBinaryEndian<endian>(reinterpret_cast<const UnderlyingType &>(x), buf);
-}
-
-template <std::endian endian, typename T>
-requires is_decimal<T> || std::is_floating_point_v<T>
-inline void writeBinaryEndian(T x, WriteBuffer & buf)
-{
-    if constexpr (std::endian::native != endian)
-    {
-        char * start = reinterpret_cast<char *>(&x);
-        char * end = start + sizeof(T);
-        std::reverse(start, end);
-    }
-
-    writePODBinary(x, buf);
-}
-
-template <std::endian endian, typename T>
-requires is_big_int_v<T>
-inline void writeBinaryEndian(const T & x, WriteBuffer & buf)
-{
-    if constexpr (std::endian::native == endian)
-    {
-        for (size_t i = 0; i != std::size(x.items); ++i)
-            writeBinaryEndian<endian>(x.items[i], buf);
-    }
-    else
-    {
-        for (size_t i = 0; i != std::size(x.items); ++i)
-            writeBinaryEndian<endian>(x.items[std::size(x.items) - i - 1], buf);
-    }
 }
 
 template <typename T>

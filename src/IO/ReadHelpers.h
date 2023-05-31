@@ -15,6 +15,7 @@
 #include <Common/DateLUT.h>
 #include <Common/LocalDate.h>
 #include <Common/LocalDateTime.h>
+#include <Common/TransformEndianness.hpp>
 #include <base/StringRef.h>
 #include <base/arithmeticOverflow.h>
 #include <base/sort.h>
@@ -1098,48 +1099,10 @@ inline void readBinary(Decimal256 & x, ReadBuffer & buf) { readPODBinary(x.value
 inline void readBinary(LocalDate & x, ReadBuffer & buf) { readPODBinary(x, buf); }
 
 template <std::endian endian, typename T>
-requires std::is_integral_v<T> && (sizeof(T) <= 8)
 inline void readBinaryEndian(T & x, ReadBuffer & buf)
 {
     readPODBinary(x, buf);
-    if constexpr (std::endian::native != endian)
-        x = std::byteswap(x);
-}
-
-template <std::endian endian, typename T>
-requires std::is_scoped_enum_v<T>
-inline void readBinaryEndian(T & x, ReadBuffer & buf)
-{
-    using UnderlyingType = std::underlying_type_t<T>;
-    readBinaryEndian<endian>(reinterpret_cast<UnderlyingType &>(x), buf);
-}
-
-template <std::endian endian, typename T>
-requires is_decimal<T> || std::is_floating_point_v<T>
-inline void readBinaryEndian(T & x, ReadBuffer & buf)
-{
-    readPODBinary(x, buf);
-    if constexpr (std::endian::native != endian)
-    {
-        char *start = reinterpret_cast<char *>(&x), *end = start + sizeof(T);
-        std::reverse(start, end);
-    }
-}
-
-template <std::endian endian, typename T>
-requires is_big_int_v<T>
-inline void readBinaryEndian(T & x, ReadBuffer & buf)
-{
-    if constexpr (std::endian::native == endian)
-    {
-        for (size_t i = 0; i != std::size(x.items); ++i)
-            readBinaryEndian<endian>(x.items[i], buf);
-    }
-    else
-    {
-        for (size_t i = 0; i != std::size(x.items); ++i)
-            readBinaryEndian<endian>(x.items[std::size(x.items) - i - 1], buf);
-    }
+    transformEndianness<endian>(x);
 }
 
 template <typename T>
