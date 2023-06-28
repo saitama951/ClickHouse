@@ -268,7 +268,18 @@ public:
         const auto & value = this->data(place).value;
         size_t size = value.size();
         writeVarUInt(size, buf);
-        buf.write(reinterpret_cast<const char *>(value.data()), size * sizeof(value[0]));
+		const char * source = reinterpret_cast<const char *>(value.data());
+        char * dest =reinterpret_cast<char *>(malloc(size*sizeof(value[0])));
+        char * dest1 = dest;
+        for(size_t i=0;i<size;i++)
+        {
+            reverseMemcpy(dest, source, sizeof(value[0]));
+            dest+=sizeof(value[0]);
+            source+=sizeof(value[0]);
+
+        }
+        buf.write(reinterpret_cast<const char *>(dest1), size * sizeof(value[0]));
+        //buf.write(reinterpret_cast<const char *>(value.data()), size * sizeof(value[0]));
 
         if constexpr (Trait::last)
             DB::writeIntBinary<size_t>(this->data(place).total_values, buf);
